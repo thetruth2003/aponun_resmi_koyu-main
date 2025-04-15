@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e40f514f089bef64aa71b77a1585f21b, type: 3}
+  m_Name: carrot
+  m_EditorClassIdentifier: 
+  itemName: carrot
+  icon: {fileID: 21300000, guid: 3f156e1684549f645b4e0d400b38a91c, type: 3}
+  itemPrefab: {fileID: 1071326183674264, guid: 499ba49ca58a64f468b997cdd7d6112c, type: 3}
+  maxAllowed: 99

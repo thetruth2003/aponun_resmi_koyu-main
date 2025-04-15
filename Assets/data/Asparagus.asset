@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e40f514f089bef64aa71b77a1585f21b, type: 3}
+  m_Name: Asparagus
+  m_EditorClassIdentifier: 
+  itemName: Asparagus
+  icon: {fileID: 21300000, guid: 61f80514269d3d64a9a18bca85273b72, type: 3}
+  itemPrefab: {fileID: 1633090950825022, guid: dc639d1e38ce2f842900cce188dbd42c, type: 3}
+  maxAllowed: 99

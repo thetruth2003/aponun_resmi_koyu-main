@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e40f514f089bef64aa71b77a1585f21b, type: 3}
+  m_Name: pumpkin
+  m_EditorClassIdentifier: 
+  itemName: pumpkin
+  icon: {fileID: 21300000, guid: 32812a237db1a2d489c5ce61d7cab72e, type: 3}
+  itemPrefab: {fileID: 6287166251661460250, guid: a304abdef6aa305419b61c1d8824c919, type: 3}
+  maxAllowed: 99

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e40f514f089bef64aa71b77a1585f21b, type: 3}
+  m_Name: carrotseed
+  m_EditorClassIdentifier: 
+  itemName: carrotseed
+  icon: {fileID: 21300000, guid: df3888ca77023e14689cb32c4e038887, type: 3}
+  itemPrefab: {fileID: 1768210808656796, guid: 9e76fb3c6fd6ef04e839ca5428dbad55, type: 3}
+  maxAllowed: 99
+  itemUsedPrefab: {fileID: 1712200964176758, guid: a74d9e41a3e780f47b3278a49fe842da, type: 3}

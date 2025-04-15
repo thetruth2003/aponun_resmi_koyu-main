@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e40f514f089bef64aa71b77a1585f21b, type: 3}
+  m_Name: fork
+  m_EditorClassIdentifier: 
+  itemName: fork
+  icon: {fileID: 21300000, guid: cda12d771a35eb84e8354c20164e0e3e, type: 3}
+  itemPrefab: {fileID: 8185389473794188782, guid: 14ee34b5212e5544da7aa40ec1e92b13, type: 3}
+  maxAllowed: 99

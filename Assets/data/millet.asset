@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e40f514f089bef64aa71b77a1585f21b, type: 3}
+  m_Name: millet
+  m_EditorClassIdentifier: 
+  itemName: millet
+  icon: {fileID: 834465296, guid: 969c308eedd1d354c91a4d95132e1f4f, type: 3}
+  itemPrefab: {fileID: 1905552429518408, guid: 99cd695c351166b4ba1965a8b073e583, type: 3}
+  maxAllowed: 99
