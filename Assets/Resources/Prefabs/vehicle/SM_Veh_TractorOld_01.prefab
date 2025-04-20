@@ -344,10 +344,7 @@ GameObject:
   - component: {fileID: 33617391304866484}
   - component: {fileID: 23967127605266366}
   - component: {fileID: 3931549583063136263}
-  - component: {fileID: 3586664833677109173}
   - component: {fileID: 836411482123282186}
-  - component: {fileID: 3708066064023448032}
-  - component: {fileID: 1134524540997182555}
   - component: {fileID: 1101559905055131116}
   m_Layer: 6
   m_Name: SM_Veh_TractorOld_01
@@ -453,29 +450,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3586664833677109173
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1848324045129022}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2300c36d5df2c74cbe138dc36838ca6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  vehicleType: 0
-  playerpoint: {fileID: 72951841452143951}
-  rotationSpeedHarvester: 100
-  blade: {fileID: 0}
-  isRotating: 0
-  arm: {fileID: 0}
-  bucket: {fileID: 0}
-  rotationSpeed: 10
-  minRotation: -50
-  maxRotation: 30
-  attachmentPoint: {fileID: 5166332266648456767}
 --- !u!65 &836411482123282186
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -497,108 +471,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5417938, y: 1.1064698, z: 2.261695}
   m_Center: {x: -0.027763367, y: 0.93843216, z: 0.28036833}
---- !u!114 &3708066064023448032
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1848324045129022}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3af3383731f1b943ad8dedacc5647c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  data: {fileID: 0}
-  rb: {fileID: 0}
-  duration: 100
-  car_name: 
-  price: 100
-  Fuel: 100
---- !u!114 &1134524540997182555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1848324045129022}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e33edb76f2b0e240a46bdb3f692386d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  controlMode: 1
-  SpeedMainCar: 1
-  BrakePowerMainCar: 2
-  activeControl: 1
-  carWheels:
-    wheels:
-      frontWheelDrive: 1
-      frontRight: {fileID: 4806798594284600}
-      frontLeft: {fileID: 4184149118199412}
-      backWheelDrive: 1
-      backRight: {fileID: 4941299852220866}
-      backLeft: {fileID: 4593786656574052}
-    setting:
-      Radius: 0.4
-      Weight: 1000
-      Distance: 0.2
-  frontWheelSetting:
-    Radius: 0.4
-    Weight: 1000
-    Distance: 0.2
-  rearWheelSetting:
-    Radius: 0.4
-    Weight: 1000
-    Distance: 0.2
-  carLights:
-    brakeLights: []
-    reverseLights: []
-  carParticles:
-    brakeParticlePerfab: {fileID: 0}
-    shiftParticle1: {fileID: 0}
-    shiftParticle2: {fileID: 0}
-  carSetting:
-    showNormalGizmos: 0
-    carSteer: {fileID: 4689554810940402}
-    hitGround: []
-    cameraSwitchView: []
-    springs: 25000
-    dampers: 1500
-    carPower: 120
-    shiftPower: 150
-    brakePower: 8000
-    shiftCentre: {x: 0, y: -0.8, z: 0}
-    maxSteerAngle: 25
-    shiftDownRPM: 1500
-    shiftUpRPM: 2500
-    idleRPM: 500
-    stiffness: 2
-    automaticGear: 1
-    gears:
-    - -10
-    - 9
-    - 6
-    - 4.5
-    - 3
-    - 2.5
-    LimitBackwardSpeed: 60
-    LimitForwardSpeed: 220
-  brake: 0
-  curTorque: 100
-  powerShift: 100
-  shift: 0
-  speed: 0
-  currentGear: 0
-  NeutralGear: 1
-  motorRPM: 0
-  Backward: 0
-  accelFwd: 0
-  accelBack: 0
-  steerAmount: 0
-  MyRigidbody: {fileID: 0}
-  Maincar: 0
-  AiFinish: 0
 --- !u!114 &1101559905055131116
 MonoBehaviour:
   m_ObjectHideFlags: 0
