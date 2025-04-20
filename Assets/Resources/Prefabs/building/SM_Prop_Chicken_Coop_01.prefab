@@ -11,9 +11,7 @@ GameObject:
   - component: {fileID: 4284009731098648}
   - component: {fileID: 33323737605841604}
   - component: {fileID: 23682897137274704}
-  - component: {fileID: -7157055195017768028}
   - component: {fileID: 64334143616121636}
-  - component: {fileID: -8177612809038686400}
   m_Layer: 0
   m_Name: SM_Prop_Chicken_Coop_01
   m_TagString: Untagged
@@ -86,21 +84,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-7157055195017768028
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1258219557364924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4b463699739da047b90c6990670cbf7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  data: {fileID: 0}
-  rb: {fileID: 0}
-  building_name: 
 --- !u!64 &64334143616121636
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -123,30 +106,3 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 43829953433989144, guid: da51e8e06a2d78f47b979247f0bf174e, type: 2}
---- !u!54 &-8177612809038686400
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1258219557364924}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
