@@ -1,9 +1,0 @@
-NPC: Merhaba, nasıl yardımcı olabilirim?
-Player: Merhaba! Yardımcı olabilir misin?
-NPC: Tabii, hangi konuda yardımcı olabilirim?
-Player: Benimle biraz konuşabilir misin?
-NPC: Tabii ki, ne hakkında konuşmak istersin?
-Player: Hava nasıl bugün?
-NPC: Bugün hava çok güzel, dışarıda gezmek için harika bir gün.
-Player: Gerçekten mi? O zaman dışarıda biraz vakit geçirelim.
-NPC: Harika, gel o zaman! 
