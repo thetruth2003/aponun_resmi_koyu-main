@@ -12,12 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce421fafd4c220b41ab7477e173307f8, type: 3}
   m_Name: MyFirstQuestChain
   m_EditorClassIdentifier: 
+  chainTitle: asdasdas
   quests:
   - questName: Talk to ...
     questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     jsonData: '{"npcObject":{"instanceID":0}}'
-  - questName: Go to ...
-    questTypeName: GoToLocationStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"targetObject":{"instanceID":0}}'

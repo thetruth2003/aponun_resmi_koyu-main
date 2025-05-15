@@ -1,75 +1,120 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class QuestEditorWindow : EditorWindow
 {
-    private QuestChain currentChain;
-    private Vector2 scrollPos;
-    private int newQuestTypeIndex;
+    [SerializeField] private List<QuestChainData> chains = new List<QuestChainData>();
+    [SerializeField] private string newChainTitle = "";
+    private int selectedChainIndex = -1;
+
+    private Vector2 chainListScroll;
+    private Vector2 subQuestScroll;
+
+    private int newSubQuestTypeIndex;
     private readonly string[] questTypeOptions = { "Talk To NPC", "Go To Location" };
 
     [MenuItem("Window/Quest Editor")]
     public static void ShowWindow() => GetWindow<QuestEditorWindow>("Quest Editor");
 
-    void OnGUI()
+    private void OnGUI()
     {
-        GUILayout.Label("Quest Chain Editor", EditorStyles.boldLabel);
-        currentChain = (QuestChain)EditorGUILayout.ObjectField("Quest Chain", currentChain, typeof(QuestChain), false);
-        if (currentChain == null) return;
+        GUILayout.Label("Quest Editor", EditorStyles.boldLabel);
 
-        // Add / Delete
-        GUILayout.BeginHorizontal();
-        newQuestTypeIndex = EditorGUILayout.Popup(newQuestTypeIndex, questTypeOptions);
-        if (GUILayout.Button("Add")) { AddStep(newQuestTypeIndex); }
-        if (GUILayout.Button("Del Last")) { DelLastStep(); }
-        GUILayout.EndHorizontal();
+        EditorGUILayout.Space();
 
-        // Listele & düzenle
-        scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
-        for (int i = 0; i < currentChain.quests.Count; i++)
+        // — Üst: Ana Görev Ekleme —
+        EditorGUILayout.BeginHorizontal();
+        newChainTitle = EditorGUILayout.TextField("New Main Quest", newChainTitle);
+        if (GUILayout.Button("Add Main Quest", GUILayout.MaxWidth(130)) 
+            && !string.IsNullOrWhiteSpace(newChainTitle))
         {
-            var qc = currentChain.quests[i];
-            EditorGUILayout.BeginVertical("box");
-            EditorGUILayout.LabelField($"Step {i + 1}: {qc.questName}", EditorStyles.boldLabel);
+            chains.Add(new QuestChainData { title = newChainTitle });
+            newChainTitle = "";
+        }
+        EditorGUILayout.EndHorizontal();
 
-            var step = qc.GetStepInstance();
-            EditorGUI.BeginChangeCheck();
-            if (step is TalkToNPCStep talk)
-            {
-                talk.npcObject = (GameObject)EditorGUILayout.ObjectField("NPC Object", talk.npcObject, typeof(GameObject), true);
-                qc.questName = talk.GetName();
-            }
-            else if (step is GoToLocationStep goTo)
-            {
-                goTo.targetObject = (GameObject)EditorGUILayout.ObjectField("Target Object", goTo.targetObject, typeof(GameObject), true);
-                qc.questName = goTo.GetName();
-            }
-            if (EditorGUI.EndChangeCheck())
-            {
-                qc.SetStepInstance(step);
-                EditorUtility.SetDirty(currentChain);
-            }
-            EditorGUILayout.EndVertical();
+        EditorGUILayout.Space();
+
+        // — Ana Görev Listesi —
+        GUILayout.Label("Main Quests:", EditorStyles.boldLabel);
+        chainListScroll = EditorGUILayout.BeginScrollView(chainListScroll, GUILayout.Height(120));
+        for (int i = 0; i < chains.Count; i++)
+        {
+            // Toggle butonla seçim
+            if (GUILayout.Toggle(selectedChainIndex == i, chains[i].title, "Button"))
+                selectedChainIndex = i;
         }
         EditorGUILayout.EndScrollView();
-    }
 
-    void AddStep(int idx)
-    {
-        IQuestStep step = idx == 0 ? (IQuestStep)new TalkToNPCStep() : new GoToLocationStep();
-        var qc = new QuestContainer();
-        qc.SetStepInstance(step);
-        qc.questName = step.GetName();
-        currentChain.quests.Add(qc);
-        EditorUtility.SetDirty(currentChain);
-    }
+        EditorGUILayout.Space();
 
-    void DelLastStep()
-    {
-        if (currentChain.quests.Count > 0)
+        // — Alt: Seçilmiş Ana Göreve Ait Alt Görevler —
+        if (selectedChainIndex >= 0 && selectedChainIndex < chains.Count)
         {
-            currentChain.quests.RemoveAt(currentChain.quests.Count - 1);
-            EditorUtility.SetDirty(currentChain);
+            var selectedChain = chains[selectedChainIndex];
+            GUILayout.Label($"Editing: {selectedChain.title}", EditorStyles.boldLabel);
+
+            // Alt görev tipi seçimi & ekleme
+            EditorGUILayout.BeginHorizontal();
+            newSubQuestTypeIndex = EditorGUILayout.Popup(newSubQuestTypeIndex, questTypeOptions);
+            if (GUILayout.Button("Add Sub Quest", GUILayout.MaxWidth(120)))
+            {
+                IQuestStep step = newSubQuestTypeIndex == 0
+                    ? (IQuestStep)new TalkToNPCStep()
+                    : new GoToLocationStep();
+                var qc = new QuestContainer();
+                qc.SetStepInstance(step);
+                qc.questName = step.GetName();
+                selectedChain.quests.Add(qc);
+            }
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space();
+
+            // Alt görevlerin listesi ve düzenleme
+            subQuestScroll = EditorGUILayout.BeginScrollView(subQuestScroll);
+            for (int j = 0; j < selectedChain.quests.Count; j++)
+            {
+                var qc = selectedChain.quests[j];
+                EditorGUILayout.BeginVertical("box");
+                EditorGUILayout.LabelField($"Sub Quest {j + 1}: {qc.questName}", EditorStyles.boldLabel);
+
+                var step = qc.GetStepInstance();
+                EditorGUI.BeginChangeCheck();
+
+                if (step is TalkToNPCStep talk)
+                {
+                    talk.npcObject = (GameObject)EditorGUILayout.ObjectField("NPC Object", talk.npcObject, typeof(GameObject), true);
+                }
+                else if (step is GoToLocationStep goTo)
+                {
+                    goTo.targetObject = (GameObject)EditorGUILayout.ObjectField("Target Object", goTo.targetObject, typeof(GameObject), true);
+                }
+
+                if (EditorGUI.EndChangeCheck())
+                {
+                    qc.questName = step.GetName();
+                }
+
+                // Alt görev silme
+                if (GUILayout.Button("Remove Sub Quest", GUILayout.MaxWidth(150)))
+                {
+                    selectedChain.quests.RemoveAt(j);
+                    break; // listeyi güncelle
+                }
+
+                EditorGUILayout.EndVertical();
+            }
+            EditorGUILayout.EndScrollView();
         }
+    }
+
+    // Küçük yardımcı sınıf: bir ana görevin başlığı + alt görev listesi
+    [System.Serializable]
+    private class QuestChainData
+    {
+        public string title;
+        public List<QuestContainer> quests = new List<QuestContainer>();
     }
 }

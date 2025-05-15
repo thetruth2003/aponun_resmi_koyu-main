@@ -4,17 +4,17 @@ using UnityEngine;
 public class QuestContainer
 {
     public string questName;
-    public string questTypeName;   // Örn: TalkToNPCStep
-    public string jsonData;        // Görev parametreleri
+    public string questTypeName;   // ï¿½rn: TalkToNPCStep
+    public string jsonData;        // Gï¿½rev parametreleri
 
-    // JSON'dan IQuestStep üret
+    // JSON'dan IQuestStep ï¿½ret
     public IQuestStep GetStepInstance()
     {
         var type = System.Type.GetType(questTypeName);
         return (IQuestStep)JsonUtility.FromJson(jsonData, type);
     }
 
-    // IQuestStep'i JSON'a çevir
+    // IQuestStep'i JSON'a ï¿½evir
     public void SetStepInstance(IQuestStep step)
     {
         questTypeName = step.GetType().AssemblyQualifiedName;

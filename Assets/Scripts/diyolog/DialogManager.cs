@@ -4,8 +4,8 @@ using TMPro;
 public class DialogManager : MonoBehaviour
 {
     public string[] dialogLines;
-    public TextMeshProUGUI dialogText; // Diyalog yazýsý
-    public GameObject[] storedElements; // Kapanýp açýlacak objeler
+    public TextMeshProUGUI dialogText; // Diyalog yazï¿½sï¿½
+    public GameObject[] storedElements; // Kapanï¿½p aï¿½ï¿½lacak objeler
 
     private int currentLine = 0;
     private bool isDialogActive = false;
@@ -28,16 +28,16 @@ public class DialogManager : MonoBehaviour
     }
 
     public void StartDialog()
-    {
+    { 
         currentLine = 0;
         isDialogActive = true;
         dialogText.gameObject.SetActive(true);
         dialogText.text = dialogLines[currentLine];
 
-        // FPS kontrolünü kapat
+        // FPS kontrolï¿½nï¿½ kapat
         fpsController.enabled = false;
 
-        // Mouse imlecini aç
+        // Mouse imlecini aï¿½
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
@@ -66,14 +66,14 @@ public class DialogManager : MonoBehaviour
     {
         isDialogActive = false;
 
-        // FPS kontrolünü geri aç
+        // FPS kontrolï¿½nï¿½ geri aï¿½
         fpsController.enabled = true;
         dialogText.gameObject.SetActive(false);
         // Mouse imlecini gizle
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // Objeleri geri aç
+        // Objeleri geri aï¿½
         foreach (GameObject obj in storedElements)
         {
             if (obj != null)

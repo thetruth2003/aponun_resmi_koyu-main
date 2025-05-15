@@ -13,8 +13,8 @@ public class NPCInteraction : MonoBehaviour
 
     private int currentLine = 0;
     private bool isDialogActive = false;
-
-    // FOV ayarlar˝
+    public TalkToNPCStep linkedStep;
+    // FOV ayarlarÔøΩ
     private float originalFOV = 60f;
     public float zoomFOV = 45f;
     public float fovLerpSpeed = 20f;
@@ -38,7 +38,7 @@ public class NPCInteraction : MonoBehaviour
             NextLine();
         }
 
-        // FOV geÁi˛i
+        // FOV geÔøΩiÔøΩi
         if (isZoomFOVActive && currentCamera.fieldOfView > zoomFOV)
         {
             currentCamera.fieldOfView = Mathf.Lerp(currentCamera.fieldOfView, zoomFOV, Time.deltaTime * fovLerpSpeed);
@@ -50,7 +50,11 @@ public class NPCInteraction : MonoBehaviour
     }
 
     public void StartDialog()
-    {
+    {   
+                // G√∂rev kontrol√º
+        if (linkedStep != null && !linkedStep.IsComplete())
+            linkedStep.MarkCompleted();
+            
         currentLine = 0;
         isDialogActive = true;
         diyolog.SetActive(true);

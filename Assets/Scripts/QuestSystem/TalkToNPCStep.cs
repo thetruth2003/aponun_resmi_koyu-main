@@ -5,13 +5,16 @@ public class TalkToNPCStep : IQuestStep
 {
     // Artık string değil, doğrudan GameObject referansı:
     public GameObject npcObject;
+    private bool isCompleted = false;
 
     public string GetName() => npcObject != null ? $"Talk to {npcObject.name}" : "Talk to ...";
-    public void OnStart() { }
+    public void OnStart() { } // Lazım değil, çünkü raycast’le tetiklenecek
     public void OnUpdate() { }
-    public bool IsComplete()
+
+    public bool IsComplete() => isCompleted;
+    public void MarkCompleted()
     {
-        // Örnek kontrol: NPCManager ile ilişkilendir
-        return npcObject != null && NPCManager.Instance.HasTalkedTo(npcObject);
+        isCompleted = true;
+        Debug.Log("TalkToNPCStep: Dialog completed.");
     }
 }
