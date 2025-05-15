@@ -1,5 +1,5 @@
 using UnityEngine;
-using TMPro; // Eğer TMP kullanıyorsan
+using TMPro;
 
 public class QuestUI : MonoBehaviour
 {

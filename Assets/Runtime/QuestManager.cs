@@ -1,14 +1,10 @@
-﻿using System.Collections;
-using UnityEngine;
-using TMPro;  // ← TMP kütüphanesini ekledik
+﻿using UnityEngine;
+using TMPro;
 
 public class QuestManager : MonoBehaviour
 {
-    [Header("Quest Data")]
-    public QuestChain questChain;         // Atayacağın QuestChain asset
-
-    [Header("UI (TextMeshPro)")]
-    public TMP_Text uiText;               // TextMeshPro – UGUI bileşeni
+    public QuestChain questChain;
+    public TMP_Text uiText;
 
     private int currentIndex = 0;
     private IQuestStep currentStep;
@@ -48,7 +44,6 @@ public class QuestManager : MonoBehaviour
 
     void LoadCurrentStep()
     {
-        // Şu anki adımı al, başlat ve UI'ı güncelle
         var container = questChain.quests[currentIndex];
         currentStep = container.GetStepInstance();
         currentStep.OnStart();
