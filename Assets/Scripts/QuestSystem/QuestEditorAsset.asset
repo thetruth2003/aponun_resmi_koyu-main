@@ -13,35 +13,13 @@ MonoBehaviour:
   m_Name: QuestEditorAsset
   m_EditorClassIdentifier: 
   chains:
-  - title: "asd\xF6aplsda"
+  - title: alperen
     quests:
-    - questName: Talk to ...
-      questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    - questName: "Buy 5\xD7 Potato "
+      questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      jsonData: '{"npcObject":{"instanceID":0}}'
-    - questName: Talk to ...
-      questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      jsonData: '{"itemID":"Potato ","requiredAmount":5}'
+    - questName: "Harvest 5\xD7 Potato "
+      questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
-      jsonData: '{"npcObject":{"instanceID":0}}'
-    - questName: Talk to ...
-      questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      jsonData: '{"npcObject":{"instanceID":0}}'
-    - questName: Go to ...
-      questTypeName: GoToLocationStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      jsonData: '{"targetObject":{"instanceID":0}}'
-    - questName: Go to ...
-      questTypeName: GoToLocationStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      jsonData: '{"targetObject":{"instanceID":0}}'
-  - title: 1321312
-    quests:
-    - questName: Talk to ...
-      questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      jsonData: '{"npcObject":{"instanceID":0}}'
-    - questName: Go to ...
-      questTypeName: GoToLocationStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      jsonData: '{"targetObject":{"instanceID":0}}'
+      jsonData: '{"itemID":"Potato ","requiredAmount":5}'
