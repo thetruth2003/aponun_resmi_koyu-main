@@ -6,7 +6,7 @@ public class QuestManager : MonoBehaviour
     public static QuestManager Instance { get; private set; }
 
     [Header("Quest Data")]
-    public QuestChain questChain;
+    public QuestEditorAsset questChain;
 
     [Header("UI")]
     public QuestUI questUI;         // QuestUI komponentine referans
@@ -32,7 +32,7 @@ public class QuestManager : MonoBehaviour
         LoadCurrentStep();
     }
 
-    void Update()
+    void CheckingQuest()
     {
         if (currentStep == null) return;
 

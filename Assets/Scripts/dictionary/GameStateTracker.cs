@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class GameStateTracker : MonoBehaviour
@@ -6,7 +7,7 @@ public class GameStateTracker : MonoBehaviour
     public static GameStateTracker Instance { get; private set; }
 
     // Tek bir sözlükte hem sayıcıları (int) hem bayrakları (bool) tutuyoruz
-    private Dictionary<string, object> state = new Dictionary<string, object>();
+    public Dictionary<string, object> state = new Dictionary<string, object>();
 
     void Awake()
     {
@@ -16,6 +17,8 @@ public class GameStateTracker : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
         else Destroy(gameObject);
+
+        //IncrementCount("Bought_asd", 1);
     }
 
     // ─── Sayaç işlemleri ───
@@ -75,5 +78,15 @@ public class GameStateTracker : MonoBehaviour
     {
         state.Remove(key);
     }
+        public void SetString(string key, string value)
+    {
+        state[key] = value;
+    }
 
+    public string GetString(string key)
+    {
+        if (state.TryGetValue(key, out var val) && val is string s)
+            return s;
+        return null;
+    }
 }

@@ -7,6 +7,7 @@ public class QuestEditorWindow : EditorWindow
     [SerializeField] private QuestEditorAsset questAsset;
     [SerializeField] private string newChainTitle = "";
     private int selectedChainIndex = -1;
+    public IQuestStep ActiveStep;
 
     private Vector2 chainListScroll;
     private Vector2 subQuestScroll;
@@ -24,42 +25,39 @@ public class QuestEditorWindow : EditorWindow
     {
         GUILayout.Label("Quest Editor", EditorStyles.boldLabel);
 
-        // — QuestAsset seç
         questAsset = (QuestEditorAsset)EditorGUILayout.ObjectField(
             "Quest Data", questAsset, typeof(QuestEditorAsset), false
         );
+
         if (questAsset == null)
         {
-            EditorGUILayout.HelpBox(
-                "Please assign a QuestEditorAsset to begin editing.",
-                MessageType.Info
-            );
+            EditorGUILayout.HelpBox("Please assign a QuestEditorAsset.", MessageType.Info);
             return;
         }
 
         EditorGUILayout.Space();
 
-        // — Ana Görev Ekle/Sil —
+        // ─── Ana Görev (başlık) ekleme ───
         EditorGUILayout.BeginHorizontal();
         newChainTitle = EditorGUILayout.TextField("New Main Quest", newChainTitle);
-        if (GUILayout.Button("Add Main Quest", GUILayout.MaxWidth(130))
-            && !string.IsNullOrWhiteSpace(newChainTitle))
+        if (GUILayout.Button("Add Main Quest", GUILayout.MaxWidth(130)) &&
+            !string.IsNullOrWhiteSpace(newChainTitle))
         {
-            questAsset.chains.Add(new QuestChainData { title = newChainTitle });
+            var mainQuest = new QuestContainer { questName = newChainTitle };
+            questAsset.quests.Add(mainQuest);
             newChainTitle = "";
             EditorUtility.SetDirty(questAsset);
         }
+
         GUILayout.FlexibleSpace();
-        if (GUILayout.Button("🗑 Delete Selected", GUILayout.MaxWidth(130))
-            && selectedChainIndex >= 0
-            && selectedChainIndex < questAsset.chains.Count)
+        if (GUILayout.Button("🗑 Delete Selected", GUILayout.MaxWidth(130)) &&
+            selectedChainIndex >= 0)
         {
-            if (EditorUtility.DisplayDialog(
-                    "Confirm Delete",
-                    $"Delete '{questAsset.chains[selectedChainIndex].title}'?",
-                    "Yes", "Cancel"))
+            int realIndex = GetMainQuestIndices()[selectedChainIndex];
+            if (EditorUtility.DisplayDialog("Confirm Delete",
+                $"Delete '{questAsset.quests[realIndex].questName}' and its sub-quests?", "Yes", "Cancel"))
             {
-                questAsset.chains.RemoveAt(selectedChainIndex);
+                DeleteMainQuestWithSubquests(realIndex);
                 selectedChainIndex = -1;
                 EditorUtility.SetDirty(questAsset);
             }
@@ -68,20 +66,27 @@ public class QuestEditorWindow : EditorWindow
 
         EditorGUILayout.Space();
 
-        // — Ana Görev Listesi —
+        // ─── Ana Görev Listesi ───
         GUILayout.Label("Main Quests:", EditorStyles.boldLabel);
+        var mainQuestIndices = GetMainQuestIndices();
+
         chainListScroll = EditorGUILayout.BeginScrollView(chainListScroll, GUILayout.Height(120));
-        for (int i = 0; i < questAsset.chains.Count; i++)
-            if (GUILayout.Toggle(selectedChainIndex == i, questAsset.chains[i].title, "Button"))
+        for (int i = 0; i < mainQuestIndices.Count; i++)
+        {
+            string title = questAsset.quests[mainQuestIndices[i]].questName;
+            if (GUILayout.Toggle(selectedChainIndex == i, title, "Button"))
                 selectedChainIndex = i;
+        }
         EditorGUILayout.EndScrollView();
 
         EditorGUILayout.Space();
 
-        // — Alt Görevler —
-        if (selectedChainIndex < 0 || selectedChainIndex >= questAsset.chains.Count) return;
-        var chain = questAsset.chains[selectedChainIndex];
-        GUILayout.Label($"Editing: {chain.title}", EditorStyles.boldLabel);
+        // ─── Alt Görevler ───
+        if (selectedChainIndex < 0 || selectedChainIndex >= mainQuestIndices.Count)
+            return;
+
+        int baseIndex = mainQuestIndices[selectedChainIndex];
+        GUILayout.Label($"Editing: {questAsset.quests[baseIndex].questName}", EditorStyles.boldLabel);
 
         // Alt görev ekleme
         EditorGUILayout.BeginHorizontal();
@@ -97,24 +102,30 @@ public class QuestEditorWindow : EditorWindow
                 4 => new HarvestItemStep(),
                 _ => null
             };
+
             if (step != null)
             {
                 var qc = new QuestContainer();
                 qc.SetStepInstance(step);
                 qc.questName = step.GetName();
-                chain.quests.Add(qc);
+
+                int insertIndex = FindEndOfSubquestBlock(baseIndex);
+                questAsset.quests.Insert(insertIndex, qc);
                 EditorUtility.SetDirty(questAsset);
             }
         }
         EditorGUILayout.EndHorizontal();
 
-        // — Sadece Play Mode’da durum etiketlerini hesapla ve göster
+        // Sadece Play Mode’da aktif adımı işaretle
+
+
         int activeIndex = -1;
         if (Application.isPlaying)
         {
-            for (int i = 0; i < chain.quests.Count; i++)
+            var subquests = GetSubquestsFor(baseIndex);
+            for (int i = 0; i < subquests.Count; i++)
             {
-                if (!chain.quests[i].GetStepInstance().IsComplete())
+                if (!subquests[i].GetStepInstance().IsComplete())
                 {
                     activeIndex = i;
                     break;
@@ -122,29 +133,29 @@ public class QuestEditorWindow : EditorWindow
             }
         }
 
-        // — Alt görev listesini çiz
+        // Alt görev çizimi
         subQuestScroll = EditorGUILayout.BeginScrollView(subQuestScroll);
-        for (int j = 0; j < chain.quests.Count; j++)
+        var subQuestList = GetSubquestsFor(baseIndex);
+        for (int j = 0; j < subQuestList.Count; j++)
         {
-            var qc = chain.quests[j];
+            var qc = subQuestList[j];
+            int globalIndex = baseIndex + 1 + j;
+
             EditorGUILayout.BeginVertical("box");
 
-            // Etiket: Play Mode’da dinamik, Edit Mode’da sade
             string label = $"Sub Quest {j + 1}: {qc.questName}";
             if (Application.isPlaying)
             {
-                if (j < activeIndex)       label += "   ✔ Completed";
+                if (j < activeIndex) label += "   ✔ Completed";
                 else if (j == activeIndex) label += "   → Active";
-                else                        label += "   (Inactive)";
+                else label += "   (Inactive)";
             }
             EditorGUILayout.LabelField(label, EditorStyles.boldLabel);
 
-            // Düzenleme: Play Mode’da sadece aktif adıma açık
             bool prevEnabled = GUI.enabled;
             if (Application.isPlaying)
                 GUI.enabled = (j == activeIndex);
 
-            // Düzenleme blokları
             var step2 = qc.GetStepInstance();
             EditorGUI.BeginChangeCheck();
             if (step2 is TalkToNPCStep talk)
@@ -166,6 +177,7 @@ public class QuestEditorWindow : EditorWindow
                 harvest.itemID = EditorGUILayout.TextField("Item ID", harvest.itemID);
                 harvest.requiredAmount = EditorGUILayout.IntField("Required Amount", harvest.requiredAmount);
             }
+
             if (EditorGUI.EndChangeCheck())
             {
                 qc.SetStepInstance(step2);
@@ -173,13 +185,11 @@ public class QuestEditorWindow : EditorWindow
                 EditorUtility.SetDirty(questAsset);
             }
 
-            // Düzenlemeyi eski haline getir
             GUI.enabled = prevEnabled;
 
-            // Silme butonu
             if (GUILayout.Button("Remove Sub Quest", GUILayout.MaxWidth(150)))
             {
-                chain.quests.RemoveAt(j);
+                questAsset.quests.RemoveAt(globalIndex);
                 EditorUtility.SetDirty(questAsset);
                 break;
             }
@@ -188,8 +198,49 @@ public class QuestEditorWindow : EditorWindow
         }
         EditorGUILayout.EndScrollView();
 
-        // — Play Mode’da Set/Reset sonrası GUI’yi güncellemek için
         if (Application.isPlaying)
             Repaint();
+    }
+
+    // Yardımcılar
+
+    private List<int> GetMainQuestIndices()
+    {
+        var indices = new List<int>();
+        for (int i = 0; i < questAsset.quests.Count; i++)
+        {
+            if (string.IsNullOrEmpty(questAsset.quests[i].questTypeName))
+                indices.Add(i);
+        }
+        return indices;
+    }
+
+    private List<QuestContainer> GetSubquestsFor(int mainQuestIndex)
+    {
+        var subquests = new List<QuestContainer>();
+        for (int i = mainQuestIndex + 1; i < questAsset.quests.Count; i++)
+        {
+            if (string.IsNullOrEmpty(questAsset.quests[i].questTypeName))
+                break;
+            subquests.Add(questAsset.quests[i]);
+        }
+        return subquests;
+    }
+
+    private int FindEndOfSubquestBlock(int mainQuestIndex)
+    {
+        int i = mainQuestIndex + 1;
+        while (i < questAsset.quests.Count &&
+               !string.IsNullOrEmpty(questAsset.quests[i].questTypeName))
+        {
+            i++;
+        }
+        return i;
+    }
+
+    private void DeleteMainQuestWithSubquests(int mainQuestIndex)
+    {
+        int end = FindEndOfSubquestBlock(mainQuestIndex);
+        questAsset.quests.RemoveRange(mainQuestIndex, end - mainQuestIndex);
     }
 }
