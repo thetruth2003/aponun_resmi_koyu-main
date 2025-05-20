@@ -11,20 +11,19 @@ public class NPCInteraction : MonoBehaviour
     public SC_FPSController fpsController;
     public Camera currentCamera;
     public GameObject[] storedElements;
+    public int currentSectionIndex = 0;
 
     public QuestEditorAsset linkedAsset;
 
     private List<DialogLine> currentLines = new List<DialogLine>();
     private int currentLine = 0;
     private bool isDialogActive = false;
-    private int currentSectionIndex = 0;
+    private AudioSource audioSource;
 
     private float originalFOV = 60f;
     public float zoomFOV = 45f;
     public float fovLerpSpeed = 20f;
     private bool isZoomFOVActive = false;
-
-    private AudioSource audioSource;
 
     void Start()
     {
@@ -39,34 +38,49 @@ public class NPCInteraction : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
     }
 
+    TalkToNPCStep FindMatchingStep()
+    {
+        if (linkedAsset == null) return null;
+        var tracked = ActiveQuestSystem.Instance?.GetTracked(linkedAsset);
+        if (tracked == null) return null;
+
+        var container = tracked.GetActiveStep();
+        var step = container?.GetStepInstance() as TalkToNPCStep;
+
+        if (step != null && step.npcObject == this.gameObject)
+            return step;
+
+        return null;
+    }
+
     public void StartDialog()
     {
-        if (dialogData == null)
+        var step = FindMatchingStep();
+        if (step == null)
         {
-            Debug.LogWarning("[NPCInteraction] dialogData boş.");
+            Debug.LogWarning("[NPCInteraction] NPC’ye ait aktif adım bulunamadı.");
             return;
         }
 
-        string npcKey = this.gameObject.name.ToLower();
-        currentSectionIndex = GameStateTracker.Instance.GetDialogIndex(npcKey);
+        int sectionIndex = step.dialogSectionIndex;
 
-
-        if (currentSectionIndex >= dialogData.sections.Count)
+        if (dialogData == null || sectionIndex < 0 || sectionIndex >= dialogData.sections.Count)
         {
-            Debug.LogWarning("[NPCInteraction] Geçersiz dialog bölümü!");
+            Debug.LogWarning("[NPCInteraction] Geçersiz diyalog index: " + sectionIndex);
             return;
         }
 
-        currentLines = dialogData.sections[currentSectionIndex].lines;
+        currentLines = dialogData.sections[sectionIndex].lines;
         if (currentLines.Count == 0)
         {
-            Debug.LogWarning("[NPCInteraction] Diyalog bölümü boş.");
+            Debug.LogWarning("[NPCInteraction] Diyalog boş.");
             return;
         }
 
         currentLine = 0;
         isDialogActive = true;
         diyolog.SetActive(true);
+        currentSectionIndex = sectionIndex;
 
         fpsController.enabled = false;
         Cursor.lockState = CursorLockMode.None;
@@ -78,25 +92,6 @@ public class NPCInteraction : MonoBehaviour
         isZoomFOVActive = true;
 
         PlayCurrentLine();
-    }
-
-    void Update()
-    {
-        if (isDialogActive && Input.GetKeyDown(KeyCode.Space))
-        {
-            audioSource.Stop(); // geçerken sesi durdur
-            currentLine++;
-
-            if (currentLine < currentLines.Count)
-                PlayCurrentLine();
-            else
-                EndDialog();
-        }
-
-        if (isZoomFOVActive && currentCamera.fieldOfView > zoomFOV)
-            currentCamera.fieldOfView = Mathf.Lerp(currentCamera.fieldOfView, zoomFOV, Time.deltaTime * fovLerpSpeed);
-        else if (!isZoomFOVActive && currentCamera.fieldOfView < originalFOV)
-            currentCamera.fieldOfView = Mathf.Lerp(currentCamera.fieldOfView, originalFOV, Time.deltaTime * fovLerpSpeed);
     }
 
     void PlayCurrentLine()
@@ -112,12 +107,27 @@ public class NPCInteraction : MonoBehaviour
         {
             audioSource.clip = line.voiceClip;
             audioSource.Play();
-            Debug.Log($"🔊 Ses başlatıldı: {line.voiceClip.name}", line.voiceClip);
+            Debug.Log($"🔊 Ses oynatılıyor: {line.voiceClip.name}");
         }
-        else
+    }
+
+    void Update()
+    {
+        if (isDialogActive && Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.LogWarning($"⚠️ voiceClip atanmadı: currentLine = {currentLine}");
+            audioSource.Stop(); // geçerken sesi durdur
+
+            currentLine++;
+            if (currentLine < currentLines.Count)
+                PlayCurrentLine();
+            else
+                EndDialog();
         }
+
+        if (isZoomFOVActive && currentCamera.fieldOfView > zoomFOV)
+            currentCamera.fieldOfView = Mathf.Lerp(currentCamera.fieldOfView, zoomFOV, Time.deltaTime * fovLerpSpeed);
+        else if (!isZoomFOVActive && currentCamera.fieldOfView < originalFOV)
+            currentCamera.fieldOfView = Mathf.Lerp(currentCamera.fieldOfView, originalFOV, Time.deltaTime * fovLerpSpeed);
     }
 
     void EndDialog()
@@ -135,12 +145,10 @@ public class NPCInteraction : MonoBehaviour
 
         isZoomFOVActive = false;
 
-        // ✅ viewKey'e göre step'i işaretle
-        string viewKey = dialogData.sections[currentSectionIndex].viewKey;
-        if (!string.IsNullOrEmpty(viewKey) && !GameStateTracker.Instance.GetFlag(viewKey))
-        {
-            GameStateTracker.Instance.SetFlag(viewKey, true);
-            Debug.Log($"✅ Görev viewKey'e göre tamamlandı: {viewKey}");
-        }
+        // ✅ Diyalog tamamlandıktan sonra flag kaydet
+        string npcName = gameObject.name.ToLower();
+        string key = $"{npcName}_{currentSectionIndex}";
+        GameStateTracker.Instance.SetFlag(key, true);
+        Debug.Log($"[NPCInteraction] Diyalog tamamlandı, flag set: {key}");
     }
 }
