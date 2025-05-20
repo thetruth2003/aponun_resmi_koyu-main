@@ -21,7 +21,7 @@ public class HarvestItemStep : IQuestStep
     {
         if (isCompleted) return true;
 
-        int harvested = GameStateTracker.Instance.GetCount($"Harvested_{itemID}");
+        int harvested = GameStateTracker.Instance.GetCount($"harvest_{itemID}");
         if (harvested >= requiredAmount)
         {
             isCompleted = true;

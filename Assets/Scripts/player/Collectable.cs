@@ -21,6 +21,9 @@ public class Collectable : MonoBehaviour
                 // Eşyayı envantere ekle ve nesneyi yok et
                 InventoryManager.Instance.Add("backpack", item);
                 Debug.Log($"{gameObject.name} toplandı!");
+                            // ✅ GameState'e harvest_ verisini yaz
+                string key = $"harvest_{item.data.itemName.ToLower()}";
+                GameStateTracker.Instance.IncrementCount(key, 1);
                 Destroy(item.gameObject);
             }
         

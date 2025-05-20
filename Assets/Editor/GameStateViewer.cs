@@ -17,7 +17,6 @@ public class GameStateViewer : EditorWindow
     {
         GUILayout.Label("Live Game State", EditorStyles.boldLabel);
 
-        // Play Mode kontrolü
         if (!Application.isPlaying)
         {
             EditorGUILayout.HelpBox("Enter Play Mode to view/edit state.", MessageType.Info);
@@ -29,30 +28,25 @@ public class GameStateViewer : EditorWindow
             return;
         }
 
-        // ── 1) Düzenleme (Edit State) ──
+        // ── 1) Edit Section ──
         EditorGUILayout.Space();
         GUILayout.Label("🔧 Edit State", EditorStyles.miniBoldLabel);
 
         editKey = EditorGUILayout.TextField("Key", editKey);
-        isFlag  = EditorGUILayout.Toggle("Is Flag (bool)?", isFlag);
+        isFlag = EditorGUILayout.Toggle("Is Flag (bool)?", isFlag);
         if (isFlag)
             boolValue = EditorGUILayout.Toggle("Bool Value", boolValue);
         else
             intValue = EditorGUILayout.IntField("Int Value", intValue);
 
         EditorGUILayout.BeginHorizontal();
-        // ► Add butonu: sayacı mevcut değeriyle toplar
+
         if (GUILayout.Button("Add", GUILayout.Width(60)))
         {
             GameStateTracker.Instance.IncrementCount(editKey, intValue);
-            EditorApplication.delayCall += () =>
-            {
-                var qe = EditorWindow.GetWindow<QuestEditorWindow>();
-                qe?.Repaint();
-            };
+            RepaintQuestEditor();
         }
 
-        // ► Set butonu: sayacı doğrudan o değere ayarlar
         if (GUILayout.Button("Set", GUILayout.Width(60)))
         {
             if (isFlag)
@@ -60,26 +54,18 @@ public class GameStateViewer : EditorWindow
             else
                 GameStateTracker.Instance.SetCount(editKey, intValue);
 
-            EditorApplication.delayCall += () =>
-            {
-                var qe = EditorWindow.GetWindow<QuestEditorWindow>();
-                qe?.Repaint();
-            };
+            RepaintQuestEditor();
         }
 
-        // ► Reset butonu: sayacı tamamen siler
         if (GUILayout.Button("Reset", GUILayout.Width(60)))
         {
             GameStateTracker.Instance.ClearKey(editKey);
-            EditorApplication.delayCall += () =>
-            {
-                var qe = EditorWindow.GetWindow<QuestEditorWindow>();
-                qe?.Repaint();
-            };
+            RepaintQuestEditor();
         }
+
         EditorGUILayout.EndHorizontal();
 
-        // ── 2) Live-view (Mevcut State) ──
+        // ── 2) View Section ──
         EditorGUILayout.Space();
         GUILayout.Label("🔍 Current Entries", EditorStyles.miniBoldLabel);
 
@@ -92,5 +78,31 @@ public class GameStateViewer : EditorWindow
             EditorGUILayout.EndHorizontal();
         }
         EditorGUILayout.EndScrollView();
+
+        // ── 3) Clear All ──
+        EditorGUILayout.Space();
+        EditorGUILayout.BeginHorizontal();
+        GUI.backgroundColor = Color.red;
+
+        if (GUILayout.Button("❌ CLEAR ALL", GUILayout.Height(30)))
+        {
+            if (EditorUtility.DisplayDialog("Tüm Verileri Sil", "Tüm oyun verilerini (PlayerPrefs ve Dictionary) sıfırlamak istediğine emin misin?", "Evet", "Vazgeç"))
+            {
+                GameStateTracker.Instance.ClearAll();
+                RepaintQuestEditor();
+            }
+        }
+
+        GUI.backgroundColor = Color.white;
+        EditorGUILayout.EndHorizontal();
+    }
+
+    void RepaintQuestEditor()
+    {
+        EditorApplication.delayCall += () =>
+        {
+            var qe = EditorWindow.GetWindow<QuestEditorWindow>();
+            qe?.Repaint();
+        };
     }
 }

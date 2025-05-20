@@ -6,6 +6,11 @@ public class TalkToNPCStep : IQuestStep
     public GameObject npcObject;
     public int dialogSectionIndex = 0;
 
+    public string GetKey()
+    {
+        return $"Talked_{npcObject.name.ToLower()}_{dialogSectionIndex}";
+    }
+
     public string GetName()
     {
         string name = npcObject != null ? npcObject.name : "...";
@@ -20,18 +25,26 @@ public class TalkToNPCStep : IQuestStep
     {
         if (npcObject == null) return false;
 
-        string key = $"Talked_{npcObject.name.ToLower()}_{dialogSectionIndex}";
-        return GameStateTracker.Instance.GetFlag(key);
+        string npc = npcObject.name.ToLower();
+        int section = dialogSectionIndex;
+
+        return GameStateTracker.Instance.GetFlag($"{npc}_{section}");
     }
+
 
     public void MarkCompleted()
     {
         if (npcObject == null) return;
 
-        string key = $"Talked_{npcObject.name.ToLower()}_{dialogSectionIndex}";
-        GameStateTracker.Instance.SetFlag(key, true);
-        Debug.Log($"[TalkToNPCStep] İşaretlendi: {key}");
+        if (!IsComplete())
+        {
+            GameStateTracker.Instance.SetFlag(GetKey(), true);
+
+            // Diyalog indexini güvenli şekilde ilerlet
+            string npcKey = npcObject.name.ToLower();
+            int current = GameStateTracker.Instance.GetDialogIndex(npcKey);
+            int next = Mathf.Max(current, dialogSectionIndex + 1); // geri gitme
+            GameStateTracker.Instance.SetDialogIndex(npcKey, next);
+        }
     }
 }
-
-

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a676a362b2624b459cbb226cf4afe1d, type: 3}
+  m_Name: ayse
+  m_EditorClassIdentifier: 
+  sections:
+  - lines:
+    - "day\u0131 sen k\u0131ms\u0131n amk"
+    - "neyse gelm\u0131sken gel yard\u0131m et"
+    - "bana muz get\u0131r"
+  - lines:
+    - "affer\u0131n muz get\u0131rm\u0131ss\u0131n"
+    - "K\xF6y halk\u0131 senden memnun kald\u0131."
+    - "\u015Eimdi pazardan elma alman\u0131 rica ediyorum."
+  - lines:
+    - "affer\u0131n oe"
+    - "s\u0131tk\u0131r g\u0131t"
+    - "adams\u0131n"

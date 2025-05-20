@@ -16,23 +16,23 @@ MonoBehaviour:
   - questName: Alperen
     questTypeName: 
     jsonData: 
+  - questName: Talk to ahmet (Section 0)
+    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"npcObject":{"instanceID":30944},"dialogSectionIndex":0}'
+  - questName: "Harvest 1\xD7 tomato"
+    questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"itemID":"tomato","requiredAmount":1}'
   - questName: Talk to ahmet (Section 1)
     questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"npcObject":{"instanceID":110122},"dialogSectionIndex":1}'
-  - questName: "Sell 1\xD7 elma"
-    questTypeName: SellItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    jsonData: '{"npcObject":{"instanceID":30944},"dialogSectionIndex":1}'
+  - questName: "Harvest 1\xD7 watermelon"
+    questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"itemID":"elma","requiredAmount":1,"npcObject":{"instanceID":110122}}'
+    jsonData: '{"itemID":"watermelon","requiredAmount":1}'
   - questName: Talk to ahmet (Section 2)
     questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"npcObject":{"instanceID":110122},"dialogSectionIndex":2}'
-  - questName: "Buy 1\xD7 karpuz"
-    questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"itemID":"karpuz","requiredAmount":1,"npcObject":{"instanceID":110122}}'
-  - questName: Talk to ahmet (Section 3)
-    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"npcObject":{"instanceID":110122},"dialogSectionIndex":3}'
+    jsonData: '{"npcObject":{"instanceID":30944},"dialogSectionIndex":2}'

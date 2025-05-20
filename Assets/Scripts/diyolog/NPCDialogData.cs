@@ -1,16 +1,22 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
-[CreateAssetMenu(menuName = "Dialog/NPC Dialog Data")]
+[System.Serializable]
+public class DialogLine
+{
+    public string text;
+    public AudioClip voiceClip;  // 🔊 Ses dosyası
+}
+
+[System.Serializable]
+public class DialogSection
+{
+    public List<DialogLine> lines;
+    public string viewKey;
+}
+
+[CreateAssetMenu(menuName = "NPC/Dialog Data")]
 public class NPCDialogData : ScriptableObject
 {
-    [System.Serializable]
-    public class DialogSection
-    {
-        public string title;
-        [TextArea(2, 10)]
-        public List<string> lines;
-    }
-
-    public List<DialogSection> sections = new List<DialogSection>();
+    public List<DialogSection> sections;
 }

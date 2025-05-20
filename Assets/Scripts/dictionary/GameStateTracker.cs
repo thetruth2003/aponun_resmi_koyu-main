@@ -17,8 +17,6 @@ public class GameStateTracker : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
-        //LoadFromPlayerPrefs(); // ⬅ Başlangıçta verileri yükle
     }
 
     // ------------------ INT ------------------
@@ -43,6 +41,12 @@ public class GameStateTracker : MonoBehaviour
     {
         int current = GetCount(key);
         SetCount(key, current + 1);
+    }
+
+    public void IncrementCount(string key, int amount)
+    {
+        int current = GetCount(key);
+        SetCount(key, current + amount);
     }
 
     // ------------------ BOOL ------------------
@@ -83,9 +87,22 @@ public class GameStateTracker : MonoBehaviour
 
     // ------------------ DIALOG INDEX ------------------
 
+    public int GetDialogIndex(string npcName)
+    {
+        return GetCount($"DialogIndex_{npcName.ToLower()}");
+    }
 
+    public void SetDialogIndex(string npcName, int value)
+    {
+        SetCount($"DialogIndex_{npcName.ToLower()}", value);
+    }
 
-    // ------------------ DEBUG (Inspector Gibi) ------------------
+    public bool HasKey(string key)
+    {
+        return state.ContainsKey(key) || PlayerPrefs.HasKey(key);
+    }
+
+    // ------------------ DEBUG ------------------
 
     public void PrintState()
     {
@@ -93,43 +110,9 @@ public class GameStateTracker : MonoBehaviour
             Debug.Log($"{kv.Key} ({kv.Value?.GetType().Name}): {kv.Value}");
     }
 
-    // ------------------ LOAD FROM PLAYERPREFS ------------------
-
-    private void LoadFromPlayerPrefs()
-    {
-        // Elle tek tek yüklemek gerekir çünkü PlayerPrefs anahtarlarını listeleyemez.
-        // Buraya özel anahtarlar yazılabilir, örnek:
-        string[] knownKeys = {
-            "DialogIndex_ahmet", "Sold_elma", "Bought_karpuz", "Talked_ahmet_0"
-            // gerektiği kadar ekle
-        };
-
-        foreach (string key in knownKeys)
-        {
-            if (PlayerPrefs.HasKey(key))
-            {
-                int intVal = PlayerPrefs.GetInt(key);
-                state[key] = intVal;
-            }
-        }
-    }
-        // GameState'i dışarı açmak için (QuestSave kullanır)
     public Dictionary<string, object> GetAll()
     {
         return new Dictionary<string, object>(state);
-    }
-    public void IncrementCount(string key, int amount)
-    {
-        if (!state.ContainsKey(key)) state[key] = 0;
-
-        if (state[key] is int current)
-        {
-            state[key] = current + amount;
-        }
-        else
-        {
-            Debug.LogWarning($"[GameStateTracker] '{key}' is not an int. Cannot increment.");
-        }
     }
 
     public void ClearKey(string key)
@@ -137,8 +120,28 @@ public class GameStateTracker : MonoBehaviour
         if (state.ContainsKey(key))
             state.Remove(key);
 
-        PlayerPrefs.DeleteKey("state_int_" + key);
-        PlayerPrefs.DeleteKey("state_bool_" + key);
-        PlayerPrefs.DeleteKey("state_string_" + key);
+        PlayerPrefs.DeleteKey(key);
+    }
+    public void ClearAll()
+    {
+        var keys = new List<string>(state.Keys);
+        foreach (var key in keys)
+        {
+            PlayerPrefs.DeleteKey(key);
+        }
+
+        state.Clear();
+        PlayerPrefs.Save();
+
+        // ✅ ActiveQuestSystem'daki currentIndex değerlerini de sıfırla
+        if (ActiveQuestSystem.Instance != null)
+        {
+            foreach (var q in ActiveQuestSystem.Instance.allQuests)
+            {
+                q.currentIndex = 0;
+            }
+        }
+
+        Debug.Log("[GameStateTracker] Tüm state ve görev ilerlemesi sıfırlandı.");
     }
 }
