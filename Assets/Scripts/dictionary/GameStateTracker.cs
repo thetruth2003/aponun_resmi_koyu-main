@@ -1,92 +1,154 @@
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GameStateTracker : MonoBehaviour
 {
-    public static GameStateTracker Instance { get; private set; }
+    public static GameStateTracker Instance;
 
-    // Tek bir sözlükte hem sayıcıları (int) hem bayrakları (bool) tutuyoruz
     public Dictionary<string, object> state = new Dictionary<string, object>();
 
     void Awake()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            Destroy(gameObject);
+            return;
         }
-        else Destroy(gameObject);
 
-        //IncrementCount("Bought_asd", 1);
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        LoadFromPlayerPrefs(); // ⬅ Başlangıçta verileri yükle
     }
 
-    // ─── Sayaç işlemleri ───
+    // ------------------ INT ------------------
 
-    // Belirli bir anahtarın sayacını 1 artırır (veya amount kadar)
-    public void IncrementCount(string key, int amount = 1)
-    {
-        int current = GetCount(key);
-        state[key] = current + amount;
-    }
-
-    // Sayaç değeri döner (hiç yoksa 0)
     public int GetCount(string key)
     {
-        if (state.TryGetValue(key, out var val) && val is int i)
-            return i;
-        return 0;
+        if (state.ContainsKey(key)) return (int)state[key];
+
+        int value = PlayerPrefs.GetInt(key, 0);
+        state[key] = value;
+        return value;
     }
 
-    // ─── Bayrak işlemleri ───
+    public void SetCount(string key, int value)
+    {
+        state[key] = value;
+        PlayerPrefs.SetInt(key, value);
+        PlayerPrefs.Save();
+    }
 
-    // Boolean flag atar
+    public void IncrementCount(string key)
+    {
+        int current = GetCount(key);
+        SetCount(key, current + 1);
+    }
+
+    // ------------------ BOOL ------------------
+
+    public bool GetFlag(string key)
+    {
+        if (state.ContainsKey(key)) return (bool)state[key];
+
+        bool value = PlayerPrefs.GetInt(key, 0) == 1;
+        state[key] = value;
+        return value;
+    }
+
     public void SetFlag(string key, bool value)
     {
         state[key] = value;
+        PlayerPrefs.SetInt(key, value ? 1 : 0);
+        PlayerPrefs.Save();
     }
 
-    // Bayrağı döner (hiç yoksa false)
-    public bool GetFlag(string key)
+    // ------------------ STRING ------------------
+
+    public string GetString(string key)
     {
-        if (state.TryGetValue(key, out var val) && val is bool b)
-            return b;
-        return false;
+        if (state.ContainsKey(key)) return (string)state[key];
+
+        string value = PlayerPrefs.GetString(key, "");
+        state[key] = value;
+        return value;
     }
 
-    // ─── Debug / Live-view için ───
+    public void SetString(string key, string value)
+    {
+        state[key] = value;
+        PlayerPrefs.SetString(key, value);
+        PlayerPrefs.Save();
+    }
 
-    // Bütün anahtar-değer çiftlerini döner
+    // ------------------ DIALOG INDEX ------------------
+
+    public void IncrementDialogIndexForNPC(string npcName)
+    {
+        string key = $"DialogIndex_{npcName.ToLower()}";
+        IncrementCount(key);
+    }
+
+    public int GetDialogIndexForNPC(string npcName)
+    {
+        string key = $"DialogIndex_{npcName.ToLower()}";
+        return GetCount(key);
+    }
+
+    // ------------------ DEBUG (Inspector Gibi) ------------------
+
+    public void PrintState()
+    {
+        foreach (var kv in state)
+            Debug.Log($"{kv.Key} ({kv.Value?.GetType().Name}): {kv.Value}");
+    }
+
+    // ------------------ LOAD FROM PLAYERPREFS ------------------
+
+    private void LoadFromPlayerPrefs()
+    {
+        // Elle tek tek yüklemek gerekir çünkü PlayerPrefs anahtarlarını listeleyemez.
+        // Buraya özel anahtarlar yazılabilir, örnek:
+        string[] knownKeys = {
+            "DialogIndex_ahmet", "Sold_elma", "Bought_karpuz", "Talked_ahmet_0"
+            // gerektiği kadar ekle
+        };
+
+        foreach (string key in knownKeys)
+        {
+            if (PlayerPrefs.HasKey(key))
+            {
+                int intVal = PlayerPrefs.GetInt(key);
+                state[key] = intVal;
+            }
+        }
+    }
+        // GameState'i dışarı açmak için (QuestSave kullanır)
     public Dictionary<string, object> GetAll()
     {
         return new Dictionary<string, object>(state);
     }
-    // Adds inside GameStateTracker class
-
-    /// <summary>
-    /// Doğrudan bir sayaç/flag’i bu değere set eder.
-    /// </summary>
-    public void SetCount(string key, int value)
+    public void IncrementCount(string key, int amount)
     {
-        state[key] = value;
+        if (!state.ContainsKey(key)) state[key] = 0;
+
+        if (state[key] is int current)
+        {
+            state[key] = current + amount;
+        }
+        else
+        {
+            Debug.LogWarning($"[GameStateTracker] '{key}' is not an int. Cannot increment.");
+        }
     }
 
-    /// <summary>
-    /// Belirli bir anahtarı tamamen kaldırır.
-    /// </summary>
     public void ClearKey(string key)
     {
-        state.Remove(key);
-    }
-        public void SetString(string key, string value)
-    {
-        state[key] = value;
-    }
+        if (state.ContainsKey(key))
+            state.Remove(key);
 
-    public string GetString(string key)
-    {
-        if (state.TryGetValue(key, out var val) && val is string s)
-            return s;
-        return null;
+        PlayerPrefs.DeleteKey("state_int_" + key);
+        PlayerPrefs.DeleteKey("state_bool_" + key);
+        PlayerPrefs.DeleteKey("state_string_" + key);
     }
 }
