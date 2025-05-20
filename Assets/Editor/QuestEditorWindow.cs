@@ -159,9 +159,13 @@ public class QuestEditorWindow : EditorWindow
             var step2 = qc.GetStepInstance();
             EditorGUI.BeginChangeCheck();
             if (step2 is TalkToNPCStep talk)
+            {
                 talk.npcObject = (GameObject)EditorGUILayout.ObjectField("NPC Object", talk.npcObject, typeof(GameObject), true);
+                talk.dialogSectionIndex = EditorGUILayout.IntField("Dialog Section Index", talk.dialogSectionIndex);
+            }
             else if (step2 is GoToLocationStep goTo)
                 goTo.targetObject = (GameObject)EditorGUILayout.ObjectField("Target Object", goTo.targetObject, typeof(GameObject), true);
+
             else if (step2 is SellItemStep sell)
             {
                 sell.itemID = EditorGUILayout.TextField("Item ID", sell.itemID);

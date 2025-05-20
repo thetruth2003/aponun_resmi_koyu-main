@@ -16,15 +16,23 @@ MonoBehaviour:
   - questName: Alperen
     questTypeName: 
     jsonData: 
-  - questName: "Buy 1\xD7 elma"
-    questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  - questName: Talk to ahmet (Section 0)
+    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"npcObject":{"instanceID":12290372},"dialogSectionIndex":0}'
+  - questName: "Sell 1\xD7 elma"
+    questTypeName: SellItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     jsonData: '{"itemID":"elma","requiredAmount":1}'
-  - questName: "Buy 1\xD7 armut"
-    questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  - questName: Talk to ahmet (Section 1)
+    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"itemID":"armut","requiredAmount":1}'
+    jsonData: '{"npcObject":{"instanceID":12290372},"dialogSectionIndex":1}'
   - questName: "Buy 1\xD7 karpuz"
     questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     jsonData: '{"itemID":"karpuz","requiredAmount":1}'
+  - questName: Talk to ahmet (Section 2)
+    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"npcObject":{"instanceID":12290372},"dialogSectionIndex":2}'
