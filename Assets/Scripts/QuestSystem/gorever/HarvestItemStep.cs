@@ -1,43 +1,32 @@
 using UnityEngine;
 
 [System.Serializable]
-public class HarvestItemStep : IQuestStep, IHasNPC
+public class HarvestItemStep : IQuestStep
 {
     public string itemID;
     public int requiredAmount;
-    public GameObject npcObject;
+
+    private bool isCompleted = false;
 
     public string GetName() => $"Harvest {requiredAmount}× {itemID}";
 
     public void OnStart() { }
 
-public void OnUpdate()
-{
-    if (!IsComplete()) return;
-
-    // NPC varsa, dialog index'i artır
-    if (npcObject != null)
+    public void OnUpdate()
     {
-        GameStateTracker.Instance.IncrementDialogIndexForNPC(npcObject.name);
+        //IsComplete();
     }
-}
-
 
     public bool IsComplete()
     {
-        int harvested = GameStateTracker.Instance.GetCount($"Harvested_{itemID}");
-        bool complete = harvested >= requiredAmount;
+        if (isCompleted) return true;
 
-        if (complete && npcObject != null)
+        int harvested = GameStateTracker.Instance.GetCount($"Harvested_{itemID}");
+        if (harvested >= requiredAmount)
         {
-            string npcKey = $"DialogIndex_{npcObject.name.ToLower()}";
-            int current = GameStateTracker.Instance.GetCount(npcKey);
-            GameStateTracker.Instance.SetCount(npcKey, current + 1);
+            isCompleted = true;
         }
 
-        return complete;
+        return isCompleted;
     }
-
-    public GameObject GetAssignedNPC() => npcObject;
-    public void SetAssignedNPC(GameObject npc) => npcObject = npc;
 }

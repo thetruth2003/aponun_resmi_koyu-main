@@ -52,24 +52,7 @@ public class NPCInteraction : MonoBehaviour
     }
 
     // Şu anki aktif adım ile bu NPC'nin adımı eşleşiyor mu? (== değil, içerik bazlı kıyas)
-    bool isMyStepActive = false;
-    if (tracked.currentIndex < linkedAsset.quests.Count)
-    {
-        var activeStep = linkedAsset.quests[tracked.currentIndex].GetStepInstance();
 
-        if (activeStep is TalkToNPCStep currentTalkStep &&
-            currentTalkStep.npcObject == linkedStep.npcObject &&
-            currentTalkStep.dialogSectionIndex == linkedStep.dialogSectionIndex)
-        {
-            isMyStepActive = true;
-        }
-    }
-
-    if (!isMyStepActive)
-    {
-        Debug.Log($"[NPCInteraction] Bu step şu anda aktif değil: {linkedStep.npcObject.name} / section {linkedStep.dialogSectionIndex}");
-        return;
-    }
 
     int sectionIndex = linkedStep.dialogSectionIndex;
 
@@ -103,18 +86,9 @@ public class NPCInteraction : MonoBehaviour
 
     isZoomFOVActive = true;
 
-    // ✅ GameState'e işaretleme (Talked_ahmet_0 gibi)
-    string npcName = linkedStep.npcObject.name.ToLower();
-    string stateKey = $"Talked_{npcName}_{sectionIndex}";
-    GameStateTracker.Instance.SetFlag(stateKey, true);
-    Debug.Log($"✅ GameState yazıldı: {stateKey} = true");
-
     // ✅ Görevi tamamla
     linkedStep.MarkCompleted();
 
-    // ✅ Bir sonraki adıma geç
-    tracked.currentIndex++;
-    Debug.Log($"[ActiveQuestSystem] Görev tamamlandı, sıradakine geçildi. Yeni index: {tracked.currentIndex}");
 }
 
 

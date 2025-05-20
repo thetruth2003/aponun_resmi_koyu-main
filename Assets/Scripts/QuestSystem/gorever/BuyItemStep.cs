@@ -1,41 +1,32 @@
 using UnityEngine;
 
 [System.Serializable]
-public class BuyItemStep : IQuestStep, IHasNPC
+public class BuyItemStep : IQuestStep
 {
     public string itemID;
     public int requiredAmount;
-    public GameObject npcObject;
+
+    private bool isCompleted = false;
 
     public string GetName() => $"Buy {requiredAmount}× {itemID}";
 
     public void OnStart() { }
+
     public void OnUpdate()
     {
-        if (!IsComplete()) return;
-
-        // NPC varsa, dialog index'i artır
-        if (npcObject != null)
-        {
-            GameStateTracker.Instance.IncrementDialogIndexForNPC(npcObject.name);
-        }
+        //IsComplete();
     }
 
     public bool IsComplete()
     {
-        int bought = GameStateTracker.Instance.GetCount($"Bought_{itemID}");
-        bool complete = bought >= requiredAmount;
+        if (isCompleted) return true;
 
-        if (complete && npcObject != null)
+        int bought = GameStateTracker.Instance.GetCount($"Bought_{itemID}");
+        if (bought >= requiredAmount)
         {
-            string npcKey = $"DialogIndex_{npcObject.name.ToLower()}";
-            int current = GameStateTracker.Instance.GetCount(npcKey);
-            GameStateTracker.Instance.SetCount(npcKey, current + 1);
+            isCompleted = true;
         }
 
-        return complete;
+        return isCompleted;
     }
-
-    public GameObject GetAssignedNPC() => npcObject;
-    public void SetAssignedNPC(GameObject npc) => npcObject = npc;
 }

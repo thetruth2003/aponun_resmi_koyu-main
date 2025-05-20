@@ -12,7 +12,7 @@ public class QuestContainer
         var type = System.Type.GetType(questTypeName);
         if (type == null)
         {
-            Debug.LogError("Geçersiz quest type: " + questTypeName);
+            //Debug.LogError("Geçersiz quest type: " + questTypeName);
             return null;
         }
         return (IQuestStep)JsonUtility.FromJson(jsonData, type);
@@ -22,7 +22,7 @@ public class QuestContainer
     {
         if (step == null)
         {
-            Debug.LogWarning("SetStepInstance'e null verildi.");
+            //Debug.LogWarning("SetStepInstance'e null verildi.");
             return;
         }
 

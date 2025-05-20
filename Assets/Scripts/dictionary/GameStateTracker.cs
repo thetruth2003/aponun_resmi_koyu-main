@@ -18,7 +18,7 @@ public class GameStateTracker : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        LoadFromPlayerPrefs(); // ⬅ Başlangıçta verileri yükle
+        //LoadFromPlayerPrefs(); // ⬅ Başlangıçta verileri yükle
     }
 
     // ------------------ INT ------------------
@@ -83,17 +83,7 @@ public class GameStateTracker : MonoBehaviour
 
     // ------------------ DIALOG INDEX ------------------
 
-    public void IncrementDialogIndexForNPC(string npcName)
-    {
-        string key = $"DialogIndex_{npcName.ToLower()}";
-        IncrementCount(key);
-    }
 
-    public int GetDialogIndexForNPC(string npcName)
-    {
-        string key = $"DialogIndex_{npcName.ToLower()}";
-        return GetCount(key);
-    }
 
     // ------------------ DEBUG (Inspector Gibi) ------------------
 

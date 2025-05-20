@@ -101,13 +101,13 @@ public class QuestSave : MonoBehaviour, ISaveable
     public void PrintState()
     {
         var dict = gameStateTracker.GetAll();
-        foreach (var kv in dict)
-            Debug.Log($"{kv.Key} ({kv.Value.GetType().Name}) = {kv.Value}");
+        foreach (var kv in dict) ;
+            //Debug.Log($"{kv.Key} ({kv.Value.GetType().Name}) = {kv.Value}");
     }
 
     void Update()
     {
-        PrintState();
+       PrintState();
     }
 
 }
