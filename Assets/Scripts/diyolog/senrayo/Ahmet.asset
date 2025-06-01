@@ -13,18 +13,27 @@ MonoBehaviour:
   m_Name: Ahmet
   m_EditorClassIdentifier: 
   sections:
-  - title: "Tan\u0131\u015Fma"
-    lines:
-    - "Merhaba yabanc\u0131, seni daha \xF6nce burada g\xF6rmedim."
-    - "K\xF6y\xFCm\xFCzde yard\u0131m edebilece\u011Fin i\u015Fler olabilir."
-    - "\u0130lk olarak, pazara birka\xE7 elma satabilir misin?"
-  - title: "G\xF6rev Teslimi"
-    lines:
-    - "Harika! Elmalar sat\u0131lm\u0131\u015F."
-    - "K\xF6y halk\u0131 senden memnun kald\u0131."
-    - "\u015Eimdi pazardan karpuz alman\u0131 rica ediyorum."
-  - title: "Kapan\u0131\u015F"
-    lines:
-    - "\u0130yi i\u015F \xE7\u0131kard\u0131n!"
-    - "K\xF6y\xFCn art\u0131k seni tan\u0131yor."
-    - "G\xFCle g\xFCle!"
+  - lines:
+    - text: asd
+      voiceClip: {fileID: 8300000, guid: 46554ad7e2219be49975003372e7a223, type: 3}
+    - text: qwe
+      voiceClip: {fileID: 8300000, guid: 8d998b8ac0b4c0b45848ab0f61591515, type: 3}
+    - text: zxc
+      voiceClip: {fileID: 8300000, guid: 05531d6aa4addea479c8d7775d21450b, type: 3}
+    viewKey: ahmet_0
+  - lines:
+    - text: asd
+      voiceClip: {fileID: 8300000, guid: e457bf3ff6e5e6d4f94735be1b6c384a, type: 3}
+    - text: qwe
+      voiceClip: {fileID: 8300000, guid: cdf3a3e8158813e4ebdf336e8230e666, type: 3}
+    - text: zxc
+      voiceClip: {fileID: 8300000, guid: f0f2276dbcd465a4a91f32a574800e4e, type: 3}
+    viewKey: ahmet_1
+  - lines:
+    - text: asd
+      voiceClip: {fileID: 8300000, guid: 4c5d5fa208fd5ac47ae1c551869b9bd6, type: 3}
+    - text: qwe
+      voiceClip: {fileID: 8300000, guid: 7637b973c747a4547bbc907ff4b39e1c, type: 3}
+    - text: zxc
+      voiceClip: {fileID: 8300000, guid: 0e1dbb19a861b8c47b0d6b2ff23c1e6a, type: 3}
+    viewKey: ahmet_2

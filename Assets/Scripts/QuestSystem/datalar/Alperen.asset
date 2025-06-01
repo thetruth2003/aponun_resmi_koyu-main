@@ -19,7 +19,7 @@ MonoBehaviour:
   - questName: Talk to ahmet (Section 0)
     questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"npcObject":{"instanceID":30944},"dialogSectionIndex":0}'
+    jsonData: '{"npcObject":{"instanceID":15846170},"dialogSectionIndex":0}'
   - questName: "Harvest 1\xD7 tomato"
     questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
@@ -27,7 +27,7 @@ MonoBehaviour:
   - questName: Talk to ahmet (Section 1)
     questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"npcObject":{"instanceID":30944},"dialogSectionIndex":1}'
+    jsonData: '{"npcObject":{"instanceID":15846170},"dialogSectionIndex":1}'
   - questName: "Harvest 1\xD7 watermelon"
     questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
@@ -35,4 +35,4 @@ MonoBehaviour:
   - questName: Talk to ahmet (Section 2)
     questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"npcObject":{"instanceID":30944},"dialogSectionIndex":2}'
+    jsonData: '{"npcObject":{"instanceID":15846170},"dialogSectionIndex":2}'

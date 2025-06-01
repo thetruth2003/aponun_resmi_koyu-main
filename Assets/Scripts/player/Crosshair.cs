@@ -4,6 +4,8 @@
     using TMPro;
     public class Crosshair : MonoBehaviour
     {
+        public AnimationController animController;
+
         public Camera playerCamera; // Oyuncunun kamerası
         public float maxDistance = 100f; // Maksimum atış mesafesi
         public LayerMask interactableLayer; // Etkileşimde bulunulacak katman
@@ -35,6 +37,7 @@
             HitTree();
             AddSeed();
             Watering();
+                                animController.PlayInteractAnimation();
         }
         if (Input.GetMouseButtonDown(1))
         {
@@ -62,6 +65,8 @@
                 {
                     currentItem = item;
                     BuyItem();
+
+
                 }
             }
             if (Physics.Raycast(ray, out hit, 3f))

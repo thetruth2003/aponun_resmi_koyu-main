@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fc5c46010afb7947bd23e850404346e, type: 3}
+  m_Name: Truck
+  m_EditorClassIdentifier: 
+  mass: 1300
+  drag: 0.05
+  torque: 5000
+  torqueCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.3
+      inSlope: 0
+      outSlope: 0.7
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.7
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  maxRPM: 7000
+  idleRPM: 900
+  gearRatios:
+  - 3.2
+  - 2.3
+  - 1.6
+  - 1.2
+  - 1
+  - 0.85
+  gearSpeedRanges:
+  - maxSpeed: 40
+    shiftUpSpeed: 20
+  - maxSpeed: 60
+    shiftUpSpeed: 80
+  - maxSpeed: 100
+    shiftUpSpeed: 120
+  - maxSpeed: 140
+    shiftUpSpeed: 160
+  - maxSpeed: 180
+    shiftUpSpeed: 0
+  shiftUpRPM: 4000
+  shiftDownRPM: 2500
+  forceShiftRPM: 6800
+  shiftDuration: 0.6
+  differentialRatio: 3.42
+  maxSteerAngle: 35
+  handbrakeForce: 3000
+  suspensionSpring: 35000
+  suspensionDamper: 4500
+  suspensionDistance: 0.2
+  forwardFrictionStiffness: 1.1
+  sidewaysFrictionStiffness: 1.4
+  drivetrain: 1

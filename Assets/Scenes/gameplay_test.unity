@@ -144993,17 +144993,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fdc4b613448b6846bb97cc249b75a42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogLines:
-  - 4
-  - 5
-  - 6
+  dialogData: {fileID: 0}
   dialogText: {fileID: 878213272}
-  storedElements:
-  - {fileID: 409962974}
   diyolog: {fileID: 878213269}
   player: {fileID: 1220668986}
   fpsController: {fileID: 1220668987}
   currentCamera: {fileID: 5313663}
+  storedElements:
+  - {fileID: 409962974}
+  currentSectionIndex: 0
+  linkedAsset: {fileID: 0}
   zoomFOV: 30
   fovLerpSpeed: 5
 --- !u!136 &719494910
@@ -384968,17 +384967,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fdc4b613448b6846bb97cc249b75a42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogLines:
-  - 1
-  - 2
-  - 3
+  dialogData: {fileID: 0}
   dialogText: {fileID: 878213272}
-  storedElements:
-  - {fileID: 409962974}
   diyolog: {fileID: 878213269}
   player: {fileID: 1220668986}
   fpsController: {fileID: 1220668987}
   currentCamera: {fileID: 5313663}
+  storedElements:
+  - {fileID: 409962974}
+  currentSectionIndex: 0
+  linkedAsset: {fileID: 0}
   zoomFOV: 30
   fovLerpSpeed: 5
 --- !u!114 &1853481617
