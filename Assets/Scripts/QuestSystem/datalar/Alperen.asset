@@ -13,26 +13,29 @@ MonoBehaviour:
   m_Name: Alperen
   m_EditorClassIdentifier: 
   quests:
-  - questName: Alperen
+  - questName: "eski g\xFCzel g\xFCnler"
     questTypeName: 
     jsonData: 
-  - questName: Talk to ahmet (Section 0)
+    optionalSideQuestID: komsu_diyolog
+    optionalSideQuestDescription: komsuyla konus
+    optionalSideQuestNPC: {fileID: 0}
+    optionalTrustReward: 1
+    optionalSideQuestCompleted: 0
+  - questName: Talk to aleyna (Section 0)
     questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"npcObject":{"instanceID":15846170},"dialogSectionIndex":0}'
-  - questName: "Harvest 1\xD7 tomato"
-    questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    jsonData: '{"npcObject":{"instanceID":-941002},"dialogSectionIndex":0}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPC: {fileID: 0}
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
+  - questName: Go to GameObject (3)
+    questTypeName: GoToLocationStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"itemID":"tomato","requiredAmount":1}'
-  - questName: Talk to ahmet (Section 1)
-    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"npcObject":{"instanceID":15846170},"dialogSectionIndex":1}'
-  - questName: "Harvest 1\xD7 watermelon"
-    questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"itemID":"watermelon","requiredAmount":1}'
-  - questName: Talk to ahmet (Section 2)
-    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"npcObject":{"instanceID":15846170},"dialogSectionIndex":2}'
+    jsonData: '{"targetObject":{"instanceID":-941984}}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPC: {fileID: 0}
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0

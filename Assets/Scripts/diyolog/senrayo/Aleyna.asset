@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a676a362b2624b459cbb226cf4afe1d, type: 3}
+  m_Name: Aleyna
+  m_EditorClassIdentifier: 
+  sections:
+  - lines:
+    - text: "boyle \u0131s\u0131 s\u0131ker\u0131m "
+      voiceClip: {fileID: 8300000, guid: 46554ad7e2219be49975003372e7a223, type: 3}
+    - text: "bu evden b\u0131 s\u0131k\u0131m olmaz g\u0131t ve etraf\u0131 tem\u0131zle"
+      voiceClip: {fileID: 8300000, guid: 8d998b8ac0b4c0b45848ab0f61591515, type: 3}
+    - text: "tem\u0131zlemeden de konusma"
+      voiceClip: {fileID: 8300000, guid: 05531d6aa4addea479c8d7775d21450b, type: 3}
+    viewKey: aleyna_0
+  - lines:
+    - text: "guzel g\u0131t ve garaj kap\u0131s\u0131n\u0131 kontrol et"
+      voiceClip: {fileID: 0}
+    - text: "kapal\u0131ysa gel "
+      voiceClip: {fileID: 0}
+    - text: "ve g\u0131t ustunu bas\u0131n\u0131 topla"
+      voiceClip: {fileID: 0}
+    viewKey: aleyna_1
+  - lines:
+    - text: "tamma gel had\u0131 yemek y\u0131ycez"
+      voiceClip: {fileID: 0}
+    - text: "ama bu sen\u0131 affet\u0131g\u0131m\u0131 dusunme"
+      voiceClip: {fileID: 0}
+    - text: "had\u0131 gec \u0131cer\u0131"
+      voiceClip: {fileID: 0}
+    viewKey: aleyna_2

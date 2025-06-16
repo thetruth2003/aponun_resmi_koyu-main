@@ -38,8 +38,8 @@ public class QuestEditorWindow : EditorWindow
         newChainTitle = EditorGUILayout.TextField("New Main Quest", newChainTitle);
         if (GUILayout.Button("Add Main Quest", GUILayout.MaxWidth(130)) && !string.IsNullOrWhiteSpace(newChainTitle))
         {
-            var mainQuest = new QuestContainer { questName = newChainTitle };
-            questAsset.quests.Add(mainQuest);
+            var newMainQuest = new QuestContainer { questName = newChainTitle };
+            questAsset.quests.Add(newMainQuest);
             newChainTitle = "";
             EditorUtility.SetDirty(questAsset);
         }
@@ -77,6 +77,26 @@ public class QuestEditorWindow : EditorWindow
 
         int baseIndex = mainQuestIndices[selectedChainIndex];
         GUILayout.Label($"Editing: {questAsset.quests[baseIndex].questName}", EditorStyles.boldLabel);
+        var mainQuest = questAsset.quests[baseIndex];
+
+        if (string.IsNullOrEmpty(mainQuest.questTypeName)) // Ana görevse
+        {
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Optional Side Quest", EditorStyles.boldLabel);
+
+            mainQuest.optionalSideQuestID = EditorGUILayout.TextField("Side Quest ID", mainQuest.optionalSideQuestID);
+            mainQuest.optionalSideQuestDescription = EditorGUILayout.TextField("Description", mainQuest.optionalSideQuestDescription);
+            mainQuest.optionalSideQuestNPC = (GameObject)EditorGUILayout.ObjectField("Related NPC", mainQuest.optionalSideQuestNPC, typeof(GameObject), true);
+            mainQuest.optionalTrustReward = EditorGUILayout.IntField("Trust Reward", mainQuest.optionalTrustReward);
+
+            if (Application.isPlaying)
+            {
+                string status = mainQuest.optionalSideQuestCompleted ? "✔ Completed" : "✘ Not Completed";
+                EditorGUILayout.LabelField("Status", status);
+            }
+
+            EditorUtility.SetDirty(questAsset);
+        }
 
         // ─── Alt Görev Ekle ───
         EditorGUILayout.BeginHorizontal();
