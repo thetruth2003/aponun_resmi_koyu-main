@@ -21,6 +21,7 @@ TagManager:
   - NPC
   - Fire
   - Street
+  - DialogText
   layers:
   - Default
   - TransparentFX

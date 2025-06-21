@@ -8,18 +8,23 @@ public class SellItemStep : IQuestStep
 
     private bool isCompleted = false;
 
-    public string GetName() => $"Sell {requiredAmount}× {itemID}";
+    public string GetName()
+    {
+        string name = string.IsNullOrEmpty(itemID) ? "???" : itemID;
+        return $"Sell {requiredAmount}× {name}";
+    }
 
     public void OnStart() { }
 
     public void OnUpdate()
     {
-        //IsComplete(); // Trigger logic
+        // İsteğe bağlı tetikleyici
     }
 
     public bool IsComplete()
     {
         if (isCompleted) return true;
+        if (string.IsNullOrEmpty(itemID)) return false;
 
         int sold = GameStateTracker.Instance.GetCount($"Sold_{itemID}");
         if (sold >= requiredAmount)

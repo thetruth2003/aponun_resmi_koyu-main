@@ -3,17 +3,17 @@
 [System.Serializable]
 public class TalkToNPCStep : IQuestStep
 {
-    public GameObject npcObject;
+    public string npcID;  // 🔄 Artık GameObject değil, string ID kullanıyoruz
     public int dialogSectionIndex = 0;
 
     public string GetKey()
     {
-        return $"Talked_{npcObject.name.ToLower()}_{dialogSectionIndex}";
+        return $"{npcID.ToLower()}_{dialogSectionIndex}";
     }
 
     public string GetName()
     {
-        string name = npcObject != null ? npcObject.name : "...";
+        string name = string.IsNullOrEmpty(npcID) ? "???" : npcID;
         return $"Talk to {name} (Section {dialogSectionIndex})";
     }
 
@@ -23,28 +23,22 @@ public class TalkToNPCStep : IQuestStep
 
     public bool IsComplete()
     {
-        if (npcObject == null) return false;
-
-        string npc = npcObject.name.ToLower();
-        int section = dialogSectionIndex;
-
-        return GameStateTracker.Instance.GetFlag($"{npc}_{section}");
+        if (string.IsNullOrEmpty(npcID)) return false;
+        return GameStateTracker.Instance.GetFlag(GetKey());
     }
-
 
     public void MarkCompleted()
     {
-        if (npcObject == null) return;
+        if (string.IsNullOrEmpty(npcID)) return;
 
         if (!IsComplete())
         {
             GameStateTracker.Instance.SetFlag(GetKey(), true);
 
             // Diyalog indexini güvenli şekilde ilerlet
-            string npcKey = npcObject.name.ToLower();
-            int current = GameStateTracker.Instance.GetDialogIndex(npcKey);
+            int current = GameStateTracker.Instance.GetDialogIndex(npcID);
             int next = Mathf.Max(current, dialogSectionIndex + 1); // geri gitme
-            GameStateTracker.Instance.SetDialogIndex(npcKey, next);
+            GameStateTracker.Instance.SetDialogIndex(npcID, next);
         }
     }
 }

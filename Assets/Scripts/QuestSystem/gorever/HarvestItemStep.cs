@@ -8,20 +8,25 @@ public class HarvestItemStep : IQuestStep
 
     private bool isCompleted = false;
 
-    public string GetName() => $"Harvest {requiredAmount}× {itemID}";
+    public string GetName()
+    {
+        string name = string.IsNullOrEmpty(itemID) ? "???" : itemID;
+        return $"Harvest {requiredAmount}× {name}";
+    }
 
     public void OnStart() { }
 
     public void OnUpdate()
     {
-        //IsComplete();
+        // Opsiyonel tetikleyici
     }
 
     public bool IsComplete()
     {
         if (isCompleted) return true;
+        if (string.IsNullOrEmpty(itemID)) return false;
 
-        int harvested = GameStateTracker.Instance.GetCount($"harvest_{itemID}");
+        int harvested = GameStateTracker.Instance.GetCount($"Harvested_{itemID}");
         if (harvested >= requiredAmount)
         {
             isCompleted = true;

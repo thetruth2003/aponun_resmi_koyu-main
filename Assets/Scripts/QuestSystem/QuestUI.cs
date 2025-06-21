@@ -29,7 +29,8 @@ public class QuestUI : MonoBehaviour
         int stepIndex = -1;
         for (int i = 0; i < questAsset.quests.Count; i++)
         {
-            if (questAsset.quests[i].GetStepInstance() != null)
+            var step = questAsset.quests[i].GetStepInstance();
+            if (step != null && !step.IsComplete())
             {
                 stepIndex = i;
                 break;
@@ -56,37 +57,37 @@ public class QuestUI : MonoBehaviour
         }
 
         var currentContainer = questAsset.quests[stepIndex];
-        var step = currentContainer.GetStepInstance();
+        var stepInstance = currentContainer.GetStepInstance();
 
         mainQuestText.text = mainTitle;
 
-        if (step is TalkToNPCStep talk)
+        if (stepInstance is TalkToNPCStep talk)
         {
             questTypeText.text = "Talk To NPC";
-            requirementText.text = talk.npcObject != null
-                ? $"Talk to {talk.npcObject.name}"
-                : "No NPC assigned";
+            requirementText.text = !string.IsNullOrEmpty(talk.npcID)
+                ? $"Talk to {talk.npcID} (Section {talk.dialogSectionIndex})"
+                : "No NPC ID assigned";
         }
-        else if (step is GoToLocationStep go)
+        else if (stepInstance is GoToLocationStep go)
         {
             questTypeText.text = "Go To Location";
-            requirementText.text = go.targetObject != null
-                ? $"Go to {go.targetObject.name}"
-                : "No location assigned";
+            requirementText.text = !string.IsNullOrEmpty(go.locationID)
+                ? $"Go to {go.locationID}"
+                : "No location ID assigned";
         }
-        else if (step is SellItemStep sell)
+        else if (stepInstance is SellItemStep sell)
         {
             questTypeText.text = "Sell Item";
             int sold = GameStateTracker.Instance.GetCount($"Sold_{sell.itemID}");
             requirementText.text = $"{sold}/{sell.requiredAmount} × {sell.itemID}";
         }
-        else if (step is BuyItemStep buy)
+        else if (stepInstance is BuyItemStep buy)
         {
             questTypeText.text = "Buy Item";
             int bought = GameStateTracker.Instance.GetCount($"Bought_{buy.itemID}");
             requirementText.text = $"{bought}/{buy.requiredAmount} × {buy.itemID}";
         }
-        else if (step is HarvestItemStep harvest)
+        else if (stepInstance is HarvestItemStep harvest)
         {
             questTypeText.text = "Harvest Item";
             int harvested = GameStateTracker.Instance.GetCount($"Harvested_{harvest.itemID}");

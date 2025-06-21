@@ -14,26 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sections:
   - lines:
-    - text: asd
+    - text: asdasdas
       voiceClip: {fileID: 8300000, guid: 46554ad7e2219be49975003372e7a223, type: 3}
-    - text: qwe
+    - text: adasdas
       voiceClip: {fileID: 8300000, guid: 8d998b8ac0b4c0b45848ab0f61591515, type: 3}
-    - text: zxc
+    - text: asdadsad
       voiceClip: {fileID: 8300000, guid: 05531d6aa4addea479c8d7775d21450b, type: 3}
     viewKey: ahmet_0
   - lines:
-    - text: asd
+    - text: 1231231
       voiceClip: {fileID: 8300000, guid: e457bf3ff6e5e6d4f94735be1b6c384a, type: 3}
-    - text: qwe
+    - text: 1312312
       voiceClip: {fileID: 8300000, guid: cdf3a3e8158813e4ebdf336e8230e666, type: 3}
-    - text: zxc
+    - text: 12312312
       voiceClip: {fileID: 8300000, guid: f0f2276dbcd465a4a91f32a574800e4e, type: 3}
     viewKey: ahmet_1
   - lines:
-    - text: asd
+    - text: '!^!^+!+!+'
       voiceClip: {fileID: 8300000, guid: 4c5d5fa208fd5ac47ae1c551869b9bd6, type: 3}
-    - text: qwe
+    - text: '!''!+^!++++'
       voiceClip: {fileID: 8300000, guid: 7637b973c747a4547bbc907ff4b39e1c, type: 3}
-    - text: zxc
+    - text: '!+++%%''!^''^^'''''
       voiceClip: {fileID: 8300000, guid: 0e1dbb19a861b8c47b0d6b2ff23c1e6a, type: 3}
     viewKey: ahmet_2

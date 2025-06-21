@@ -22,12 +22,11 @@ public class SideQuestHandler : MonoBehaviour
                     Debug.Log($"Yan görev tamamlandı: {quest.optionalSideQuestDescription}");
 
                     // İsteğe bağlı: güven puanı artır
-                    if (quest.optionalTrustReward > 0 && quest.optionalSideQuestNPC != null)
-                    {
-                        string npcName = quest.optionalSideQuestNPC.name.ToLower();
-                        GameStateTracker.Instance.IncrementCount($"Trust_{npcName}", quest.optionalTrustReward);
-                        Debug.Log($"Güven artışı: {npcName} +{quest.optionalTrustReward}");
-                    }
+             if (quest.optionalTrustReward > 0 && !string.IsNullOrEmpty(quest.optionalSideQuestNPCID))
+                {
+                    string npcID = quest.optionalSideQuestNPCID.ToLower();
+                    GameStateTracker.Instance.IncrementCount($"Trust_{npcID}", quest.optionalTrustReward);
+                }
                 }
             }
         }

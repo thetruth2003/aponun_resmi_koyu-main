@@ -2,41 +2,69 @@ using TMPro;
 using UnityEngine;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(UniversalIdentifier))]
 public class NPCInteraction : MonoBehaviour
 {
-    public NPCDialogData dialogData;
+    public string npcID; // Inspector’dan girilebilir, ama Start'ta da UniversalIdentifier üzerinden çözülür
     public TextMeshProUGUI dialogText;
-    public GameObject diyolog;
     public GameObject player;
     public SC_FPSController fpsController;
     public Camera currentCamera;
     public GameObject[] storedElements;
-    public int currentSectionIndex = 0;
-
     public QuestEditorAsset linkedAsset;
 
-    private List<DialogLine> currentLines = new List<DialogLine>();
-    private int currentLine = 0;
-    private bool isDialogActive = false;
-    private AudioSource audioSource;
+    public NPCDialogData dialogData;
+    public List<DialogLine> currentLines = new List<DialogLine>();
+    public int currentLine = 0;
+    public bool isDialogActive = false;
+    public AudioSource audioSource;
 
     private float originalFOV = 60f;
     public float zoomFOV = 45f;
     public float fovLerpSpeed = 20f;
     private bool isZoomFOVActive = false;
+    private int currentSectionIndex = 0;
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         fpsController = player.GetComponent<SC_FPSController>();
-        if (currentCamera == null)
-            currentCamera = Camera.main;
+        currentCamera = currentCamera ?? Camera.main;
         originalFOV = currentCamera.fieldOfView;
 
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-            audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
+
+        // Universal ID çözümleme
+        if (string.IsNullOrEmpty(npcID))
+            npcID = GetComponent<UniversalIdentifier>()?.ID;
+
+        if (string.IsNullOrEmpty(npcID))
+        {
+            Debug.LogWarning($"{gameObject.name} → npcID atanamamış!");
+            return;
+        }
+
+        // ⛳️ TAG ile TextMeshPro yazısını bul
+        if (dialogText == null)
+        {
+            GameObject dialogObj = GameObject.FindGameObjectWithTag("DialogText");
+            if (dialogObj != null)
+            {
+                dialogText = dialogObj.GetComponent<TextMeshProUGUI>();
+            }
+
+            if (dialogText == null)
+            {
+                Debug.LogError("[NPCInteraction] 'DialogText' tagine sahip bir TextMeshProUGUI bulunamadı!");
+            }
+        }
+        if (dialogText != null)
+        Debug.Log("✅ DialogText bulundu: " + dialogText.gameObject.name);
+        else
+        Debug.LogError("❌ DialogText bulunamadı, metin gösterilmeyecek.");
+
     }
+
 
     TalkToNPCStep FindMatchingStep()
     {
@@ -47,7 +75,7 @@ public class NPCInteraction : MonoBehaviour
         var container = tracked.GetActiveStep();
         var step = container?.GetStepInstance() as TalkToNPCStep;
 
-        if (step != null && step.npcObject == this.gameObject)
+        if (step != null && step.npcID == npcID)
             return step;
 
         return null;
@@ -58,28 +86,26 @@ public class NPCInteraction : MonoBehaviour
         var step = FindMatchingStep();
         if (step == null)
         {
-            Debug.LogWarning("[NPCInteraction] NPC’ye ait aktif adım bulunamadı.");
+            Debug.LogWarning("[NPCInteraction] Bu NPC'ye ait aktif TalkToNPC adımı yok.");
             return;
         }
 
         int sectionIndex = step.dialogSectionIndex;
-
         if (dialogData == null || sectionIndex < 0 || sectionIndex >= dialogData.sections.Count)
         {
-            Debug.LogWarning("[NPCInteraction] Geçersiz diyalog index: " + sectionIndex);
+            Debug.LogWarning($"[NPCInteraction] Geçersiz diyalog indexi: {sectionIndex}");
             return;
         }
 
         currentLines = dialogData.sections[sectionIndex].lines;
         if (currentLines.Count == 0)
         {
-            Debug.LogWarning("[NPCInteraction] Diyalog boş.");
+            Debug.LogWarning("[NPCInteraction] Diyalog bölümü boş.");
             return;
         }
 
         currentLine = 0;
         isDialogActive = true;
-        diyolog.SetActive(true);
         currentSectionIndex = sectionIndex;
 
         fpsController.enabled = false;
@@ -97,7 +123,6 @@ public class NPCInteraction : MonoBehaviour
     void PlayCurrentLine()
     {
         var line = currentLines[currentLine];
-
         dialogText.text = line.text;
 
         if (audioSource.isPlaying)
@@ -107,7 +132,7 @@ public class NPCInteraction : MonoBehaviour
         {
             audioSource.clip = line.voiceClip;
             audioSource.Play();
-            Debug.Log($"🔊 Ses oynatılıyor: {line.voiceClip.name}");
+            Debug.Log($"🔊 Oynatılıyor: {line.voiceClip.name}");
         }
     }
 
@@ -134,7 +159,6 @@ public class NPCInteraction : MonoBehaviour
     {
         isDialogActive = false;
         fpsController.enabled = true;
-        diyolog.SetActive(false);
         audioSource.Stop();
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -145,10 +169,8 @@ public class NPCInteraction : MonoBehaviour
 
         isZoomFOVActive = false;
 
-        // ✅ Diyalog tamamlandıktan sonra flag kaydet
-        string npcName = gameObject.name.ToLower();
-        string key = $"{npcName}_{currentSectionIndex}";
+        string key = $"{npcID.ToLower()}_{currentSectionIndex}";
         GameStateTracker.Instance.SetFlag(key, true);
-        Debug.Log($"[NPCInteraction] Diyalog tamamlandı, flag set: {key}");
+        Debug.Log($"✅ Diyalog tamamlandı, flag ayarlandı: {key}");
     }
 }

@@ -86,7 +86,7 @@ public class QuestEditorWindow : EditorWindow
 
             mainQuest.optionalSideQuestID = EditorGUILayout.TextField("Side Quest ID", mainQuest.optionalSideQuestID);
             mainQuest.optionalSideQuestDescription = EditorGUILayout.TextField("Description", mainQuest.optionalSideQuestDescription);
-            mainQuest.optionalSideQuestNPC = (GameObject)EditorGUILayout.ObjectField("Related NPC", mainQuest.optionalSideQuestNPC, typeof(GameObject), true);
+            mainQuest.optionalSideQuestNPCID = EditorGUILayout.TextField("Related NPC ID", mainQuest.optionalSideQuestNPCID);
             mainQuest.optionalTrustReward = EditorGUILayout.IntField("Trust Reward", mainQuest.optionalTrustReward);
 
             if (Application.isPlaying)
@@ -166,12 +166,12 @@ public class QuestEditorWindow : EditorWindow
 
             if (step is TalkToNPCStep talk)
             {
-                talk.npcObject = (GameObject)EditorGUILayout.ObjectField("NPC Object", talk.npcObject, typeof(GameObject), true);
+                talk.npcID = EditorGUILayout.TextField("NPC ID", talk.npcID);
                 talk.dialogSectionIndex = EditorGUILayout.IntField("Dialog Section Index", talk.dialogSectionIndex);
             }
             else if (step is GoToLocationStep goTo)
             {
-                goTo.targetObject = (GameObject)EditorGUILayout.ObjectField("Target Object", goTo.targetObject, typeof(GameObject), true);
+                goTo.locationID = EditorGUILayout.TextField("Location ID", goTo.locationID);
             }
             else if (step is SellItemStep sell)
             {
@@ -187,15 +187,6 @@ public class QuestEditorWindow : EditorWindow
             {
                 harvest.itemID = EditorGUILayout.TextField("Item ID", harvest.itemID);
                 harvest.requiredAmount = EditorGUILayout.IntField("Required Amount", harvest.requiredAmount);
-            }
-
-            // Ortak NPC gösterimi (IHasNPC desteği varsa)
-            if (step is IHasNPC hasNPC)
-            {
-                GameObject current = hasNPC.GetAssignedNPC();
-                GameObject updated = (GameObject)EditorGUILayout.ObjectField("NPC (Optional)", current, typeof(GameObject), true);
-                if (updated != current)
-                    hasNPC.SetAssignedNPC(updated);
             }
 
             if (EditorGUI.EndChangeCheck())
@@ -219,8 +210,6 @@ public class QuestEditorWindow : EditorWindow
         if (Application.isPlaying)
             Repaint();
     }
-
-    // ─────────────── Yardımcı Metotlar ───────────────
 
     private List<int> GetMainQuestIndices()
     {

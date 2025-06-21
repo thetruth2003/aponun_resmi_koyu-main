@@ -18,33 +18,33 @@ MonoBehaviour:
     jsonData: 
     optionalSideQuestID: 
     optionalSideQuestDescription: 
-    optionalSideQuestNPC: {fileID: 0}
+    optionalSideQuestNPCID: 
     optionalTrustReward: 0
     optionalSideQuestCompleted: 0
-  - questName: "Buy 1\xD7 asd"
-    questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  - questName: Go to location
+    questTypeName: GoToLocationStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"itemID":"asd","requiredAmount":1}'
+    jsonData: '{"targetObject":{"instanceID":0}}'
     optionalSideQuestID: 
     optionalSideQuestDescription: 
-    optionalSideQuestNPC: {fileID: 0}
+    optionalSideQuestNPCID: 
     optionalTrustReward: 0
     optionalSideQuestCompleted: 0
-  - questName: "Sell 2\xD7 qwe"
+  - questName: Talk to ... (Section 0)
+    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"npcObject":{"instanceID":0},"dialogSectionIndex":0}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
+  - questName: "Sell 0\xD7 "
     questTypeName: SellItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"itemID":"qwe","requiredAmount":2}'
+    jsonData: '{"itemID":"","requiredAmount":0}'
     optionalSideQuestID: 
     optionalSideQuestDescription: 
-    optionalSideQuestNPC: {fileID: 0}
-    optionalTrustReward: 0
-    optionalSideQuestCompleted: 0
-  - questName: "Harvest 3\xD7 zxc"
-    questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"itemID":"zxc","requiredAmount":3}'
-    optionalSideQuestID: 
-    optionalSideQuestDescription: 
-    optionalSideQuestNPC: {fileID: 0}
+    optionalSideQuestNPCID: 
     optionalTrustReward: 0
     optionalSideQuestCompleted: 0

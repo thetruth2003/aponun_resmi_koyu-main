@@ -32,7 +32,7 @@ public class QuestContainer
     // ─── YAN GÖREV ALANLARI ───
     public string optionalSideQuestID;                     // "alperen_kasa_tasi"
     [TextArea] public string optionalSideQuestDescription; // Açıklama metni
-    public GameObject optionalSideQuestNPC;                // NPC objesi
+    public string optionalSideQuestNPCID;                  // Universal ID: "npc_mustafa"
     public int optionalTrustReward;                        // Güven puanı
     public bool optionalSideQuestCompleted;                // Tamamlandı mı
 }

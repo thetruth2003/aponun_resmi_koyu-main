@@ -77,6 +77,7 @@
                     if (npc != null)
                     {
                         npc.StartDialog();
+                        Debug.Log("NPC ile etkileşim başladı: " + npc.gameObject.name);
                     }
                 }
             }
@@ -89,14 +90,13 @@
 
         if (Physics.Raycast(ray, out hit, maxDistance))
         {
-            npc_info npc = hit.collider.GetComponent<npc_info>();
+            UniversalIdentifier npc = hit.collider.GetComponent<UniversalIdentifier>();
 
             if (npc != null)
             {
                 // UI'yı güncelle
                 NpcInfoPanel.SetActive(true);
-                Npcname.text = npc.Npc;
-                Npcetkileşim.text = npc.etkilesim; 
+                Npcname.text = npc.ID;
                 return;
             }
         }
