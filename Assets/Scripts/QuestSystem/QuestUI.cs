@@ -3,100 +3,86 @@ using TMPro;
 
 public class QuestUI : MonoBehaviour
 {
-    public QuestEditorAsset questAsset;
     public TMP_Text mainQuestText;
     public TMP_Text questTypeText;
     public TMP_Text requirementText;
-
-    private int currentQuestIndex = 0;
-
-    void Start()
+    public void Update()
     {
         UpdateQuestUI();
     }
 
     public void UpdateQuestUI()
     {
-        if (questAsset == null || questAsset.quests.Count == 0)
+        var trackedList = ActiveQuestSystem.Instance.GetAllTracked();
+        if (trackedList == null || trackedList.Count == 0)
         {
-            mainQuestText.text = "No Quest Data";
+            mainQuestText.text = "No Quest Tracked";
             questTypeText.text = "";
             requirementText.text = "";
             return;
         }
 
-        // Aktif görev adımını bul (ilk step ≠ null olan)
-        int stepIndex = -1;
-        for (int i = 0; i < questAsset.quests.Count; i++)
+        foreach (var tracked in trackedList)
         {
-            var step = questAsset.quests[i].GetStepInstance();
-            if (step != null && !step.IsComplete())
+            var index = tracked.currentIndex;
+
+            if (tracked.asset == null || tracked.asset.quests == null || index >= tracked.asset.quests.Count)
+                continue;
+
+            var container = tracked.asset.quests[index];
+            var step = container.GetStepInstance();
+
+            if (step == null || step.IsComplete())
+                continue;
+
+            mainQuestText.text = tracked.asset.quests[0].questName;
+
+
+            // Alt görev tipi
+            if (step is TalkToNPCStep talk)
             {
-                stepIndex = i;
-                break;
+                questTypeText.text = $"{talk.npcID} ile konuş";
+                requirementText.text = !string.IsNullOrEmpty(talk.npcID)
+                    ? ""
+                    : "No NPC ID assigned";
             }
-        }
-
-        if (stepIndex == -1)
-        {
-            mainQuestText.text = "All quests complete!";
-            questTypeText.text = "";
-            requirementText.text = "";
-            return;
-        }
-
-        // Ana başlık: kendisinden önceki en yakın step == null olan questName
-        string mainTitle = "Untitled";
-        for (int i = stepIndex - 1; i >= 0; i--)
-        {
-            if (questAsset.quests[i].GetStepInstance() == null)
+            else if (step is GoToLocationStep go)
             {
-                mainTitle = questAsset.quests[i].questName;
-                break;
+                questTypeText.text = $"{go.locationID} git";
+                requirementText.text = !string.IsNullOrEmpty(go.locationID)
+                    ? $""
+                    : "No location ID assigned";
             }
+            else if (step is SellItemStep sell)
+            {
+                questTypeText.text = $"{sell.requiredAmount} tane {sell.itemID} sat";
+                int sold = GameStateTracker.Instance.GetCount($"Sold_{sell.itemID}");
+                requirementText.text = $"{sold}/{sell.requiredAmount}";
+            }
+            else if (step is BuyItemStep buy)
+            {
+                questTypeText.text = $"{buy.requiredAmount} tane {buy.itemID} satın al";
+                int bought = GameStateTracker.Instance.GetCount($"Bought_{buy.itemID}");
+                requirementText.text = $"{bought}/{buy.requiredAmount}";
+            }
+            else if (step is HarvestItemStep harvest)
+            {
+                questTypeText.text = $"{harvest.requiredAmount} tane {harvest.itemID} hasat et";
+                int harvested = GameStateTracker.Instance.GetCount($"Harvested_{harvest.itemID}");
+                requirementText.text = $"{harvested}/{harvest.requiredAmount}";
+            }
+            else
+            {
+                questTypeText.text = "Unknown Step Type";
+                requirementText.text = "";
+            }
+
+            return; // bulduğun ilk aktif görevden sonra UI güncellendi, çık
         }
 
-        var currentContainer = questAsset.quests[stepIndex];
-        var stepInstance = currentContainer.GetStepInstance();
-
-        mainQuestText.text = mainTitle;
-
-        if (stepInstance is TalkToNPCStep talk)
-        {
-            questTypeText.text = "Talk To NPC";
-            requirementText.text = !string.IsNullOrEmpty(talk.npcID)
-                ? $"Talk to {talk.npcID} (Section {talk.dialogSectionIndex})"
-                : "No NPC ID assigned";
-        }
-        else if (stepInstance is GoToLocationStep go)
-        {
-            questTypeText.text = "Go To Location";
-            requirementText.text = !string.IsNullOrEmpty(go.locationID)
-                ? $"Go to {go.locationID}"
-                : "No location ID assigned";
-        }
-        else if (stepInstance is SellItemStep sell)
-        {
-            questTypeText.text = "Sell Item";
-            int sold = GameStateTracker.Instance.GetCount($"Sold_{sell.itemID}");
-            requirementText.text = $"{sold}/{sell.requiredAmount} × {sell.itemID}";
-        }
-        else if (stepInstance is BuyItemStep buy)
-        {
-            questTypeText.text = "Buy Item";
-            int bought = GameStateTracker.Instance.GetCount($"Bought_{buy.itemID}");
-            requirementText.text = $"{bought}/{buy.requiredAmount} × {buy.itemID}";
-        }
-        else if (stepInstance is HarvestItemStep harvest)
-        {
-            questTypeText.text = "Harvest Item";
-            int harvested = GameStateTracker.Instance.GetCount($"Harvested_{harvest.itemID}");
-            requirementText.text = $"{harvested}/{harvest.requiredAmount} × {harvest.itemID}";
-        }
-        else
-        {
-            questTypeText.text = "Unknown Type";
-            requirementText.text = "";
-        }
+        // Hiç görev bulunamadıysa:
+        mainQuestText.text = "✔️ All quests complete!";
+        questTypeText.text = "";
+        requirementText.text = "";
     }
 }

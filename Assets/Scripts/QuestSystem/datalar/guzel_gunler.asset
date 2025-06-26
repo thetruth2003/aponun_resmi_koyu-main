@@ -10,39 +10,39 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b44069f1ff866bf4b9a4d4a2c0632d82, type: 3}
-  m_Name: Alperen
+  m_Name: guzel_gunler
   m_EditorClassIdentifier: 
   quests:
-  - questName: "eski g\xFCzel g\xFCnler"
+  - questName: "g\xFCzel eski g\xFCnler"
     questTypeName: 
     jsonData: 
-    optionalSideQuestID: aleyna_konus
-    optionalSideQuestDescription: aleyna
-    optionalSideQuestNPCID: aleyna
-    optionalTrustReward: 1
-    optionalSideQuestCompleted: 0
-  - questName: Talk to aleyna (Section 0)
-    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"npcID":"aleyna","dialogSectionIndex":0}'
     optionalSideQuestID: 
     optionalSideQuestDescription: 
     optionalSideQuestNPCID: 
     optionalTrustReward: 0
     optionalSideQuestCompleted: 0
-  - questName: Go to garaj
-    questTypeName: GoToLocationStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  - questName: "Sell 12\xD7 elma"
+    questTypeName: SellItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"locationID":"garaj"}'
+    jsonData: '{"itemID":"elma","requiredAmount":12}'
     optionalSideQuestID: 
     optionalSideQuestDescription: 
     optionalSideQuestNPCID: 
     optionalTrustReward: 0
     optionalSideQuestCompleted: 0
-  - questName: Talk to aleyna (Section 1)
-    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  - questName: "Buy 23\xD7 \xFCz\xFCm"
+    questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"npcID":"aleyna","dialogSectionIndex":1}'
+    jsonData: "{\"itemID\":\"\xFCz\xFCm\",\"requiredAmount\":23}"
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
+  - questName: "Harvest 34\xD7 patates"
+    questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"itemID":"patates","requiredAmount":34}'
     optionalSideQuestID: 
     optionalSideQuestDescription: 
     optionalSideQuestNPCID: 

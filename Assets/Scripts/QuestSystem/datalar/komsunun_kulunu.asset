@@ -10,21 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b44069f1ff866bf4b9a4d4a2c0632d82, type: 3}
-  m_Name: haktan
+  m_Name: komsunun_kulunu
   m_EditorClassIdentifier: 
   quests:
-  - questName: Alperen
+  - questName: alperen
     questTypeName: 
     jsonData: 
-  - questName: "Buy 1\xD7 asd"
-    questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"itemID":"asd","requiredAmount":1}'
-  - questName: "Sell 2\xD7 qwe"
+  - questName: "Sell 5\xD7 am"
     questTypeName: SellItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"itemID":"qwe","requiredAmount":2}'
-  - questName: "Harvest 3\xD7 zxc"
-    questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    jsonData: '{"itemID":"am","requiredAmount":5}'
+  - questName: "Buy 3\xD7 yarak"
+    questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"itemID":"zxc","requiredAmount":3}'
+    jsonData: '{"itemID":"yarak","requiredAmount":3}'
+  - questName: "Sell 2\xD7 s\u0131k"
+    questTypeName: SellItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: "{\"itemID\":\"s\u0131k\",\"requiredAmount\":2}"
+  - questName: ayse
+    questTypeName: 
+    jsonData: 

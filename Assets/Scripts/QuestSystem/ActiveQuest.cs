@@ -9,7 +9,7 @@ public class ActiveQuestSystem : MonoBehaviour
     public class TrackedQuest
     {
         public QuestEditorAsset asset;
-        public int currentIndex = 0;
+        public int currentIndex = 1;
 
         // ✅ Şu anki aktif adımı verir (null değilse)
         public QuestContainer GetActiveStep()
@@ -31,18 +31,17 @@ public class ActiveQuestSystem : MonoBehaviour
     {
         foreach (var tracked in allQuests)
         {
-            // Her frame'de aktif görev adımını kontrol et
             while (tracked.currentIndex < tracked.asset.quests.Count)
             {
                 var container = tracked.asset.quests[tracked.currentIndex];
                 var step = container.GetStepInstance();
                 if (step == null || step.IsComplete())
                 {
-                    tracked.currentIndex++; // geç tamamlandıysa
+                    tracked.currentIndex++; // ⛔ BU YÜZDEN step her zaman null veya tamamlanmış
                 }
                 else
                 {
-                    break; // aktif görev devam ediyor
+                    break;
                 }
             }
         }

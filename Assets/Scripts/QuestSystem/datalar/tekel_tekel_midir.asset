@@ -10,39 +10,39 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b44069f1ff866bf4b9a4d4a2c0632d82, type: 3}
-  m_Name: Aleyna
+  m_Name: tekel_tekel_midir
   m_EditorClassIdentifier: 
   quests:
-  - questName: Alperen
+  - questName: "eski g\xFCzel g\xFCnler"
     questTypeName: 
     jsonData: 
-    optionalSideQuestID: 
-    optionalSideQuestDescription: 
-    optionalSideQuestNPCID: 
-    optionalTrustReward: 0
+    optionalSideQuestID: aleyna_konus
+    optionalSideQuestDescription: aleyna
+    optionalSideQuestNPCID: aleyna
+    optionalTrustReward: 1
     optionalSideQuestCompleted: 0
-  - questName: Go to location
-    questTypeName: GoToLocationStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"targetObject":{"instanceID":0}}'
-    optionalSideQuestID: 
-    optionalSideQuestDescription: 
-    optionalSideQuestNPCID: 
-    optionalTrustReward: 0
-    optionalSideQuestCompleted: 0
-  - questName: Talk to ... (Section 0)
+  - questName: Talk to aleyna (Section 0)
     questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"npcObject":{"instanceID":0},"dialogSectionIndex":0}'
+    jsonData: '{"npcID":"aleyna","dialogSectionIndex":0}'
     optionalSideQuestID: 
     optionalSideQuestDescription: 
     optionalSideQuestNPCID: 
     optionalTrustReward: 0
     optionalSideQuestCompleted: 0
-  - questName: "Sell 0\xD7 "
-    questTypeName: SellItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  - questName: Go to garaj
+    questTypeName: GoToLocationStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"itemID":"","requiredAmount":0}'
+    jsonData: '{"locationID":"garaj"}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
+  - questName: Talk to aleyna (Section 1)
+    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"npcID":"aleyna","dialogSectionIndex":1}'
     optionalSideQuestID: 
     optionalSideQuestDescription: 
     optionalSideQuestNPCID: 
