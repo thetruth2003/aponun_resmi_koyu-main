@@ -8,16 +8,28 @@ public class Inventory
 {
     [System.Serializable]
     public class Slot
-    {
+    {   
+        public ItemData item;
         public string itemName;
         public int count;
         public int maxAllowed;
         public GameObject itemPrefab;
         public Sprite icon;
         public GameObject itemUsedPrefab;
+        public Slot(ItemData item, int count)
+        {
+            this.item = item;
+            this.count = count;
+        }
 
+        public void Clear()
+        {
+            item = null;
+            count = 0;
+        }
         public Slot()
         {
+            item = null;
             itemName = "";
             count = 0;
             maxAllowed = 99;
@@ -39,7 +51,7 @@ public class Inventory
             return this.itemName == itemName && count < maxAllowed;
         }
 
-        public void AddItem(string itemName, Sprite icon, int maxAllowed, GameObject itemPrefab, GameObject itemUsedPrefab)
+        public void AddItem(ItemData item,string itemName, Sprite icon, int maxAllowed, GameObject itemPrefab, GameObject itemUsedPrefab)
         {
             // Aynı item türündeyse sayıyı artır, yoksa yeni item ekle
             if (this.itemName == itemName)
@@ -48,6 +60,7 @@ public class Inventory
             }
             else
             {
+                this.item = item;
                 this.itemName = itemName;
                 this.icon = icon;
                 this.maxAllowed = maxAllowed;
@@ -65,6 +78,7 @@ public class Inventory
 
                 if (count == 0)
                 {
+                    item = null;
                     icon = null;
                     itemName = "";
                     itemPrefab = null;
@@ -97,7 +111,7 @@ public class Inventory
         {
             if (slot.CanAddItem(item.data.itemName)) // Aynı itemName'e ve kapasiteye bakar
             {
-                slot.AddItem(item.data.itemName, item.data.icon, item.data.maxAllowed, item.data.itemPrefab, item.data.itemUsedPrefab);
+                slot.AddItem(item.data,item.data.itemName, item.data.icon, item.data.maxAllowed, item.data.itemPrefab, item.data.itemUsedPrefab);
                 Debug.Log($"Item added to existing slot: {slot.itemName}, Count: {slot.count}");
                 return;
             }
@@ -108,7 +122,7 @@ public class Inventory
         {
             if (slot.IsEmpty)
             {
-                slot.AddItem(item.data.itemName, item.data.icon, item.data.maxAllowed, item.data.itemPrefab, item.data.itemUsedPrefab);
+                slot.AddItem(item.data,item.data.itemName, item.data.icon, item.data.maxAllowed, item.data.itemPrefab, item.data.itemUsedPrefab);
                 Debug.Log($"Item added to empty slot: {slot.itemName}, Count: {slot.count}");
                 return;
             }
@@ -168,7 +182,7 @@ public class Inventory
         {
             if (toSlot.IsEmpty || toSlot.CanAddItem(fromSlot.itemName))
             {
-                toSlot.AddItem(fromSlot.itemName, fromSlot.icon, fromSlot.maxAllowed, fromSlot.itemPrefab, fromSlot.itemUsedPrefab);
+                toSlot.AddItem(fromSlot.item, fromSlot.itemName, fromSlot.icon, fromSlot.maxAllowed, fromSlot.itemPrefab, fromSlot.itemUsedPrefab);
                 fromSlot.RemoveItem();
             }
         }

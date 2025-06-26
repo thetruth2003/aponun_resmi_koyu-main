@@ -8,12 +8,10 @@ public class Inventory_UI : MonoBehaviour, ISaveable
     public string inventoryName;
     public List<Slot_UI> slots = new List<Slot_UI>();
     public Canvas canvas;
-    public TextMeshProUGUI money_text;
     private Inventory inventory;
-
+    public Money money; // Para UI referansı
     private void Start()
     {
-        money_text.text = "100"; // Başlangıçta 100 birim para
         canvas = FindObjectOfType<Canvas>();
         inventory = GameManager.instance.player.inventoryManager.GetInventoryByName(inventoryName);
         SetupSlots();
@@ -141,13 +139,13 @@ public class Inventory_UI : MonoBehaviour, ISaveable
 
     public void SaveData()
     {
-        PlayerPrefs.SetString(GetUniqueID() + "_para", money_text.text.ToString());
+        PlayerPrefs.SetString(GetUniqueID() + "_para", money.moneyText.text.ToString());
         Debug.Log("save para");
     }
 
     public void LoadData()
     {
-        money_text.text = PlayerPrefs.GetString(GetUniqueID() + "_para", "69").ToString();
+        money.moneyText.text = PlayerPrefs.GetString(GetUniqueID() + "_para", "69").ToString();
         Debug.Log("load para");
     }
 }

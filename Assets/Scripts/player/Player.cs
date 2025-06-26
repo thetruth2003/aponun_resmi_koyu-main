@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     public GameObject handObject;     // Karakterin elindeki nesne
 
     public static Player Instance;
-
+    // Existing fields and methods
     void Awake()
     {
         if (Instance == null) Instance = this;

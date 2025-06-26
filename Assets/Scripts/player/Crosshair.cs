@@ -5,7 +5,7 @@
     public class Crosshair : MonoBehaviour
     {
         public AnimationController animController;
-
+        public Money money; // Para yönetimi için Money script referansı
         public Camera playerCamera; // Oyuncunun kamerası
         public float maxDistance = 100f; // Maksimum atış mesafesi
         public LayerMask interactableLayer; // Etkileşimde bulunulacak katman
@@ -37,7 +37,7 @@
             HitTree();
             AddSeed();
             Watering();
-                                animController.PlayInteractAnimation();
+            animController.PlayInteractAnimation();
         }
         if (Input.GetMouseButtonDown(1))
         {
@@ -65,8 +65,6 @@
                 {
                     currentItem = item;
                     BuyItem();
-
-
                 }
             }
             if (Physics.Raycast(ray, out hit, 3f))
@@ -120,7 +118,7 @@
                 itemPriceText.text = item.price.ToString();
 
                 // Mevcut parayı al
-                int currentMoney = int.Parse(inventory_uı.money_text.text);
+                int currentMoney = int.Parse(money.moneyText.text);
 
                 // Renk değişimi
                 if (currentMoney >= item.price)
@@ -145,12 +143,12 @@
 
     private void BuyItem()
     {
-        int currentMoney = int.Parse(inventory_uı.money_text.text); // Mevcut parayı al (string → int)
+        int currentMoney = int.Parse(money.moneyText.text); // Mevcut parayı al (string → int)
 
         if (currentMoney >= currentItem.price)
         {
             currentMoney -= currentItem.price; // Parayı düş
-            inventory_uı.money_text.text = currentMoney.ToString(); // UI'yi güncelle
+            money.moneyText.text = currentMoney.ToString(); // UI'yi güncelle
             ShootRay();
             Debug.Log(currentItem.itemName + " satın alındı!");
         }
@@ -159,28 +157,27 @@
             Debug.Log("Yetersiz altın!");
         }
     }
-
-
+    
     public void ShootRay()
+    {
+        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, maxDistance, interactableLayer))
         {
-            Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            // Etkileşimli nesneye ulaşıldıysa
+            Debug.Log("Etkileşim: " + hit.collider.name);
 
-            if (Physics.Raycast(ray, out hit, maxDistance, interactableLayer))
+            // Collectable bileşeni olup olmadığını kontrol et
+            Collectable collectable = hit.collider.GetComponent<Collectable>();
+
+            if (collectable != null)
             {
-                // Etkileşimli nesneye ulaşıldıysa
-                Debug.Log("Etkileşim: " + hit.collider.name);
-
-                // Collectable bileşeni olup olmadığını kontrol et
-                Collectable collectable = hit.collider.GetComponent<Collectable>();
-
-                if (collectable != null)
-                {
-                    // Nesnenin Collect metodunu çağırarak tetikle
-                    collectable.Collect();
-                }
+                // Nesnenin Collect metodunu çağırarak tetikle
+                collectable.Collect();
             }
         }
+    }
 
         public void HitTree()
         {

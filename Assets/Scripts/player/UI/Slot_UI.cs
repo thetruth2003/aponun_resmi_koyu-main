@@ -10,7 +10,6 @@ public class Slot_UI : MonoBehaviour
     public Image itemIcon;
     public TextMeshProUGUI quantityText;
     public GameObject highlight;
-    public Inventory.Slot slot; // Slot referansını ekliyoruz
     public Inventory inventory; // Inventory referansını ekliyoruz
     public Inventory.Slot inventorySlot; // inventorySlot referansı
     public string itemName; // Item ismi için özellik
@@ -43,6 +42,11 @@ public class Slot_UI : MonoBehaviour
             quantityText.text = slot.count.ToString();
         }
     }
+    public int GetTotalSellValue()
+    {
+        return inventorySlot.count * inventorySlot.item.sellPrice;
+    }
+
 
     public void SetEmpty()
     {
@@ -57,6 +61,14 @@ public class Slot_UI : MonoBehaviour
         {
             quantityText.text = "";
         }
+    }
+    public bool IsEmpty()
+    {
+        return inventorySlot == null || inventorySlot.item == null;
+    }
+    public void Clear()
+    {
+        SetEmpty(); // Aynı işlev zaten SetEmpty’de var
     }
 
     public void SetHighlight(bool isOn)
