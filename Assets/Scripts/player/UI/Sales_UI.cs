@@ -43,7 +43,8 @@ public class Sales_UI : MonoBehaviour
 
                 Debug.Log($"✔ Satıldı: {count} × {slot.inventorySlot.item.itemName} → {slotTotal}₺");
 
-                slot.Clear(); // Slotu temizle
+                slot.inventorySlot.Clear(); // Gerçek envanteri temizle
+                slot.Clear(); // UI'den de temizle
                 money.AddMoney(slotTotal); // Yeni para sistemi ile para ekle
             }
         }
