@@ -25,7 +25,11 @@ public class Inventory
         public void Clear()
         {
             item = null;
+            itemName = "";
             count = 0;
+            maxAllowed = 99;
+            itemPrefab = null;
+            itemUsedPrefab = null;  
         }
         public Slot()
         {
