@@ -16,15 +16,35 @@ MonoBehaviour:
   - questName: Alperen
     questTypeName: 
     jsonData: 
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
   - questName: "Buy 1\xD7 asd"
     questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     jsonData: '{"itemID":"asd","requiredAmount":1}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
   - questName: "Sell 2\xD7 qwe"
     questTypeName: SellItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     jsonData: '{"itemID":"qwe","requiredAmount":2}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
   - questName: "Harvest 3\xD7 zxc"
     questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     jsonData: '{"itemID":"zxc","requiredAmount":3}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
