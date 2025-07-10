@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4555866504254558}
   - component: {fileID: 33019111143325558}
   - component: {fileID: 23657795969698534}
+  - component: {fileID: 6947681329137046251}
   m_Layer: 0
   m_Name: SM_Prop_Box_Peach_01
   m_TagString: Untagged
@@ -83,3 +84,24 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6947681329137046251
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1346500356932356}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.75573605, y: 0.45161596, z: 0.45261505}
+  m_Center: {x: 0, y: 0.22580798, z: 0}

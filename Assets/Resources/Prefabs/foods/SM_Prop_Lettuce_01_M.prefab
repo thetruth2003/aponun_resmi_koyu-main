@@ -11,11 +11,9 @@ GameObject:
   - component: {fileID: 4341067604763964}
   - component: {fileID: 33235362798928930}
   - component: {fileID: 23075490815601160}
-  - component: {fileID: 64091704360529676}
-  - component: {fileID: 8586767350602822780}
   - component: {fileID: 2826943988274302125}
   - component: {fileID: -486392697834844041}
-  - component: {fileID: 2749283448540520675}
+  - component: {fileID: -7819144149798790560}
   m_Layer: 0
   m_Name: SM_Prop_Lettuce_01_M
   m_TagString: Untagged
@@ -88,55 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64091704360529676
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1877061502209778}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43651490884638068, guid: b8501b7d8a4f85547b53a31a786a705f, type: 2}
---- !u!54 &8586767350602822780
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1877061502209778}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &2826943988274302125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -150,7 +99,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 7cf806a1310ba164bbf31c942ff7f246, type: 2}
-  rb: {fileID: 0}
 --- !u!114 &-486392697834844041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,8 +111,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 334870c622a7fdd4fa8cadd335c913d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!64 &2749283448540520675
-MeshCollider:
+--- !u!65 &-7819144149798790560
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -178,10 +126,9 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: dd167a2e92f246c46819d90378a5235d, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.20187469, y: 0.13163035, z: 0.21299927}
+  m_Center: {x: -0.00763046, y: 0.06264175, z: 0.014174804}

@@ -11,11 +11,9 @@ GameObject:
   - component: {fileID: 4313404059034182}
   - component: {fileID: 33308192374014320}
   - component: {fileID: 23305538208302780}
-  - component: {fileID: 64119460831935956}
-  - component: {fileID: -8237490684161633912}
   - component: {fileID: 6617661737759695808}
   - component: {fileID: 3830220094653780606}
-  - component: {fileID: -1767853590775552532}
+  - component: {fileID: 5589561918492346469}
   m_Layer: 0
   m_Name: SM_Prop_Tomato_01_Group
   m_TagString: Untagged
@@ -88,55 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64119460831935956
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1393761842596918}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43262245033006498, guid: 838ce683724a0a34a953d484706bf429, type: 2}
---- !u!54 &-8237490684161633912
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1393761842596918}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &6617661737759695808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -150,7 +99,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 5c6db9400baf79148b46c3090041ba06, type: 2}
-  rb: {fileID: 0}
 --- !u!114 &3830220094653780606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,8 +111,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 334870c622a7fdd4fa8cadd335c913d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!64 &-1767853590775552532
-MeshCollider:
+--- !u!65 &5589561918492346469
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -178,10 +126,9 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 7353f471ffb309848a15c037b8193534, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.25743103, y: 0.13471735, z: 0.22988953}
+  m_Center: {x: 0, y: 0.06735867, z: -0.0000003054738}

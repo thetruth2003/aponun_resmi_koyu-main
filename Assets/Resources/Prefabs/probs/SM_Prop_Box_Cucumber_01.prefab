@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4776679214366594}
   - component: {fileID: 33531500660308412}
   - component: {fileID: 23988402860510970}
+  - component: {fileID: 8974846573946856765}
   m_Layer: 0
   m_Name: SM_Prop_Box_Cucumber_01
   m_TagString: Untagged
@@ -83,3 +84,24 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8974846573946856765
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1335058353384804}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.7593243, y: 0.43354738, z: 0.45261502}
+  m_Center: {x: 0, y: 0.21677369, z: -0.00000015646219}

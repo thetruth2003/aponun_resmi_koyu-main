@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 8279878965729103248}
   - component: {fileID: 8279878965732527536}
   - component: {fileID: 8279878965731397488}
+  - component: {fileID: 7997470110490594894}
   m_Layer: 0
   m_Name: Wheelbarrow_03
   m_TagString: Untagged
@@ -116,6 +117,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7997470110490594894
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8279878965729202608}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.88311744, y: 0.8764052, z: 1.6248969}
+  m_Center: {x: 0, y: 0.4403111, z: -0.07047111}
 --- !u!1001 &3352889852798980218
 PrefabInstance:
   m_ObjectHideFlags: 0

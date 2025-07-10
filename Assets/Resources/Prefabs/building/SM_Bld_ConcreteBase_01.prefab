@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4798710816451428}
   - component: {fileID: 33859893314019994}
   - component: {fileID: 23737618694745424}
-  - component: {fileID: 64287919542030772}
+  - component: {fileID: 9009260254547835474}
   m_Layer: 0
   m_Name: SM_Bld_ConcreteBase_01
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64287919542030772
-MeshCollider:
+--- !u!65 &9009260254547835474
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -102,7 +102,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43538332716131876, guid: 18290ee5017eb9f48a46fd9f6eabfeca, type: 2}
+  serializedVersion: 3
+  m_Size: {x: 4.4988174, y: 0.9864381, z: 4.4988174}
+  m_Center: {x: 0, y: -0.31540033, z: 0}

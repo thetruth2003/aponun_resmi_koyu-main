@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4369799291534954}
   - component: {fileID: 33651916401343232}
   - component: {fileID: 23787437520110124}
-  - component: {fileID: 64737958659675064}
+  - component: {fileID: 5325395010607584758}
   m_Layer: 0
   m_Name: SM_Bld_ProduceStand_01
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64737958659675064
-MeshCollider:
+--- !u!65 &5325395010607584758
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -102,7 +102,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43965640075710556, guid: 560a450a32995584fba96d4a78c21758, type: 2}
+  serializedVersion: 3
+  m_Size: {x: 3.0757282, y: 3.3336914, z: 3.0778034}
+  m_Center: {x: 0.019528866, y: 1.6668457, z: 0.03415191}

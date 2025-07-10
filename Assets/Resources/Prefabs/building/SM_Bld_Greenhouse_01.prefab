@@ -306,7 +306,7 @@ GameObject:
   - component: {fileID: 4229869433677180}
   - component: {fileID: 33020209056561204}
   - component: {fileID: 23935517815585338}
-  - component: {fileID: 64567479861093568}
+  - component: {fileID: 3663352568026539663}
   m_Layer: 0
   m_Name: SM_Bld_Greenhouse_01
   m_TagString: Untagged
@@ -382,8 +382,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64567479861093568
-MeshCollider:
+--- !u!65 &3663352568026539663
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -400,10 +400,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: a2848500904f42740aa991dcb3e9afbe, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 5.5713263, y: 4.9906435, z: 7.5853515}
+  m_Center: {x: 0, y: 2.4953218, z: 0}
 --- !u!1 &1756974831247686
 GameObject:
   m_ObjectHideFlags: 0

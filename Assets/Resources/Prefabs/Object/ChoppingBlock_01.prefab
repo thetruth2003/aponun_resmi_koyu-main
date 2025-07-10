@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6981015246744907191}
   - component: {fileID: 6981015246746201495}
   - component: {fileID: 6981015246747332439}
-  - component: {fileID: 8127148624560172152}
+  - component: {fileID: -131507867510936753}
   m_Layer: 0
   m_Name: ChoppingBlock_01
   m_TagString: Untagged
@@ -85,8 +85,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8127148624560172152
-MeshCollider:
+--- !u!65 &-131507867510936753
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -103,10 +103,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 504a8d7a5cabb0a47a5c073f6b723ac0, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.43970984, y: 0.50399715, z: 0.43969584}
+  m_Center: {x: -0.000006534159, y: 0.25199857, z: -0.00000029057264}
 --- !u!1001 &4363120462364210388
 PrefabInstance:
   m_ObjectHideFlags: 0

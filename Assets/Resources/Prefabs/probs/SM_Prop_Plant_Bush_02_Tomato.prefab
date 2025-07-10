@@ -11,10 +11,9 @@ GameObject:
   - component: {fileID: 4839070543284110}
   - component: {fileID: 33969699047753716}
   - component: {fileID: 23185969233174288}
-  - component: {fileID: -4604069170924223711}
   - component: {fileID: -557350864452144700}
   - component: {fileID: -6089223062168044937}
-  - component: {fileID: 9121175345503385237}
+  - component: {fileID: -5129787217364254691}
   m_Layer: 0
   m_Name: SM_Prop_Plant_Bush_02_Tomato
   m_TagString: Untagged
@@ -88,33 +87,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!54 &-4604069170924223711
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1261134927141026}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &-557350864452144700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128,7 +100,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 0}
-  rb: {fileID: 0}
 --- !u!114 &-6089223062168044937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,8 +112,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 334870c622a7fdd4fa8cadd335c913d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!64 &9121175345503385237
-MeshCollider:
+--- !u!65 &-5129787217364254691
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -159,7 +130,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 7306b7ab02e6c8440b5030dd1d3fed62, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.6271204, y: 0.9888379, z: 0.597222}
+  m_Center: {x: 0, y: 0.46984825, z: 0}

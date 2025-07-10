@@ -298,42 +298,55 @@
         if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer))
         {
             GameObject clickedCell = hit.collider.gameObject; // Tıklanan hücreyi al
+            Debug.Log($"Raycast başarılı, çarpılan obje: {clickedCell.name}, Layer: {clickedCell.layer}");
 
             // Tıklanan hücre SeedBox katmanında mı ve seçili öğe "seed" mi kontrol et
-            if (clickedCell.layer == LayerMask.NameToLayer("SeedBox") && toolbar.GetSelectedPrefabTag() == "seed")
+            int seedBoxLayer = LayerMask.NameToLayer("SeedBox");
+            Debug.Log($"SeedBox Layer Index: {seedBoxLayer}");
+            Debug.Log($"Seçili prefab tagı: {toolbar.GetSelectedPrefabTag()}");
+
+            if (clickedCell.layer == seedBoxLayer && toolbar.GetSelectedPrefabTag() == "seed")
             {
                 string selectedItemUsedPrefab = toolbar.GetSelectedUsedPrefab();
+                Debug.Log($"Prefab adı: {selectedItemUsedPrefab}");
 
                 if (!string.IsNullOrEmpty(selectedItemUsedPrefab))
                 {
                     // Resources klasöründen prefab'ı yükle
-                    GameObject newItem = Resources.Load<GameObject>($"Prefabs/{selectedItemUsedPrefab}");
-
+                    GameObject newItem = Resources.Load<GameObject>($"Prefabs/foods/{selectedItemUsedPrefab}");
+                    Debug.Log($"Prefab yükleniyor: {newItem}");
                     if (newItem != null)
                     {
                         // Yeni prefab'ı hücrenin merkezine spawnla
                         Vector3 spawnPosition = clickedCell.transform.position; // Hücrenin pozisyonu
                         Quaternion spawnRotation = Quaternion.identity; // Varsayılan rotasyon
-
+                        Debug.Log($"Spawn pozisyonu: {spawnPosition}, Rotasyon: {spawnRotation}");
+                        // Instantiate ile yeni prefab'ı oluştur
                         Instantiate(newItem, spawnPosition, spawnRotation);
-
-                        Debug.Log($"Seed prefab spawned: {selectedItemUsedPrefab} at {spawnPosition}");
+                        // Hücrenin child'ı olan seedBox objesini aktif et
+                        clickedCell.transform.GetChild(0).gameObject.SetActive(true);
+                        Debug.Log($"Seed prefab spawned: {newItem} at {spawnPosition}");
+                        // Hücrenin child'ı olan seedBox objesini aktif et
+                        Destroy(clickedCell);
                     }
                     else
                     {
                         Debug.LogWarning($"Prefab bulunamadı: {selectedItemUsedPrefab}");
                     }
                 }
+                else
+                {
+                    Debug.LogWarning("Seçili prefab adı boş!");
+                }
             }
             else
             {
-                // Şartlar sağlanmadığında kullanıcıyı bilgilendir
-                Debug.Log("Tıklanan hücre SeedBox değil veya seçili öğe 'seed' değil.");
+                Debug.LogWarning($"Layer veya tag uyuşmuyor! clickedCell.layer: {clickedCell.layer}, seedBoxLayer: {seedBoxLayer}, tag: {toolbar.GetSelectedPrefabTag()}");
             }
         }
         else
         {
-            Debug.Log("Raycast bir objeye çarpmadı.");
+            Debug.LogWarning("Raycast bir objeye çarpmadı.");
         }
     }
     public void Watering()
@@ -367,14 +380,14 @@
                     }
                     else
                     {
-                        Debug.LogWarning($"Prefab bulunamadı: {selectedItemUsedPrefab}");
+                        //Debug.LogWarning($"Prefab bulunamadı: {selectedItemUsedPrefab}");
                     }
                 }
             }
             else
             {
                 // Şartlar sağlanmadığında kullanıcıyı bilgilendir
-                Debug.Log("Tıklanan hücre SeedBox değil veya seçili öğe 'seed' değil.");
+                //Debug.Log("Tıklanan hücre SeedBox değil veya seçili öğe 'seed' değil.");
             }
         }
         else

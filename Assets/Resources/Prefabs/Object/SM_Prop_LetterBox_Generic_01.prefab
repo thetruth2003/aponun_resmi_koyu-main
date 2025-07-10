@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4283820572680212}
   - component: {fileID: 33385991130459116}
   - component: {fileID: 23756554228545274}
-  - component: {fileID: 64777229092625186}
+  - component: {fileID: 5536479492126288023}
   m_Layer: 0
   m_Name: SM_Prop_LetterBox_Generic_01
   m_TagString: Untagged
@@ -85,8 +85,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64777229092625186
-MeshCollider:
+--- !u!65 &5536479492126288023
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -103,10 +103,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43076534581983360, guid: 56df083b5990d81489586685fdcea2c3, type: 2}
+  serializedVersion: 3
+  m_Size: {x: 0.26153773, y: 1.1522772, z: 0.5982826}
+  m_Center: {x: 0.0011300072, y: 0.5761386, z: 0.0030448884}
 --- !u!1 &1861568066633656
 GameObject:
   m_ObjectHideFlags: 0

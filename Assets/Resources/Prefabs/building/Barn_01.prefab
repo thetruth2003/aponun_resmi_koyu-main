@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7421269736671921059}
   - component: {fileID: 7421269736670593923}
   - component: {fileID: 7421269736669495619}
-  - component: {fileID: 4418059628649009806}
+  - component: {fileID: -6693410297134429108}
   m_Layer: 0
   m_Name: Barn_01
   m_TagString: Untagged
@@ -85,8 +85,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4418059628649009806
-MeshCollider:
+--- !u!65 &-6693410297134429108
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -103,10 +103,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: d9f152ffa1af2ca419bfe6a6081a65d1, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 9.326086, y: 6.6605334, z: 9.51}
+  m_Center: {x: -1.6092465, y: 3.3302653, z: 0.0000021457672}
 --- !u!1001 &2106682606113279225
 PrefabInstance:
   m_ObjectHideFlags: 0

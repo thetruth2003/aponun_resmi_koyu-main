@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4225582121890452}
   - component: {fileID: 33935554784713652}
   - component: {fileID: 23945935164086650}
-  - component: {fileID: 64708147197179124}
+  - component: {fileID: 2730970960199502059}
   m_Layer: 0
   m_Name: SM_Bld_Silo_Base_01
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64708147197179124
-MeshCollider:
+--- !u!65 &2730970960199502059
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -102,7 +102,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43100239390213432, guid: 5b1dea0eb093b994cbc301e7a5ae649c, type: 2}
+  serializedVersion: 3
+  m_Size: {x: 6.843062, y: 0.81332546, z: 6.8430624}
+  m_Center: {x: 0, y: -0.40666273, z: 0.00000059604645}

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3147430222276724589}
   - component: {fileID: 3147430222275954509}
   - component: {fileID: 3147430222274954637}
+  - component: {fileID: -4246769957143252503}
   m_Layer: 0
   m_Name: CarTrailer_02
   m_TagString: Untagged
@@ -85,6 +86,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &-4246769957143252503
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3147430222276959053}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.6436067, y: 0.63631535, z: 2.768639}
+  m_Center: {x: 0.000000029802322, y: 0.45816267, z: 0.36333328}
 --- !u!1001 &964605356790141351
 PrefabInstance:
   m_ObjectHideFlags: 0

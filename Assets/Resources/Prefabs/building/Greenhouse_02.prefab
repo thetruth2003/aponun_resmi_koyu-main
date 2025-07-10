@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5771624560900078416}
   - component: {fileID: 5771624560900848496}
   - component: {fileID: 5771624560901978544}
-  - component: {fileID: 4294481804732896435}
+  - component: {fileID: 3635896486744641831}
   m_Layer: 0
   m_Name: Greenhouse_02
   m_TagString: Untagged
@@ -86,8 +86,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4294481804732896435
-MeshCollider:
+--- !u!65 &3635896486744641831
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -104,10 +104,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 4d2c78d4f262e904ca37e9563120c06e, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 3.6200001, y: 3.5565438, z: 5.15}
+  m_Center: {x: 0, y: 1.7782714, z: 0}
 --- !u!1001 &4153871079118231067
 PrefabInstance:
   m_ObjectHideFlags: 0

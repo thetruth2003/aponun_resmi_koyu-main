@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4422828779368080}
   - component: {fileID: 33835358091439610}
   - component: {fileID: 23658099100676894}
-  - component: {fileID: 64136450136299482}
+  - component: {fileID: -1367832416042953141}
   m_Layer: 0
   m_Name: SM_Bld_Barn_01
   m_TagString: Untagged
@@ -90,8 +90,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64136450136299482
-MeshCollider:
+--- !u!65 &-1367832416042953141
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -108,10 +108,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 7a008a2a8cd7a884db028e0a25227376, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 13.4948435, y: 9.105388, z: 14.157824}
+  m_Center: {x: 0.0000023841858, y: 4.5526824, z: -0.0000011920929}
 --- !u!1 &1668543662975604
 GameObject:
   m_ObjectHideFlags: 0
