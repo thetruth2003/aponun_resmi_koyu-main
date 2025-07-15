@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5166787796186108012}
   - component: {fileID: 6338219940235291950}
+  - component: {fileID: 4525453115752865210}
   m_Layer: 9
   m_Name: SeedPoint8
   m_TagString: seedpoint
@@ -53,6 +54,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4525453115752865210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 56275389681257297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasSeed: 0
+  isWatered: 0
+  currentSeed: 0
+  dryDayCount: 0
+  maxDryDays: 2
+  plantPrefab: {fileID: 0}
 --- !u!1 &431145404223085917
 GameObject:
   m_ObjectHideFlags: 0
@@ -63,6 +82,7 @@ GameObject:
   m_Component:
   - component: {fileID: 295428332101647391}
   - component: {fileID: 3657716349984475426}
+  - component: {fileID: 3350030968940159308}
   m_Layer: 9
   m_Name: SeedPoint5
   m_TagString: seedpoint
@@ -106,6 +126,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3350030968940159308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431145404223085917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasSeed: 0
+  isWatered: 0
+  currentSeed: 0
+  dryDayCount: 0
+  maxDryDays: 2
+  plantPrefab: {fileID: 0}
 --- !u!1 &622034637012851075
 GameObject:
   m_ObjectHideFlags: 0
@@ -116,6 +154,7 @@ GameObject:
   m_Component:
   - component: {fileID: 497900751861037416}
   - component: {fileID: 5944749575076088070}
+  - component: {fileID: 6171262450533265923}
   m_Layer: 9
   m_Name: SeedPoint6
   m_TagString: seedpoint
@@ -159,6 +198,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6171262450533265923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 622034637012851075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasSeed: 0
+  isWatered: 0
+  currentSeed: 0
+  dryDayCount: 0
+  maxDryDays: 2
+  plantPrefab: {fileID: 0}
 --- !u!1 &1893874971047153002
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,6 +279,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7203898478484590821}
   - component: {fileID: 1315458294958736330}
+  - component: {fileID: 7042497891480352487}
   m_Layer: 9
   m_Name: SeedPoint2
   m_TagString: seedpoint
@@ -265,6 +323,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7042497891480352487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1993008865491651625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasSeed: 0
+  isWatered: 0
+  currentSeed: 0
+  dryDayCount: 0
+  maxDryDays: 2
+  plantPrefab: {fileID: 0}
 --- !u!1 &2102039325700640016
 GameObject:
   m_ObjectHideFlags: 0
@@ -275,6 +351,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1007594165809968304}
   - component: {fileID: 3872068295504195653}
+  - component: {fileID: 8823669224907456846}
   m_Layer: 9
   m_Name: SeedPoint3
   m_TagString: seedpoint
@@ -318,6 +395,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8823669224907456846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102039325700640016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasSeed: 0
+  isWatered: 0
+  currentSeed: 0
+  dryDayCount: 0
+  maxDryDays: 2
+  plantPrefab: {fileID: 0}
 --- !u!1 &2745339515094903116
 GameObject:
   m_ObjectHideFlags: 0
@@ -330,6 +425,7 @@ GameObject:
   - component: {fileID: 2745339515095807308}
   - component: {fileID: 2745339515096905612}
   - component: {fileID: 4281874745746023033}
+  - component: {fileID: 8893924564624938071}
   m_Layer: 0
   m_Name: tarla
   m_TagString: Platform
@@ -436,6 +532,28 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.0000486, y: 0.29623556, z: 4}
   m_Center: {x: -0.000024199486, y: 0.1309883, z: 0}
+--- !u!114 &8893924564624938071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2745339515094903116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: debaaa8bc13ac014f950bdada33a5373, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  seedPoints:
+  - {fileID: 5760815711971788158}
+  - {fileID: 3453555669788111656}
+  - {fileID: 8623879054596103538}
+  - {fileID: 1993008865491651625}
+  - {fileID: 56275389681257297}
+  - {fileID: 2102039325700640016}
+  - {fileID: 622034637012851075}
+  - {fileID: 6341003764343220984}
+  - {fileID: 431145404223085917}
 --- !u!1 &3327490269083964999
 GameObject:
   m_ObjectHideFlags: 0
@@ -552,6 +670,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3265449638499926038}
   - component: {fileID: 4569320364503897001}
+  - component: {fileID: 4692713328746044481}
   m_Layer: 9
   m_Name: SeedPoint1
   m_TagString: seedpoint
@@ -595,6 +714,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4692713328746044481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3453555669788111656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasSeed: 0
+  isWatered: 0
+  currentSeed: 0
+  dryDayCount: 0
+  maxDryDays: 2
+  plantPrefab: {fileID: 0}
 --- !u!1 &5760815711971788158
 GameObject:
   m_ObjectHideFlags: 0
@@ -605,6 +742,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3606501558376780250}
   - component: {fileID: 7928909967673692528}
+  - component: {fileID: 5268594420475197032}
   m_Layer: 9
   m_Name: SeedPoint4
   m_TagString: seedpoint
@@ -648,6 +786,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5268594420475197032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5760815711971788158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasSeed: 0
+  isWatered: 0
+  currentSeed: 0
+  dryDayCount: 0
+  maxDryDays: 2
+  plantPrefab: {fileID: 0}
 --- !u!1 &6341003764343220984
 GameObject:
   m_ObjectHideFlags: 0
@@ -658,6 +814,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7081184250021552637}
   - component: {fileID: 3989985506384947682}
+  - component: {fileID: 7379397225836536479}
   m_Layer: 9
   m_Name: SeedPoint9
   m_TagString: seedpoint
@@ -701,6 +858,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7379397225836536479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6341003764343220984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasSeed: 0
+  isWatered: 0
+  currentSeed: 0
+  dryDayCount: 0
+  maxDryDays: 2
+  plantPrefab: {fileID: 0}
 --- !u!1 &8384887083689732905
 GameObject:
   m_ObjectHideFlags: 0
@@ -764,6 +939,7 @@ GameObject:
   m_Component:
   - component: {fileID: 411884604494527260}
   - component: {fileID: 5228756436476005213}
+  - component: {fileID: 8604426831157042222}
   m_Layer: 9
   m_Name: SeedPoint7
   m_TagString: seedpoint
@@ -807,3 +983,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8604426831157042222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8623879054596103538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasSeed: 0
+  isWatered: 0
+  currentSeed: 0
+  dryDayCount: 0
+  maxDryDays: 2
+  plantPrefab: {fileID: 0}

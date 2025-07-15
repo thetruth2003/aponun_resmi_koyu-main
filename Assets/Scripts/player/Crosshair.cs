@@ -328,6 +328,7 @@
                         Debug.Log($"Seed prefab spawned: {newItem} at {spawnPosition}");
                         // Hücrenin child'ı olan seedBox objesini aktif et
                         Destroy(clickedCell);
+                        // Hücreyi yok et
                     }
                     else
                     {
