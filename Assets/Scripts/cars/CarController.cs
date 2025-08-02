@@ -25,7 +25,7 @@ public class CarController : MonoBehaviour
         // Sadece "Attachable" tag'ine sahip nesneler için
         if (other.CompareTag("Attachable"))
         {
-            Debug.Log("Attachable nesne algılandı: " + other.name);
+            //Debug.Log("Attachable nesne algılandı: " + other.name);
 
             // Traktör tipi kontrolü ve bağlı römork yoksa işlem yap
             if (vehicleType == VehicleType.Tractor)

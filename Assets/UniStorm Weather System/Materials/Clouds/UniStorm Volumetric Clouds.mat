@@ -72,21 +72,34 @@ Material:
     - _FogGradientHeight: 0.472
     - _MaskMoon: 1
     - _MoonControl: 0
+<<<<<<< Updated upstream
     - _MoonIntensity: -0.011008906
+=======
+    - _MoonIntensity: -0.007858852
+>>>>>>> Stashed changes
     - _S: 3
     - _Seed: -5257
     - _SnowStrength: 0
     - _SunAlpha: 9.4
     - _SunBeta: 0.5
+<<<<<<< Updated upstream
     - _SunControl: 1.0045485
     - _SunIntensity: 1.2557973
+=======
+    - _SunControl: 1.005055
+    - _SunIntensity: 0.06039368
+>>>>>>> Stashed changes
     - _UseHighConvergenceSpeed: 0
     - _UseUniStormFog: 1
     - _VRSinglePassEnabled: 0
     - _VisibleDistance: -39.6
     - _WetnessStrength: 0
     - _WorldPosGlobal: 0
+<<<<<<< Updated upstream
     - _uAttenuation: 0.9310779
+=======
+    - _uAttenuation: 1.5048683
+>>>>>>> Stashed changes
     - _uCloudAlpha: 1
     - _uCloudHeight: 1
     - _uCloudsBackwardScatteringG: -0.2
@@ -132,12 +145,20 @@ Material:
     - _FogColor: {r: 0.18925646, g: 0.22199371, b: 0.25468552, a: 1}
     - _HorizonColor: {r: 0, g: 0, b: 0, a: 1}
     - _MoonColor: {r: 0.33023313, g: 0.36793935, b: 0.38679242, a: 1}
+<<<<<<< Updated upstream
     - _MoonVector: {r: -0.57357633, g: -0.03213302, b: -0.81852156, a: 0}
+=======
+    - _MoonVector: {r: -0.57357633, g: -0.5022511, b: 0.6471119, a: 0}
+>>>>>>> Stashed changes
     - _PlayerPosition: {r: 0, g: 0, b: 0, a: 0}
     - _SkyColor: {r: 0.5513084, g: 0.62561595, b: 0.72794116, a: 1}
     - _SunColor: {r: 0.83461076, g: 0.40665412, b: 0.19004852, a: 1}
     - _SunDir: {r: 0.2784009, g: 0.9581905, b: 0.0660601, a: 0}
+<<<<<<< Updated upstream
     - _SunVector: {r: 0.34202018, g: 0.036861617, b: 0.9389693, a: 0}
+=======
+    - _SunVector: {r: 0.34202018, g: 0.57615876, b: -0.7423364, a: 0}
+>>>>>>> Stashed changes
     - _uCloudColor: {r: 1, g: 1, b: 1, a: 1}
     - _uCloudsAmbientColorBottom: {r: 0.2168178, g: 0.27191836, b: 0.3133623, a: 1}
     - _uCloudsAmbientColorTop: {r: 0.7755887, g: 0.5779947, b: 0.4827419, a: 1}
@@ -147,7 +168,13 @@ Material:
     - _uHorizonColor: {r: 1, g: 1, b: 1, a: 1}
     - _uLightningColor: {r: 0.7647059, g: 0.8352941, b: 0.8862745, a: 1}
     - _uMoonColor: {r: 0.33023313, g: 0.36793935, b: 0.38679242, a: 1}
+<<<<<<< Updated upstream
     - _uMoonDir: {r: 0.5735764, g: 0.032133024, b: 0.8185216, a: 0}
     - _uSunColor: {r: 0.58449006, g: 0.2700313, b: 0.107918836, a: 1}
     - _uSunDir: {r: -0.34202018, g: -0.036861617, b: -0.9389693, a: 0}
+=======
+    - _uMoonDir: {r: 0.57357633, g: 0.5021709, b: -0.64717424, a: 0}
+    - _uSunColor: {r: 0.5566038, g: 0.5529281, b: 0.53822535, a: 1}
+    - _uSunDir: {r: -0.34202018, g: -0.5760669, b: 0.7424077, a: 0}
+>>>>>>> Stashed changes
   m_BuildTextureStacks: []

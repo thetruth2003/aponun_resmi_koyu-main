@@ -28,6 +28,7 @@ public class QuestUI : MonoBehaviour
         // Hangi step tipiyse ona göre başlık ve sayaç göster
         if (step is TalkToNPCStep talk)
         {
+<<<<<<< Updated upstream
             questTypeText.text = "Talk To NPC";
             targetNameText.text = talk.npcObject != null ? talk.npcObject.name : "No NPC Assigned";
         }
@@ -58,6 +59,62 @@ public class QuestUI : MonoBehaviour
         {
             questTypeText.text = "Unknown Quest Type";
             targetNameText.text = "";
+=======
+            var index = tracked.currentIndex;
+
+            if (tracked.asset == null || tracked.asset.quests == null || index >= tracked.asset.quests.Count)
+                continue;
+
+            var container = tracked.asset.quests[index];
+            var step = container.GetStepInstance();
+
+            if (step == null || step.IsComplete())
+                continue;
+
+            mainQuestText.text = tracked.asset.quests[0].questName;
+
+
+            // Alt görev tipi
+            if (step is TalkToNPCStep talk)
+            {
+                questTypeText.text = $"Talk Whit {talk.npcID}";
+                requirementText.text = !string.IsNullOrEmpty(talk.npcID)
+                    ? ""
+                    : "No NPC ID assigned";
+            }
+            else if (step is GoToLocationStep go)
+            {
+                questTypeText.text = $"Go To{go.locationID}";
+                requirementText.text = !string.IsNullOrEmpty(go.locationID)
+                    ? $""
+                    : "No location ID assigned";
+            }
+            else if (step is SellItemStep sell)
+            {
+                questTypeText.text = $"Sell {sell.requiredAmount} {sell.itemID}";
+                int sold = GameStateTracker.Instance.GetCount($"Sold_{sell.itemID}");
+                requirementText.text = $"{sold}/{sell.requiredAmount}";
+            }
+            else if (step is BuyItemStep buy)
+            {
+                questTypeText.text = $"Buy {buy.requiredAmount}  {buy.itemID}";
+                int bought = GameStateTracker.Instance.GetCount($"Bought_{buy.itemID}");
+                requirementText.text = $"{bought}/{buy.requiredAmount}";
+            }
+            else if (step is HarvestItemStep harvest)
+            {
+                questTypeText.text = $"Harvest {harvest.requiredAmount} {harvest.itemID}";
+                int harvested = GameStateTracker.Instance.GetCount($"Harvested_{harvest.itemID}");
+                requirementText.text = $"{harvested}/{harvest.requiredAmount}";
+            }
+            else
+            {
+                questTypeText.text = "Unknown Step Type";
+                requirementText.text = "";
+            }
+
+            return; // bulduğun ilk aktif görevden sonra UI güncellendi, çık
+>>>>>>> Stashed changes
         }
     }
 }

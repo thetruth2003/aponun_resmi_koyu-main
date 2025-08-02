@@ -187,6 +187,7 @@
             {
                 GameObject clickedCell = hit.collider.gameObject; // Tıklanan hücreyi al
 
+<<<<<<< Updated upstream
                 // Katman kontrolü ve seçili öğe adı kontrolü
                 if (clickedCell.layer == LayerMask.NameToLayer("Tree") && toolbar.GetSelectedPrefab() == "axe")
                 {
@@ -210,6 +211,76 @@
                 }
             }
         }
+=======
+                // Yeni hücreyi oluştur
+                GameObject newCell = Instantiate(replacementPrefab, cellPosition, cellRotation);
+                newCell.transform.localScale = cellScale;
+
+                // Eski hücreyi yok et
+                Destroy(clickedCell);
+
+                Debug.Log("Hücre başarıyla değiştirildi.");
+            }
+            else
+            {
+                // Şartlar sağlanmadığında kullanıcıyı bilgilendir
+                Debug.Log("katman ground değil veya elinde hoe yok");
+            }
+        }
+    }
+
+    // Fare tıklama ile seçilen hücrenin rengini değiştirir ve aktif hale getirir
+
+    public void ActivateCellAtMousePosition()
+    {
+        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition); // Nişangahın ekran üzerindeki pozisyonundan ray oluştur
+        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer)) // Raycast ile vurulan nesneyi bul
+        {
+            GameObject clickedCell = hit.collider.gameObject; // Vurulan hücreyi al
+
+            // Eğer hücre zemin katmanına aitse
+            if (clickedCell.layer == LayerMask.NameToLayer("groundcell") && toolbar.GetSelectedPrefab() == "Hammer")
+            {
+                clickedCell.transform.GetChild(0).gameObject.SetActive(true); // Child objeyi aktif yap
+            }
+        }
+    }
+    public void AddSeed()
+    {
+        // Nişangah pozisyonuna göre ray oluştur
+        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+
+        // Raycast ile tıklanan hücreyi bul
+        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer))
+        {
+            GameObject clickedCell = hit.collider.gameObject; // Tıklanan hücreyi al
+            Debug.Log($"Raycast başarılı, çarpılan obje: {clickedCell.name}, Layer: {clickedCell.layer}");
+
+            // Tıklanan hücre SeedBox katmanında mı ve seçili öğe "seed" mi kontrol et
+            int seedBoxLayer = LayerMask.NameToLayer("SeedBox");
+            Debug.Log($"SeedBox Layer Index: {seedBoxLayer}");
+            Debug.Log($"Seçili prefab tagı: {toolbar.GetSelectedPrefabTag()}");
+
+            if (clickedCell.layer == seedBoxLayer && toolbar.GetSelectedPrefabTag() == "seed")
+            {
+                SeedPoint seedPoint = clickedCell.GetComponent<SeedPoint>();
+                if (seedPoint != null)
+                {
+                    Debug.Log("SeedPoint bileşeni bulundu, seed ekleniyor...");
+                    seedPoint.PlantSeed(); // SeedPoint bileşeninin PlantSeed metodunu çağır
+                }
+                else
+                {
+                    Debug.LogWarning("SeedPoint bileşeni bulunamadı!");
+                }
+            }
+        }
+    }
+    public void Watering()
+    {
+        // Nişangah pozisyonuna göre ray oluştur
+        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+>>>>>>> Stashed changes
 
 
         // Fare ile tıklanarak hücre değiştirilir
@@ -364,6 +435,7 @@
             //WateringCan_full.transform.GetChild(0).gameObject.SetActive(true);
         }
     }
+<<<<<<< Updated upstream
 
 
 
@@ -371,3 +443,12 @@
 
 
 
+=======
+    public IEnumerator waterfall()
+    {
+        //WateringCan_full.transform.GetChild(0).gameObject.SetActive(true);
+        yield return new WaitForSeconds(1);
+        //WateringCan_full.transform.GetChild(0).gameObject.SetActive(true);
+    }
+}
+>>>>>>> Stashed changes
