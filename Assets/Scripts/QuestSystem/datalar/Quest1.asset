@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b44069f1ff866bf4b9a4d4a2c0632d82, type: 3}
+  m_Name: Quest1
+  m_EditorClassIdentifier: 
+  quests:
+  - questName: Quest 1
+    questTypeName: 
+    jsonData: 
+    optionalSideQuestID: 1
+    optionalSideQuestDescription: Side Quest
+    optionalSideQuestNPCID: NPC
+    optionalTrustReward: 1
+    optionalSideQuestCompleted: 0
+  - questName: "Sell 10\xD7 Apple"
+    questTypeName: SellItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"itemID":"Apple","requiredAmount":10}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
+  - questName: "Buy 10\xD7 Grape"
+    questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"itemID":"Grape","requiredAmount":10}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
+  - questName: "Harvest 10\xD7 Corn"
+    questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"itemID":"Corn","requiredAmount":10}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
+  - questName: Go to Home
+    questTypeName: GoToLocationStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"locationID":"Home"}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
+  - questName: Talk to NPC (Section 0)
+    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"npcID":"NPC","dialogSectionIndex":0}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
