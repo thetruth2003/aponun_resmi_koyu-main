@@ -42,7 +42,7 @@ Quests and their steps are fully editable via Unity Inspector. You can define st
 > Screenshot showing a QuestEditorAsset with substeps like Sell apple, Buy tomato, Go to location, Talk to NPC, etc.
 
 ```md
-![Quest Editor](Images/quest3.png)
+![Quest Editor](Images/quest1.PNG)
 ```
 
 ---
