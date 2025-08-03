@@ -42,7 +42,7 @@ Quests and their steps are fully editable via Unity Inspector. You can define st
 > Screenshot showing a QuestEditorAsset with substeps like Sell apple, Buy tomato, Go to location, Talk to NPC, etc.
 
 ```md
-![Quest Editor](Images/quest_editor.png)
+![Quest Editor](Images/quest3.png)
 ```
 
 ---
@@ -58,7 +58,7 @@ The system remembers progress. If Quest 1 asks to sell 10 apples and Quest 2 ask
 > Screenshot showing debug panel with key = Sold_apple and value = 5
 
 ```md
-![Game State Tracker](Images/game_state_debug.png)
+![Game State Tracker](Images/quest2.png)
 ```
 
 ---
@@ -86,7 +86,7 @@ Dialogs:
 > Screenshot showing `NPCDialogData` structure with subtitle lines and AudioClip references.
 
 ```md
-![Dialog System](Images/dialog_npc.png)
+![Dialog System](Images/quest1.png)
 ```
 
 ---
@@ -98,17 +98,6 @@ The player can interact with shopkeepers to buy or sell items. Each transaction 
 - Inventory is managed using slots and `ItemData` references.
 - Sales update `GameStateTracker` keys such as `Sold_apple`, etc.
 
----
-
-## 📷 Suggested Screenshots to Include
-
-1. `quest_editor.png` – Inspector showing QuestEditorAsset and substeps.
-2. `game_state_debug.png` – GameState panel with value tracking.
-3. `dialog_npc.png` – Dialog ScriptableObject setup in the inspector.
-4. `quest_ui.png` – In-game quest UI showing quest name, step, and progress.
-5. `npc_interaction.png` – NPC prefab showing attached quest and dialog references.
-
-Put them in an `Images/` folder in your repo and use `![title](Images/filename.png)` to embed.
 
 ---
 
