@@ -42,7 +42,7 @@ Quests and their steps are fully editable via Unity Inspector. You can define st
 > Screenshot showing a QuestEditorAsset with substeps like Sell apple, Buy tomato, Go to location, Talk to NPC, etc.
 
 ```md
-![Quest Editor](Images/quest1.PNG)
+(Images/quest1.PNG)
 ```
 
 ---
@@ -58,7 +58,7 @@ The system remembers progress. If Quest 1 asks to sell 10 apples and Quest 2 ask
 > Screenshot showing debug panel with key = Sold_apple and value = 5
 
 ```md
-![Game State Tracker](Images/quest2.png)
+(Images/quest2.png)
 ```
 
 ---
@@ -86,7 +86,7 @@ Dialogs:
 > Screenshot showing `NPCDialogData` structure with subtitle lines and AudioClip references.
 
 ```md
-![Dialog System](Images/quest1.png)
+(Images/quest1.png)
 ```
 
 ---
