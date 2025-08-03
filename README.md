@@ -2,7 +2,7 @@
 
 This project showcases a modular quest and dialog system developed in Unity using ScriptableObject-based architecture. It’s designed for RPGs, farming, or narrative-driven games that require structured quest flow and NPC interactions.
 
----
+
 
 ## 🎯 Features
 
@@ -14,11 +14,10 @@ This project showcases a modular quest and dialog system developed in Unity usin
 - 🧪 **Real-time debugging tools** (`GameStateTracker`, Quest Debug Viewer)
 - 🖥️ **Quest UI integration** using TextMeshPro
 
----
 
 ## 🧱 System Architecture
 
-```
+
 [QuestEditorAsset]
     └── [QuestContainer]
          ├─ IQuestStep
@@ -27,12 +26,12 @@ This project showcases a modular quest and dialog system developed in Unity usin
          │   ├─ HarvestItemStep
          │   ├─ TalkToNPCStep
          │   └─ GoToLocationStep
-```
+
 
 - Each `IQuestStep` checks against `GameStateTracker`.
 - `ActiveQuestSystem` handles quest logic, transitions, and step validation.
 
----
+
 
 ## 🧩 Quest Editor Example
 
@@ -41,12 +40,12 @@ Quests and their steps are fully editable via Unity Inspector. You can define st
 ### 🖼️ Image: `quest_editor.png`
 > Screenshot showing a QuestEditorAsset with substeps like Sell apple, Buy tomato, Go to location, Talk to NPC, etc.
 
-```md
+
 <img src="Images/quest1.png" width="600" />
 
-```
 
----
+
+
 
 ## 💾 Game State Tracker
 
@@ -58,11 +57,11 @@ The system remembers progress. If Quest 1 asks to sell 10 apples and Quest 2 ask
 ### 🖼️ Image: `game_state_debug.png`
 > Screenshot showing debug panel with key = Sold_apple and value = 5
 
-```md
-(Images/quest2.png)
-```
 
----
+(Images/quest2.png)
+
+
+
 
 ## 🧠 Dynamic Quest Flow
 
@@ -86,11 +85,11 @@ Dialogs:
 ### 🖼️ Image: `dialog_npc.png`
 > Screenshot showing `NPCDialogData` structure with subtitle lines and AudioClip references.
 
-```md
-(Images/quest1.png)
-```
 
----
+(Images/quest1.png)
+
+
+
 
 ## 📦 Inventory & Shop Integration
 
@@ -100,7 +99,7 @@ The player can interact with shopkeepers to buy or sell items. Each transaction 
 - Sales update `GameStateTracker` keys such as `Sold_apple`, etc.
 
 
----
+
 
 ## 🚀 Future Improvements
 
@@ -108,6 +107,6 @@ The player can interact with shopkeepers to buy or sell items. Each transaction 
 - 📜 Include Quest Logs / Journal system
 - 🌐 Localization support (Turkish, English, etc.)
 
----
+
 
 Made with ❤️ using Unity.
