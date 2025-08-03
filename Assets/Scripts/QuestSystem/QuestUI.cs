@@ -41,7 +41,7 @@ public class QuestUI : MonoBehaviour
             // Alt görev tipi
             if (step is TalkToNPCStep talk)
             {
-                questTypeText.text = $"{talk.npcID} ile konuş";
+                questTypeText.text = $"Talk Whit {talk.npcID}";
                 requirementText.text = !string.IsNullOrEmpty(talk.npcID)
                     ? ""
                     : "No NPC ID assigned";
