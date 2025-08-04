@@ -1,23 +1,135 @@
-# 🧩 Modular Quest & Dialog System (Unity)
+# 🤩 Modular Quest, Dialogue, Farming & Trading System (Unity)
 
-This project showcases a modular quest and dialog system developed in Unity using ScriptableObject-based architecture. It’s designed for RPGs, farming, or narrative-driven games that require structured quest flow and NPC interactions.
+This project is a fully modular and extensible system built in Unity. It features ScriptableObject-based quest and dialogue systems, dynamic farming mechanics, vehicle-driven field interactions, trading, save/load functionality, and NPC-specific relationship mechanics.
 
+---
 
+## 🌟 Core Features
 
-## 🎯 Features
+* ✅ Main & Sub Quest System (ScriptableObject-based)
+* ⟲ Sequential quest progression with memory of past actions
+* 🧠 Quest step types: Buy, Sell, Harvest, Talk, GoTo
+* 📂 Visual Quest Editor for quick creation
+* 🗣️ NPC Dialogue System (subtitles + voice + trust level)
+* 🧪 Real-time tracking tools (`GameStateTracker`)
+* 📏 Save / Load system (inventory, quests, world state)
+* 🎒 Inventory system with drag-and-drop trading UI
+* 🚜 Vehicles for field interactions (planting, watering, harvesting, spraying)
+* 🤝 NPC-specific Trust Level system & character types
 
-- ✅ **ScriptableObject-based Main & Sub Quest Structure**
-- 🔄 **Sequential quest progression**, with memory of past actions (persistent game state)
-- 🧠 **Dynamic step types**: Buy, Sell, Harvest, Talk, GoTo
-- 🗂️ **Quest Editor Asset** for custom quest design
-- 🗣️ **Voice-supported NPC dialog system** with subtitles and quest-awareness
-- 🧪 **Real-time debugging tools** (`GameStateTracker`, Quest Debug Viewer)
-- 🖥️ **Quest UI integration** using TextMeshPro
+---
 
+## 🌺 Harvest System
 
-## 🧱 System Architecture
+<img src="Images/collect.gif" width="600" />
 
+Plants (from seed to crop) follow a multi-stage growth cycle. The system covers the entire farming loop:
 
+### ⟳ Growth Mechanics
+
+* Seeds (e.g., `carrot`, `tomato`, `apple`) start in the initial stage on placement
+* Each prefab includes in `SeedData`:
+  * Growth duration (days)
+  * Daily prefab transitions
+  * Watering requirement
+  * Drying time threshold
+
+### 💧 Watering System
+
+* Each day, the system checks all `SeedPoint` objects under `Field`
+* Watering status:
+  * Not watered: growth stops, crop dries over time
+  * Watered: progresses to next prefab stage
+
+### 🧪 Manual Harvesting
+
+* Fully grown crops become `Collectable`
+* Player interaction:
+  * Removes prefab from scene
+  * Adds item to inventory
+* Linked to `HarvestItemStep` in quest system
+
+### ⟳ Vehicle Harvesting
+
+* Harvesting vehicles can collect all ready crops automatically
+* Fully integrated with inventory and quest systems
+
+---
+
+## 🌾 Trading System
+
+<img src="Images/trade.gif" width="600" />
+
+* Players can open trade menus with NPCs
+* Items can be dragged into the sell slot
+* Pressing “E” opens the NPC's shop
+* Prices defined in `ItemData`
+* Global currency managed via `GameManager`
+* Confirm sale using `Sales_UI.ConfirmSale()`
+* Fully integrated with quest steps (`BuyItemStep`, `SellItemStep`)
+
+---
+
+## 💼 Inventory System
+
+<img src="Images/inventory.gif" width="600" />
+
+* Slot-based system (`ItemData` + count, icon, prefab)
+* Supports stacking, removal, splitting, moving
+* Drag-and-drop via UI
+* Connected to trading interface
+
+---
+
+## 🗣️ NPC Dialogue & Trust Level System
+
+<img src="Images/npc.gif" width="600" />
+
+Each NPC has:
+
+* Unique `ID`, character type (friendly, neutral, aggressive)
+* `Trust Level` ranging from 0–100
+
+### ✨ Effects
+
+* Quest availability: locked unless trust meets threshold
+* Dialogue changes: NPC responses vary with trust
+* Trade pricing: influenced by relationship
+
+Trust increases through quests, gifts, or positive dialogue decisions.  
+Dialogue assets are assigned to NPC prefabs and selected via `TrustLevel` conditions.
+
+---
+
+## 📍 Location-Based Quests
+
+<img src="Images/location.gif" width="600" />
+
+* Locations have assigned IDs
+* Trigger completes step when player enters
+* Tracked via `GameStateTracker`
+
+---
+
+## 🚜 Vehicle Mechanics
+
+<img src="Images/build.gif" width="600" />
+
+| 🚜 Vehicle Type   | Function                            |
+| ----------------- | ------------------------------------ |
+| Seeder            | Plants seeds automatically           |
+| Water Sprayer     | Waters all plants in the field       |
+| Pesticide Sprayer | Removes harmful effects              |
+| Harvester         | Collects mature crops                |
+
+* All mechanics act on `SeedPoint` components under each `Field`
+* Easily extendable to support new vehicle types
+
+---
+
+## 🔹 Quest System Architecture
+
+```
 [QuestEditorAsset]
     └── [QuestContainer]
          ├─ IQuestStep
@@ -26,87 +138,44 @@ This project showcases a modular quest and dialog system developed in Unity usin
          │   ├─ HarvestItemStep
          │   ├─ TalkToNPCStep
          │   └─ GoToLocationStep
-
-
-- Each `IQuestStep` checks against `GameStateTracker`.
-- `ActiveQuestSystem` handles quest logic, transitions, and step validation.
-
-
-
-## 🧩 Quest Editor Example
-
-Quests and their steps are fully editable via Unity Inspector. You can define step type, item, amount, NPC ID, or location.
-
-### 🖼️ Image: `quest_editor.png`
-> Screenshot showing a QuestEditorAsset with substeps like Sell apple, Buy tomato, Go to location, Talk to NPC, etc.
-
-
-<img src="Images/collect.gif" width="600" />
-
-
-
-
-
-## 💾 Game State Tracker
-
-The system remembers progress. If Quest 1 asks to sell 10 apples and Quest 2 asks 1000, the player doesn’t start from scratch — state persists.
-
-- All values are tracked via string-based keys (`Sold_apple`, `Harvested_carrot`, etc.).
-- Easily editable in live tools.
-
-### 🖼️ Image: `game_state_debug.png`
-> Screenshot showing debug panel with key = Sold_apple and value = 5
-
-
-<img src="Images/build.gif" width="600" />
-
-
-
-
-## 🧠 Dynamic Quest Flow
-
-- Quest steps use Dictionary lookups.
-- You can stack multiple quest steps per quest.
-- Steps are modular — no hardcoding.
-- When a quest is completed, the next one starts **automatically**.
-- Past actions affect next quests dynamically.
+```
 
 ---
 
-## 🗣️ Dialog System
+## 📁 Save / Load System
 
-NPCs have their own `NPCDialogData` assets with dialog sections. Each section includes subtitle lines and optional audio clips.
+* Data saved includes:
+  * Quest progress
+  * Inventory contents
+  * NPC Trust Levels
+  * Placed structures and crops
+  * Vehicle positions and states
 
-Dialogs:
-- Are triggered with `E` key when near NPC
-- Play audio + subtitle together
-- Switch between sections depending on active quest
+Data can be saved using JSON or Binary format.  
+Connected via `GameManager.SaveGame()` and `LoadGame()`.
 
-### 🖼️ Image: `dialog_npc.png`
-> Screenshot showing `NPCDialogData` structure with subtitle lines and AudioClip references.
+---
 
+## 🚀 Planned Features
 
-<img src="Images/npc.gif" width="600" />
+* 📖 Quest Journal (history & active tracking)
+* 🌐 Language support (EN / TR)
+* 🧐 Advanced AI / Dynamic NPC behavior
+* 🤩 Crafting system (recipe-based production)
+* 🔍 Mini-map & pin system
+* 🔊 Audio feedback for quest completion
 
+---
 
+## 📆 Technologies Used
 
+* Unity 2022.3 LTS
+* C#
+* ScriptableObject
+* TextMeshPro
+* Unity UI Toolkit
+* JSON / Binary Save System
 
-## 📦 Inventory & Shop Integration
+---
 
-The player can interact with shopkeepers to buy or sell items. Each transaction updates the quest state automatically.
-
-- Inventory is managed using slots and `ItemData` references.
-- Sales update `GameStateTracker` keys such as `Sold_apple`, etc.
-
-
-<img src="Images/location.gif" width="600" />
-
-## 🚀 Future Improvements
-
-- 🔊 Add step-complete and quest-complete sounds
-- 📜 Include Quest Logs / Journal system
-- 🌐 Localization support (Turkish, English, etc.)
-
-
-
-Made with ❤️ using Unity.
+**Made with ❤️ using Unity.**
