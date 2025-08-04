@@ -12,4 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b44069f1ff866bf4b9a4d4a2c0632d82, type: 3}
   m_Name: Quest3
   m_EditorClassIdentifier: 
-  quests: []
+  quests:
+  - questName: quest3
+    questTypeName: 
+    jsonData: 
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
+  - questName: Talk to NPC (Section 1)
+    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"npcID":"NPC","dialogSectionIndex":1}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0

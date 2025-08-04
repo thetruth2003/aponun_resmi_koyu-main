@@ -103,7 +103,7 @@ public class NPCInteraction : MonoBehaviour
             Debug.LogWarning("[NPCInteraction] Diyalog bölümü boş.");
             return;
         }
-
+        dialogText.gameObject.SetActive(true);
         currentLine = 0;
         isDialogActive = true;
         currentSectionIndex = sectionIndex;
@@ -160,7 +160,7 @@ public class NPCInteraction : MonoBehaviour
         isDialogActive = false;
         fpsController.enabled = true;
         audioSource.Stop();
-
+        dialogText.gameObject.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 

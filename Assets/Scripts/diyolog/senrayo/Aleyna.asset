@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sections:
   - lines:
-    - text: "boyle \u0131s\u0131 s\u0131ker\u0131m "
+    - text: Dialog1
       voiceClip: {fileID: 8300000, guid: 46554ad7e2219be49975003372e7a223, type: 3}
-    - text: "bu evden b\u0131 s\u0131k\u0131m olmaz g\u0131t ve etraf\u0131 tem\u0131zle"
+    - text: Dialog2
       voiceClip: {fileID: 8300000, guid: 8d998b8ac0b4c0b45848ab0f61591515, type: 3}
-    - text: "tem\u0131zlemeden de konusma"
+    - text: Dialog3
       voiceClip: {fileID: 8300000, guid: 05531d6aa4addea479c8d7775d21450b, type: 3}
     viewKey: aleyna_0
   - lines:

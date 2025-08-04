@@ -48,26 +48,26 @@ public class QuestUI : MonoBehaviour
             }
             else if (step is GoToLocationStep go)
             {
-                questTypeText.text = $"{go.locationID} git";
+                questTypeText.text = $"Go To {go.locationID}";
                 requirementText.text = !string.IsNullOrEmpty(go.locationID)
                     ? $""
                     : "No location ID assigned";
             }
             else if (step is SellItemStep sell)
             {
-                questTypeText.text = $"{sell.requiredAmount} tane {sell.itemID} sat";
+                questTypeText.text = $"Sell {sell.requiredAmount} {sell.itemID} ";
                 int sold = GameStateTracker.Instance.GetCount($"Sold_{sell.itemID}");
                 requirementText.text = $"{sold}/{sell.requiredAmount}";
             }
             else if (step is BuyItemStep buy)
             {
-                questTypeText.text = $"{buy.requiredAmount} tane {buy.itemID} satın al";
+                questTypeText.text = $"Buy {buy.requiredAmount} {buy.itemID}";
                 int bought = GameStateTracker.Instance.GetCount($"Bought_{buy.itemID}");
                 requirementText.text = $"{bought}/{buy.requiredAmount}";
             }
             else if (step is HarvestItemStep harvest)
             {
-                questTypeText.text = $"{harvest.requiredAmount} tane {harvest.itemID} hasat et";
+                questTypeText.text = $"Harvest {harvest.requiredAmount} {harvest.itemID}";
                 int harvested = GameStateTracker.Instance.GetCount($"Harvested_{harvest.itemID}");
                 requirementText.text = $"{harvested}/{harvest.requiredAmount}";
             }

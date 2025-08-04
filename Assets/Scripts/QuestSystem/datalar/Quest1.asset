@@ -21,46 +21,10 @@ MonoBehaviour:
     optionalSideQuestNPCID: NPC
     optionalTrustReward: 1
     optionalSideQuestCompleted: 0
-  - questName: "Sell 10\xD7 Apple"
-    questTypeName: SellItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"itemID":"Apple","requiredAmount":10}'
-    optionalSideQuestID: 
-    optionalSideQuestDescription: 
-    optionalSideQuestNPCID: 
-    optionalTrustReward: 0
-    optionalSideQuestCompleted: 0
-  - questName: "Buy 10\xD7 Grape"
-    questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"itemID":"Grape","requiredAmount":10}'
-    optionalSideQuestID: 
-    optionalSideQuestDescription: 
-    optionalSideQuestNPCID: 
-    optionalTrustReward: 0
-    optionalSideQuestCompleted: 0
-  - questName: "Harvest 10\xD7 Corn"
-    questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"itemID":"Corn","requiredAmount":10}'
-    optionalSideQuestID: 
-    optionalSideQuestDescription: 
-    optionalSideQuestNPCID: 
-    optionalTrustReward: 0
-    optionalSideQuestCompleted: 0
-  - questName: Go to Home
+  - questName: Go to location
     questTypeName: GoToLocationStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"locationID":"Home"}'
-    optionalSideQuestID: 
-    optionalSideQuestDescription: 
-    optionalSideQuestNPCID: 
-    optionalTrustReward: 0
-    optionalSideQuestCompleted: 0
-  - questName: Talk to NPC (Section 0)
-    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"npcID":"NPC","dialogSectionIndex":0}'
+    jsonData: '{"locationID":"location"}'
     optionalSideQuestID: 
     optionalSideQuestDescription: 
     optionalSideQuestNPCID: 

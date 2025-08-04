@@ -21,46 +21,10 @@ MonoBehaviour:
     optionalSideQuestNPCID: NPC
     optionalTrustReward: 2
     optionalSideQuestCompleted: 0
-  - questName: "Sell 10\xD7 Meat"
-    questTypeName: SellItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"itemID":"Meat","requiredAmount":10}'
-    optionalSideQuestID: 
-    optionalSideQuestDescription: 
-    optionalSideQuestNPCID: 
-    optionalTrustReward: 0
-    optionalSideQuestCompleted: 0
-  - questName: "Buy 10\xD7 tomato"
-    questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"itemID":"tomato","requiredAmount":10}'
-    optionalSideQuestID: 
-    optionalSideQuestDescription: 
-    optionalSideQuestNPCID: 
-    optionalTrustReward: 0
-    optionalSideQuestCompleted: 0
-  - questName: "Harvest 10\xD7 Eggplant"
-    questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"itemID":"Eggplant","requiredAmount":10}'
-    optionalSideQuestID: 
-    optionalSideQuestDescription: 
-    optionalSideQuestNPCID: 
-    optionalTrustReward: 0
-    optionalSideQuestCompleted: 0
-  - questName: Talk to ??? (Section 0)
+  - questName: Talk to NPC (Section 0)
     questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"npcID":"","dialogSectionIndex":0}'
-    optionalSideQuestID: 
-    optionalSideQuestDescription: 
-    optionalSideQuestNPCID: 
-    optionalTrustReward: 0
-    optionalSideQuestCompleted: 0
-  - questName: 'Go to '
-    questTypeName: GoToLocationStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"locationID":""}'
+    jsonData: '{"npcID":"NPC","dialogSectionIndex":0}'
     optionalSideQuestID: 
     optionalSideQuestDescription: 
     optionalSideQuestNPCID: 
