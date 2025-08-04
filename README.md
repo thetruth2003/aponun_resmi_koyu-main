@@ -58,7 +58,7 @@ The system remembers progress. If Quest 1 asks to sell 10 apples and Quest 2 ask
 > Screenshot showing debug panel with key = Sold_apple and value = 5
 
 
-(Images/quest2.png)
+<img src="Images/build.gif" width="600" />
 
 
 
