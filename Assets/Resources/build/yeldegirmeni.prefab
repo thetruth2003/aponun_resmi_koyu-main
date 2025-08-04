@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5343242762849954546}
   - component: {fileID: 5343242762848856114}
   - component: {fileID: 4431650251845383370}
-  - component: {fileID: 59608314106984673}
   - component: {fileID: -8816085068481027930}
   m_Layer: 0
   m_Name: yeldegirmeni
@@ -109,33 +108,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.6052125, y: 7.615259, z: 3.6564078}
   m_Center: {x: 0.000019073486, y: 3.8073769, z: -0.000000059604645}
---- !u!54 &59608314106984673
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5343242762851120882}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &-8816085068481027930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,7 +121,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 0}
-  rb: {fileID: 0}
   building_name: yeldegirmeni
 --- !u!1001 &1718835292962651405
 PrefabInstance:

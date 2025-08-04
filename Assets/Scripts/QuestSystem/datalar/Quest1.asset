@@ -21,10 +21,10 @@ MonoBehaviour:
     optionalSideQuestNPCID: NPC
     optionalTrustReward: 1
     optionalSideQuestCompleted: 0
-  - questName: Go to location
-    questTypeName: GoToLocationStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  - questName: Talk to NPC (Section 0)
+    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"locationID":"location"}'
+    jsonData: '{"npcID":"NPC","dialogSectionIndex":0}'
     optionalSideQuestID: 
     optionalSideQuestDescription: 
     optionalSideQuestNPCID: 

@@ -363,7 +363,7 @@ PrefabInstance:
     - target: {fileID: 95518965220513221, guid: a3981b0f4b9c4bb489dce3db59ee32b5, type: 3}
       propertyPath: linkedAsset
       value: 
-      objectReference: {fileID: 11400000, guid: b4cb31d023b29d345bb3754a907b1b9e, type: 2}
+      objectReference: {fileID: 11400000, guid: ce81ef551a31baf45a2eaaeb766c2b22, type: 2}
     - target: {fileID: 95518965220513221, guid: a3981b0f4b9c4bb489dce3db59ee32b5, type: 3}
       propertyPath: currentCamera
       value: 
