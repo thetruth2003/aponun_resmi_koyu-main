@@ -41,7 +41,7 @@ Quests and their steps are fully editable via Unity Inspector. You can define st
 > Screenshot showing a QuestEditorAsset with substeps like Sell apple, Buy tomato, Go to location, Talk to NPC, etc.
 
 
-<img src="Images/quest1.PNG" width="600" />
+<img src="Images/collect.gif" width="600" />
 
 
 
@@ -86,7 +86,7 @@ Dialogs:
 > Screenshot showing `NPCDialogData` structure with subtitle lines and AudioClip references.
 
 
-(Images/quest1.png)
+<img src="Images/npc.gif" width="600" />
 
 
 
@@ -99,7 +99,7 @@ The player can interact with shopkeepers to buy or sell items. Each transaction 
 - Sales update `GameStateTracker` keys such as `Sold_apple`, etc.
 
 
-
+<img src="Images/location.gif" width="600" />
 
 ## 🚀 Future Improvements
 
