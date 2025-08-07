@@ -16,7 +16,10 @@ public class SeedPoint : MonoBehaviour
     [Header("Planted Prefab")]
     public GameObject plantPrefab;
     private GameObject plantedInstance;
-
+    [Header("Growth")]
+    public GameObject[] growthStages; // 5 prefab
+    private int currentGrowthStage = 0;
+    public bool isPesticideApplied = false; // opsiyonel
     private void Start()
     {
         if (GameTime.Instance != null)
@@ -44,7 +47,7 @@ public class SeedPoint : MonoBehaviour
         isWatered = true;
     }
 
-    private void HandleNewDay()
+        private void HandleNewDay()
     {
         if (!hasSeed) return;
 
@@ -62,11 +65,24 @@ public class SeedPoint : MonoBehaviour
         else
         {
             dryDayCount = 0;
+            AdvanceGrowth(); // → Eğer sulandıysa büyüsün
         }
 
-        isWatered = false; // Gün başında sıfırlanır
+        isWatered = false;
+        isPesticideApplied = false;
     }
 
+    void AdvanceGrowth()
+    {
+        if (growthStages.Length == 0 || currentGrowthStage >= growthStages.Length - 1)
+            return;
+
+        currentGrowthStage++;
+        if (plantedInstance != null)
+            Destroy(plantedInstance);
+
+        plantedInstance = Instantiate(growthStages[currentGrowthStage], transform.position, Quaternion.identity, transform);
+    }
     private void KillCrop()
     {
         hasSeed = false;

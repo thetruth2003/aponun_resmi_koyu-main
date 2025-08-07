@@ -14,7 +14,7 @@ public class game_start : MonoBehaviour
     public Slider timeSlider;
     public TextMeshProUGUI hourText;
     public TextMeshProUGUI minuteText;
-
+    public TextMeshProUGUI dayCounterText;
     private bool isMidNight = false;
 
     [Header("Sun (Directional Light)")]
@@ -65,7 +65,12 @@ public class game_start : MonoBehaviour
                     isMidNight = true;
                     StartCoroutine(MidNight());
                     yield return new WaitForSeconds(fadeDuration);
+
                     saveobjevt();
+
+                    // 🎯 Yeni gün başlat
+                    GameTime.Instance.TriggerNewDay();
+
                     UniStormSystem.Instance.Morning();
                     StartCoroutine(FadeIn());
                 }
@@ -103,9 +108,12 @@ public class game_start : MonoBehaviour
 
             UpdateSunRotation(hour, minute);
         }
-                GameObject sliderObj = GameObject.Find("UniStorm Canvas/Time Slider");
+        GameObject sliderObj = GameObject.Find("UniStorm Canvas/Time Slider");
         if (sliderObj != null)
             timeSlider = sliderObj.GetComponent<Slider>();
+                // Güncellenmiş gün sayısını göster
+        if (GameTime.Instance != null)
+            dayCounterText.text = $"Day {GameTime.Instance.dayCount}";
     }
 
     void saveobjevt()

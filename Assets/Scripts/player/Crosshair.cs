@@ -26,7 +26,6 @@
     public GameObject itemInfoPanel; // UI Panel
     public GameObject NpcInfoPanel; // UI Panel
 
-
     public void Update()
     {
         UpdateItemInfo();
@@ -49,33 +48,54 @@
         {
             Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-
             if (Physics.Raycast(ray, out hit, maxDistance, interactableLayer))
             {
-                IInteractable interactable = hit.collider.GetComponent<IInteractable>();
-
-                if (interactable != null)
+                UniversalIdentifier id = hit.collider.GetComponent<UniversalIdentifier>();
+                if (id != null && id.ID.ToLower() == "halci")
                 {
-                    interactable.Interact(); // Nesneye özel etkileşimi tetikle
-                    Debug.Log("Etkileşim gerçekleşti: " + hit.collider.gameObject.name);
-                }
-
-                Tools item = hit.collider.GetComponent<Tools>();
-                if (item == null)
-                    item = hit.collider.GetComponentInParent<Tools>();
-
-                if (item != null)
-                {
-                    Debug.Log("SATIN ALMA: Tools bulundu → " + item.itemName);
-                    currentItem = item;
-                    BuyItem();
+                    // Market paneli aktifse kapat, değilse aç
+                    if (id.market.activeSelf)
+                    {
+                        id.closemarket();
+                        Debug.Log("🛒 Halcı ile etkileşim → Market kapatıldı.");
+                    }
+                    else
+                    {
+                        id.openmarket();
+                        Debug.Log("🛒 Halcı ile etkileşim → Market açıldı.");
+                    }
                 }
                 else
                 {
-                    Debug.LogWarning("SATIN ALMA: Tools component yok → BuyItem çalışmadı.");
+                    Debug.LogWarning("Bu NPC'nin universal ID'si 'halci' değil veya UniversalIdentifier bileşeni yok.");
                 }
-
             }
+            if (Physics.Raycast(ray, out hit, maxDistance, interactableLayer))
+                {
+                    IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+
+                    if (interactable != null)
+                    {
+                        interactable.Interact(); // Nesneye özel etkileşimi tetikle
+                        Debug.Log("Etkileşim gerçekleşti: " + hit.collider.gameObject.name);
+                    }
+
+                    Tools item = hit.collider.GetComponent<Tools>();
+                    if (item == null)
+                        item = hit.collider.GetComponentInParent<Tools>();
+
+                    if (item != null)
+                    {
+                        Debug.Log("SATIN ALMA: Tools bulundu → " + item.itemName);
+                        currentItem = item;
+                        BuyItem();
+                    }
+                    else
+                    {
+                        Debug.LogWarning("SATIN ALMA: Tools component yok → BuyItem çalışmadı.");
+                    }
+
+                }
             if (Physics.Raycast(ray, out hit, 3f))
             {
                 if (hit.collider.CompareTag("NPC"))

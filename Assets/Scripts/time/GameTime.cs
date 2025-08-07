@@ -4,28 +4,27 @@ using System;
 public class GameTime : MonoBehaviour
 {
     public static GameTime Instance;
+    public int dayCount = 1;
 
-    public int currentDay = 1;
-    public float secondsPerDay = 60f; // 1 gün = 60 saniye
-    private float timer = 0f;
+    public delegate void NewDayAction();
+    public event NewDayAction OnNewDay;
 
-    public event Action OnNewDay;
-
-    void Awake()
+    private void Awake()
     {
         if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
-    void Update()
+    public void TriggerNewDay()
     {
-        timer += Time.deltaTime;
+        dayCount++;
+        PlayerPrefs.SetInt("DayCount", dayCount);
+        OnNewDay?.Invoke();
+    }
 
-        if (timer >= secondsPerDay)
-        {
-            timer = 0f;
-            currentDay++;
-            Debug.Log("Yeni gün: " + currentDay);
-            OnNewDay?.Invoke(); // Abonelere haber ver (örneğin tarlalar)
-        }
+    private void Start()
+    {
+        dayCount = PlayerPrefs.GetInt("DayCount", 1);
     }
 }
+
