@@ -2,8 +2,23 @@ using UnityEngine;
 
 public enum SeedType { None, Wheat, Corn, Tomato }
 
+[System.Serializable]
+public struct SeedPointData
+{
+    public bool hasSeed;
+    public SeedType seedType;
+    public bool isWatered;
+    public int dryDayCount;
+    public int growthStage;
+    public bool isPesticideApplied;
+}
+
 public class SeedPoint : MonoBehaviour
 {
+    [Header("Seed Configuration")]
+    [Tooltip("ScriptableObject ile tohum verisi")]
+    public SeedData seedData;
+    
     [Header("Seed State")]
     public bool hasSeed = false;
     public bool isWatered = false;
@@ -16,83 +31,64 @@ public class SeedPoint : MonoBehaviour
     [Header("Planted Prefab")]
     public GameObject plantPrefab;
     private GameObject plantedInstance;
+
     [Header("Growth")]
     public GameObject[] growthStages; // 5 prefab
     private int currentGrowthStage = 0;
+
     public bool isPesticideApplied = false; // opsiyonel
+
     private void Start()
     {
         if (GameTime.Instance != null)
             GameTime.Instance.OnNewDay += HandleNewDay;
     }
 
-    public void PlantSeed(SeedType type)
+    // Kullanım yeri: FieldSave, durumu toplarken çağırır
+    public SeedPointData GetState()
     {
-        if (hasSeed) return;
-
-        currentSeed = type;
-        hasSeed = true;
-        isWatered = false;
-        dryDayCount = 0;
-
-        if (plantPrefab != null)
+        return new SeedPointData
         {
-            plantedInstance = Instantiate(plantPrefab, transform.position, Quaternion.identity, transform);
-        }
+            hasSeed            = hasSeed,
+            seedType           = currentSeed,
+            isWatered          = isWatered,
+            dryDayCount        = dryDayCount,
+            growthStage        = currentGrowthStage,
+            isPesticideApplied = isPesticideApplied
+        };
     }
 
-    public void Water()
+    // Kullanım yeri: FieldSave, yüklendiğinde çağırır
+    public void SetState(in SeedPointData data)
     {
-        if (!hasSeed) return;
-        isWatered = true;
-    }
+        hasSeed            = data.hasSeed;
+        currentSeed        = data.seedType;
+        isWatered          = data.isWatered;
+        dryDayCount        = data.dryDayCount;
+        currentGrowthStage = data.growthStage;
+        isPesticideApplied = data.isPesticideApplied;
 
-        private void HandleNewDay()
-    {
-        if (!hasSeed) return;
-
-        if (!isWatered)
-        {
-            dryDayCount++;
-
-            if (dryDayCount >= maxDryDays)
-            {
-                Debug.Log($"{name} kurudu!");
-                KillCrop();
-                return;
-            }
-        }
-        else
-        {
-            dryDayCount = 0;
-            AdvanceGrowth(); // → Eğer sulandıysa büyüsün
-        }
-
-        isWatered = false;
-        isPesticideApplied = false;
-    }
-
-    void AdvanceGrowth()
-    {
-        if (growthStages.Length == 0 || currentGrowthStage >= growthStages.Length - 1)
-            return;
-
-        currentGrowthStage++;
+        // Mevcut örneği temizle
         if (plantedInstance != null)
             Destroy(plantedInstance);
 
-        plantedInstance = Instantiate(growthStages[currentGrowthStage], transform.position, Quaternion.identity, transform);
-    }
-    private void KillCrop()
-    {
-        hasSeed = false;
-        currentSeed = SeedType.None;
-        isWatered = false;
-        dryDayCount = 0;
+        // Yeniden instantiate
+        if (hasSeed)
+        {
+            GameObject prefabToSpawn = (growthStages != null && growthStages.Length > 0)
+                ? growthStages[currentGrowthStage]
+                : plantPrefab;
 
-        if (plantedInstance != null)
-            Destroy(plantedInstance);
+            if (prefabToSpawn != null)
+                plantedInstance = Instantiate(prefabToSpawn, transform.position, Quaternion.identity, transform);
+        }
     }
+
+    public void PlantSeed(SeedType type) { /* ... */ }
+    public void Water()            { /* ... */ }
+    private void HandleNewDay()    { /* ... */ }
+    private void AdvanceGrowth()  { /* ... */ }
+    private void KillCrop()       { /* ... */ }
 
     private void OnDestroy()
     {

@@ -48,26 +48,30 @@
         {
             Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, maxDistance, interactableLayer))
+
+            if (Input.GetKeyDown(KeyCode.E)) // E tuşuna basılınca
             {
-                UniversalIdentifier id = hit.collider.GetComponent<UniversalIdentifier>();
-                if (id != null && id.ID.ToLower() == "halci")
+                if (Physics.Raycast(ray, out hit, maxDistance, interactableLayer))
                 {
-                    // Market paneli aktifse kapat, değilse aç
-                    if (id.market.activeSelf)
+                    UniversalIdentifier id = hit.collider.GetComponent<UniversalIdentifier>();
+                    if (id != null && id.ID.ToLower() == "halci")
                     {
-                        id.closemarket();
-                        Debug.Log("🛒 Halcı ile etkileşim → Market kapatıldı.");
+                        // Market paneli aktifse kapat, değilse aç
+                        if (id.market.activeSelf)
+                        {
+                            id.closemarket();
+                            Debug.Log("🛒 Halcı ile etkileşim → Market kapatıldı.");
+                        }
+                        else
+                        {
+                            id.openmarket();
+                            Debug.Log("🛒 Halcı ile etkileşim → Market açıldı.");
+                        }
                     }
                     else
                     {
-                        id.openmarket();
-                        Debug.Log("🛒 Halcı ile etkileşim → Market açıldı.");
+                        Debug.LogWarning("Bu NPC'nin universal ID'si 'halci' değil veya UniversalIdentifier bileşeni yok.");
                     }
-                }
-                else
-                {
-                    Debug.LogWarning("Bu NPC'nin universal ID'si 'halci' değil veya UniversalIdentifier bileşeni yok.");
                 }
             }
             if (Physics.Raycast(ray, out hit, maxDistance, interactableLayer))

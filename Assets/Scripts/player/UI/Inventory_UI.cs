@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class Inventory_UI : MonoBehaviour, ISaveable
+public class Inventory_UI : MonoBehaviour//, ISaveable
 {
     public string inventoryName;
     public List<Slot_UI> slots = new List<Slot_UI>();

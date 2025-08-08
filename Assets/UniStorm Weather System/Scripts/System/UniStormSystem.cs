@@ -1581,7 +1581,7 @@ namespace UniStorm
             TimeSliderGameObject = TimeSlider.gameObject;
             TimeSlider.onValueChanged.AddListener(delegate { CalculateTimeSlider(); }); //Create an event to control UniStorm's time with a slider
             OnHourChangeEvent.AddListener(delegate { UpdateTimeSlider(); }); 
-            TimeSlider.maxValue = 0.995f;
+            TimeSlider.maxValue = 0.999f;
 
             WeatherButtonGameObject = GameObject.Find("Change Weather Button");
 

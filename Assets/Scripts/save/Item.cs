@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshRenderer))]
-public class Item : MonoBehaviour, ISaveable
+public class Item : MonoBehaviour//, ISaveable
 {
     public ItemData data;
 

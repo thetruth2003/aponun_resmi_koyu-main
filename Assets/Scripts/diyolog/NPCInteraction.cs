@@ -24,6 +24,7 @@ public class NPCInteraction : MonoBehaviour
     public float fovLerpSpeed = 20f;
     private bool isZoomFOVActive = false;
     private int currentSectionIndex = 0;
+    
 
     void Start()
     {
