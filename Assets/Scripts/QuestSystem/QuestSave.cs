@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QuestSave : MonoBehaviour, ISaveable
+public class QuestSave : MonoBehaviour//, ISaveable
 {
     public GameStateTracker gameStateTracker;
 

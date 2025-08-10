@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: f5756361854b31e439c1fd52a51138d1, type: 2}
+  seedData: {fileID: 11400000, guid: 40da3ba35b516e44aaa1694b0eb2ef85, type: 2}
 --- !u!114 &5215158280006953712
 MonoBehaviour:
   m_ObjectHideFlags: 0

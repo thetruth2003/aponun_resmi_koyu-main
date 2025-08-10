@@ -6,6 +6,7 @@ using UnityEngine;
 public class Item : MonoBehaviour//, ISaveable
 {
     public ItemData data;
+    public SeedData seedData; // SeedPoint için kullanılacak
 
 
 

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SaveLoadManager : MonoBehaviour
@@ -69,7 +69,7 @@ public interface ISaveable
     void LoadData();
 }
 
-public abstract class SaveableMonoBehaviour : MonoBehaviour, ISaveable
+    public abstract class SaveableMonoBehaviour : MonoBehaviour, ISaveable
 {
     // Her saveable için sahnede benzersiz bir ID üretip kaydeder
     [SerializeField] private string uniqueID;

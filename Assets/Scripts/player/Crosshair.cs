@@ -332,6 +332,7 @@
             if (clickedCell.layer == seedBoxLayer && toolbar.GetSelectedPrefabTag() == "seed")
             {
                 string selectedItemUsedPrefab = toolbar.GetSelectedUsedPrefab();
+                SeedData selectedSeedData = toolbar.GetSelectedPrefabSeedData();
                 Debug.Log($"Prefab adı: {selectedItemUsedPrefab}");
 
                 if (!string.IsNullOrEmpty(selectedItemUsedPrefab))
@@ -339,20 +340,12 @@
                     // Resources klasöründen prefab'ı yükle
                     GameObject newItem = Resources.Load<GameObject>($"Prefabs/foods/{selectedItemUsedPrefab}");
                     Debug.Log($"Prefab yükleniyor: {newItem}");
+                    SeedPoint seedPoint = hit.collider.GetComponent<SeedPoint>();
                     if (newItem != null)
                     {
-                        // Yeni prefab'ı hücrenin merkezine spawnla
-                        Vector3 spawnPosition = clickedCell.transform.position; // Hücrenin pozisyonu
-                        Quaternion spawnRotation = Quaternion.identity; // Varsayılan rotasyon
-                        Debug.Log($"Spawn pozisyonu: {spawnPosition}, Rotasyon: {spawnRotation}");
-                        // Instantiate ile yeni prefab'ı oluştur
-                        Instantiate(newItem, spawnPosition, spawnRotation);
-                        // Hücrenin child'ı olan seedBox objesini aktif et
-                        clickedCell.transform.GetChild(0).gameObject.SetActive(true);
-                        Debug.Log($"Seed prefab spawned: {newItem} at {spawnPosition}");
-                        // Hücrenin child'ı olan seedBox objesini aktif et
-                        Destroy(clickedCell);
-                        // Hücreyi yok et
+                        seedPoint.seedData = selectedSeedData;
+                        seedPoint.PlantSeed(selectedSeedData.seedType); // Sadece bu satır yeterli!
+                        Debug.Log($"SeedPoint'e ekim yapıldı: {selectedSeedData.seedType}");
                     }
                     else
                     {

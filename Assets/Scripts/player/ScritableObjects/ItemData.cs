@@ -11,4 +11,5 @@ public class ItemData : ScriptableObject
     public int maxAllowed;
     public GameObject itemUsedPrefab = null; // Prefab burada tutuluyor
     public int sellPrice;
+    public SeedData seedData; // SeedPoint için kullanılacak
 }

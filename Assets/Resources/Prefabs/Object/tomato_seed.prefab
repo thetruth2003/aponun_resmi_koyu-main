@@ -98,7 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da0b18645ffddb44ead407a3f459a00d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: fc2c94172de37d945afbfb10aee6ef9f, type: 2}
+  data: {fileID: 11400000, guid: f5756361854b31e439c1fd52a51138d1, type: 2}
+  seedData: {fileID: 11400000, guid: 40da3ba35b516e44aaa1694b0eb2ef85, type: 2}
 --- !u!114 &-5574449432687317892
 MonoBehaviour:
   m_ObjectHideFlags: 0
