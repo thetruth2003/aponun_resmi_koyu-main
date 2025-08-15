@@ -1,4 +1,4 @@
-using UnityEngine;
+    using UnityEngine;
 
 public enum SeedType { None, Wheat, Corn, Tomato, Potato, Carrot, Pumpkin, Cabbage, Eggplant, Radish, Lettuce }
 
@@ -54,7 +54,14 @@ public class SeedPoint : MonoBehaviour
         if (GameTime.Instance != null)
             GameTime.Instance.OnNewDay += HandleNewDay;
     }
-
+    private void OnEnable()
+    {
+        game_start.OnDayChanged += HandleNewDay;
+    }
+    private void OnDisable()
+    {
+        game_start.OnDayChanged -= HandleNewDay;
+    }
     private void OnDestroy()
     {
         if (GameTime.Instance != null)

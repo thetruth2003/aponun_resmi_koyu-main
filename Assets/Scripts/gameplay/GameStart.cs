@@ -33,7 +33,7 @@ public class game_start : MonoBehaviour
         dayCounterText.text = $"Day {dayCount}";
         StartCoroutine(CheckMidNight());
     }
-
+    public static event System.Action OnDayChanged;
     public IEnumerator FadeIn()
     {
         fadePanel.gameObject.SetActive(true);
@@ -94,9 +94,10 @@ public IEnumerator CheckMidNight()
                 UniStormSystem.Instance.Morning();
                 UniStormSystem.Instance.UpdateTimeSlider();
                 Debug.Log("New day started at midnight.");
-
+                OnDayChanged?.Invoke();
+                //saveobjevt();
                 // 3️⃣ Sonra ekranı aç
-                yield return StartCoroutine(FadeOut());
+                    yield return StartCoroutine(FadeOut());
             }
             else if ((hour != 0 || minute != 0) && isMidNight)
             {
