@@ -106,17 +106,35 @@ public class SeedPoint : MonoBehaviour
     {
         if (hasSeed) return;
 
-        currentSeed = type;
+        currentSeed   = type;
 
-        // SeedData atanmışsa ve uyuşmuyorsa uyarı (yine de ekime izin veriyoruz)
-        if (seedData != null && seedData.seedType != SeedType.None && seedData.seedType != type)
+        // SeedData atanmışsa ve tiple uyumluysa, growthStages ve diğer değerleri kopyala
+        if (seedData != null)
         {
-            Debug.LogWarning($"[SeedPoint] SeedData.seedType ({seedData.seedType}) ile ekilen tip ({type}) farklı.");
+            if (seedData.seedType != SeedType.None && seedData.seedType != type)
+            {
+                Debug.LogWarning($"[SeedPoint] SeedData.seedType ({seedData.seedType}) ile ekilen tip ({type}) farklı.");
+            }
+
+            // >>> SENKRON: SO -> komponent
+            if (seedData.growthStages != null && seedData.growthStages.Length > 0)
+                growthStages = seedData.growthStages;
+
+            maxDryDays = seedData.maxDryDays;   // istersen kopyala
+            // sellPrice gibi başka alanları da burada alabilirsin (SeedPoint'te varsa)
+
+            #if UNITY_EDITOR
+            UnityEditor.EditorUtility.SetDirty(this); // Inspector'da güncellemeyi işaretle
+            #endif
+        }
+        else
+        {
+            Debug.LogWarning("[SeedPoint] PlantSeed çağrıldı ama seedData atanmış değil. Fallback (growthStages) kullanılacak.");
         }
 
-        hasSeed = true;
-        isWatered = false;
-        dryDayCount = 0;
+        hasSeed            = true;
+        isWatered          = false;
+        dryDayCount        = 0;
         currentGrowthStage = 0;
 
         SpawnStage(0);

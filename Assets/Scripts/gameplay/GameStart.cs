@@ -27,7 +27,7 @@ public class game_start : MonoBehaviour
 
     public void Start()
     {
-
+        PlayerPrefs.DeleteKey("DayCount");   // sadece gün sayacını siler
         fadePanel.gameObject.SetActive(true);
         dayCount = PlayerPrefs.GetInt("DayCount", 1);
         dayCounterText.text = $"Day {dayCount}";

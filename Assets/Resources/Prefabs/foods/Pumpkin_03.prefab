@@ -151,10 +151,10 @@ GameObject:
   - component: {fileID: 4237346315126661134}
   - component: {fileID: 8462699392328610914}
   - component: {fileID: 8759899997574417213}
-  - component: {fileID: 2824213122831000766}
   - component: {fileID: 3790850917212726411}
   - component: {fileID: 2462810709301680210}
   - component: {fileID: 5653133853135199216}
+  - component: {fileID: 775344901577435692}
   m_Layer: 0
   m_Name: Pumpkin_03_LOD0
   m_TagString: Untagged
@@ -227,28 +227,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &2824213122831000766
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5025783687600765029}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 8987654863959508424, guid: 7b187b243e1e27b49b3e13260f95a11c, type: 3}
 --- !u!54 &3790850917212726411
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -289,7 +267,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 050253e34deb9934b9312501b0c85efd, type: 2}
-  rb: {fileID: 0}
+  seedData: {fileID: 0}
 --- !u!114 &5653133853135199216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -302,3 +280,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 334870c622a7fdd4fa8cadd335c913d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &775344901577435692
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5025783687600765029}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.3, y: 0.3, z: 0.3}
+  m_Center: {x: -0.00003196299, y: 0.1915334, z: -0.0001508519}

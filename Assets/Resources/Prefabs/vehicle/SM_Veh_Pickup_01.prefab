@@ -509,8 +509,6 @@ GameObject:
   - component: {fileID: 4805542088995832}
   - component: {fileID: 33148800981090458}
   - component: {fileID: 23549281800011234}
-  - component: {fileID: 5244816844458476434}
-  - component: {fileID: 8310898340828619056}
   - component: {fileID: 3520001187231461079}
   m_Layer: 6
   m_Name: SM_Veh_Pickup_01
@@ -590,56 +588,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!54 &5244816844458476434
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1858355190577810}
-  serializedVersion: 4
-  m_Mass: 2000
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!114 &8310898340828619056
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1858355190577810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2300c36d5df2c74cbe138dc36838ca6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  vehicleType: 2
-  playerpoint: {fileID: 0}
-  rotationSpeedHarvester: 100
-  blade: {fileID: 0}
-  isRotating: 0
-  arm: {fileID: 0}
-  bucket: {fileID: 0}
-  rotationSpeed: 10
-  minRotation: -50
-  maxRotation: 30
-  attachmentPoint: {fileID: 0}
 --- !u!65 &3520001187231461079
 BoxCollider:
   m_ObjectHideFlags: 0
