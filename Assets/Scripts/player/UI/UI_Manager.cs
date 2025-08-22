@@ -27,11 +27,15 @@ public class UI_Manager : MonoBehaviour
 
     private void Start()
     {
-        ToggleInventoryUI();
+       ToggleInventoryUI();
     }
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            ToggleInventoryUI();
+        }
+        if (Input.GetKeyDown(KeyCode.F))
         {
             ToggleInventoryUI();
         }
@@ -43,7 +47,7 @@ public class UI_Manager : MonoBehaviour
         else if (Input.GetKeyUp(KeyCode.Q) && isMenuOpen)
         {
             ToggleMenuUI(); // Menü kapat
-            
+
             isMenuOpen = false;         // Durum güncellenir
         }
     }
@@ -84,7 +88,6 @@ public class UI_Manager : MonoBehaviour
             {
                 inventoryPanel.SetActive(true);
                 RefreshInventoryUI("backpack");
-
                 // Mouse imlecini serbest bırak
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
@@ -92,7 +95,6 @@ public class UI_Manager : MonoBehaviour
             else
             {
                 inventoryPanel.SetActive(false);
-
                 // Envanter kapatıldığında imleci yeniden kilitle
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
