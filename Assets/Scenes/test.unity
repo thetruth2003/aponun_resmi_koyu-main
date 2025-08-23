@@ -2890,6 +2890,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 310ddccac72306946a2f711aed5fd9c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inventoryUI: {fileID: 0}
+  market: {fileID: 0}
+  emptyMarket: {fileID: 0}
+  SC_FPSController: {fileID: 0}
   id: location
 --- !u!114 &1098468873
 MonoBehaviour:
@@ -7095,7 +7099,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2094285919
 Transform:
   m_ObjectHideFlags: 0

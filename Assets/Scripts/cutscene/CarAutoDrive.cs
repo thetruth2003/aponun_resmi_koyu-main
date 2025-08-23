@@ -1,26 +1,53 @@
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
 public class CarAutoDrive : MonoBehaviour
 {
     public Transform[] waypoints;
-    private NavMeshAgent agent;
-    private int currentIndex = 0;
+    public game_start gameStart;   // FadeIn/FadeOut burada
+    public GameObject player;      // varışta açılacak
+    public GameObject cutscene;    // varışta kapanacak
+    public float arriveThreshold = 1f;
+
+    NavMeshAgent agent;
+    int i = 0;
+    bool done = false;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         agent.autoBraking = false;
-        agent.SetDestination(waypoints[currentIndex].position);
+
+        if (player)   player.SetActive(false);
+        if (cutscene) cutscene.SetActive(true);
+
+        agent.SetDestination(waypoints[0].position);
     }
 
     void Update()
     {
-        if (!agent.pathPending && agent.remainingDistance < 1f)
+        if (done || agent.pathPending) return;
+
+        if (agent.remainingDistance <= arriveThreshold)
         {
-            currentIndex++;
-            if (currentIndex < waypoints.Length)
-                agent.SetDestination(waypoints[currentIndex].position);
+            i++;
+            if (i < waypoints.Length)
+                agent.SetDestination(waypoints[i].position);
+            else
+                StartCoroutine(FinishSeq());
         }
+    }
+
+    IEnumerator FinishSeq()
+    {
+        done = true;
+        agent.isStopped = true; agent.ResetPath();
+
+        if (gameStart) yield return gameStart.StartCoroutine(gameStart.FadeIn());
+        if (player) player.SetActive(true);
+        if (gameStart) yield return gameStart.StartCoroutine(gameStart.FadeOut());
+        if (cutscene) cutscene.SetActive(false);
+        // gameObject.SetActive(false); // istersen arabayı da kapat
     }
 }
