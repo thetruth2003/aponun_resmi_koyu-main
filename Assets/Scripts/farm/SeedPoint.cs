@@ -13,7 +13,7 @@ public struct SeedPointData
     public bool isPesticideApplied;
 }
 
-public class SeedPoint : MonoBehaviour
+public class SeedPoint : MonoBehaviour , ISaveable
 {
     [Header("Seed Configuration")]
     [Tooltip("ScriptableObject ile tohum verisi (varsa buradan okunur)")]
@@ -239,5 +239,20 @@ public class SeedPoint : MonoBehaviour
 
         plantedInstance = Instantiate(prefab, transform.position, Quaternion.identity, transform);
         plantedInstance.transform.SetParent(transform, worldPositionStays: true);
+    }
+    
+    public string GetUniqueID() => transform.GetInstanceID().ToString();
+
+    public string UniqueID { get; }
+    public void SaveData()
+    {
+        PlayerPrefs.SetInt(GetUniqueID() + "_HasSeed",  hasSeed ? 1 : 0);
+        
+        throw new System.NotImplementedException();
+    }
+
+    public void LoadData()
+    {
+        throw new System.NotImplementedException();
     }
 }

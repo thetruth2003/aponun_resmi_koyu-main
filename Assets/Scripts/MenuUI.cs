@@ -97,7 +97,7 @@ public class MenuUI : MonoBehaviour
         PlayerPrefs.DeleteKey(KEY_SAVE_EXISTS);
         PlayerPrefs.DeleteKey(KEY_LAST_SCENE);
         PlayerPrefs.Save();
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("aponun orjinal koyu");
     }
 
     private void OnClick_Continue()

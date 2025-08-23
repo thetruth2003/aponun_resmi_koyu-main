@@ -61,13 +61,19 @@ public class RealisticCarController : MonoBehaviour
 
     void Update()
     {
+        
         // Giriş
         if (Input.GetKey(KeyCode.W))
+        {
             throttleInput = Mathf.MoveTowards(throttleInput, 1f, Time.deltaTime * 3f);
+            
+        }
         else if (Input.GetKey(KeyCode.S))
             throttleInput = Mathf.MoveTowards(throttleInput, -1f, Time.deltaTime * 3f);
         else
-            throttleInput = Mathf.MoveTowards(throttleInput, 0f, Time.deltaTime * 4f);
+        {
+            throttleInput = 0;
+        }
 
         inputSteer = Input.GetAxis("Horizontal");
 
