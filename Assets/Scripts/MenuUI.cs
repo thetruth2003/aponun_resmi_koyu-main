@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Rendering; // Volume için
 
 public class MenuUI : MonoBehaviour
 {
@@ -44,6 +45,7 @@ public class MenuUI : MonoBehaviour
     [SerializeField] private Toggle fullscreenToggle;
     [SerializeField] private Toggle vSyncToggle;
     [SerializeField] private Dropdown resolutionDropdown; // optional
+    
 
     // ===================== PLAYER PREFS KEYS =====================
     private const string KEY_SAVE_EXISTS = "SaveExists";
@@ -55,6 +57,9 @@ public class MenuUI : MonoBehaviour
     private const string KEY_RESOLUTION  = "opt_res";
 
     private Resolution[] _resolutions;
+    public GameObject[] killOnStart; // Menu Camera, Global Volume, vs.
+    
+
 
     private void Start()
     {
@@ -67,17 +72,17 @@ public class MenuUI : MonoBehaviour
         if (continueButton) continueButton.interactable = hasSave;
 
         // --- Main buttons (koddan bağla) ---
-        if (newGameButton)  newGameButton.onClick.AddListener(OnClick_NewGame);
+        if (newGameButton) newGameButton.onClick.AddListener(OnClick_NewGame);
         if (continueButton) continueButton.onClick.AddListener(OnClick_Continue);
-        if (optionsButton)  optionsButton.onClick.AddListener(OnClick_Options);
-        if (quitButton)     quitButton.onClick.AddListener(OnClick_Quit);
-        if (backButton)     backButton.onClick.AddListener(OnClick_Back);
+        if (optionsButton) optionsButton.onClick.AddListener(OnClick_Options);
+        if (quitButton) quitButton.onClick.AddListener(OnClick_Quit);
+        if (backButton) backButton.onClick.AddListener(OnClick_Back);
 
         // --- Options tab buttons ---
-        if (voiceTabButton)    voiceTabButton.onClick.AddListener(OnClick_VoiceTab);
-        if (videoTabButton)    videoTabButton.onClick.AddListener(OnClick_VideoTab);
+        if (voiceTabButton) voiceTabButton.onClick.AddListener(OnClick_VoiceTab);
+        if (videoTabButton) videoTabButton.onClick.AddListener(OnClick_VideoTab);
         if (controlsTabButton) controlsTabButton.onClick.AddListener(OnClick_ControlsTab);
-        if (gameTabButton)     gameTabButton.onClick.AddListener(OnClick_GameTab);
+        if (gameTabButton) gameTabButton.onClick.AddListener(OnClick_GameTab);
 
         // --- Options widgets init + listeners ---
         InitQualityDropdown();
@@ -85,26 +90,24 @@ public class MenuUI : MonoBehaviour
         LoadAndApplyOptions();
 
         if (masterVolumeSlider) masterVolumeSlider.onValueChanged.AddListener(OnVolumeChanged);
-        if (qualityDropdown)    qualityDropdown.onValueChanged.AddListener(OnQualityChanged);
-        if (fullscreenToggle)   fullscreenToggle.onValueChanged.AddListener(OnFullscreenChanged);
-        if (vSyncToggle)        vSyncToggle.onValueChanged.AddListener(OnVSyncChanged);
+        if (qualityDropdown) qualityDropdown.onValueChanged.AddListener(OnQualityChanged);
+        if (fullscreenToggle) fullscreenToggle.onValueChanged.AddListener(OnFullscreenChanged);
+        if (vSyncToggle) vSyncToggle.onValueChanged.AddListener(OnVSyncChanged);
         if (resolutionDropdown) resolutionDropdown.onValueChanged.AddListener(OnResolutionChanged);
     }
 
     // ===================== MAIN =====================
     private void OnClick_NewGame()
     {
-        PlayerPrefs.DeleteKey(KEY_SAVE_EXISTS);
-        PlayerPrefs.DeleteKey(KEY_LAST_SCENE);
-        PlayerPrefs.Save();
-        SceneManager.LoadScene("aponun orjinal koyu");
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("aponun orjinal koyu", LoadSceneMode.Single);
     }
 
     private void OnClick_Continue()
     {
-        if (PlayerPrefs.GetInt(KEY_SAVE_EXISTS, 0) != 1) return;
-        // string last = PlayerPrefs.GetString(KEY_LAST_SCENE, "Game");
-        SceneManager.LoadScene("Game");
+        if (PlayerPrefs.GetInt("SaveExists", 0) != 1) return;
+        string last = PlayerPrefs.GetString("LastScene", "aponun orjinal koyu");
+        SceneManager.LoadScene(last, LoadSceneMode.Single);
     }
 
     private void OnClick_Options()

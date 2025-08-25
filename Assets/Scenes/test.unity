@@ -323,6 +323,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: House_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4709146643591080948, guid: 335975ddf87ea0943b7a3a0e89dda331, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5365579310035863504, guid: 335975ddf87ea0943b7a3a0e89dda331, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -1095,7 +1099,7 @@ Transform:
   m_GameObject: {fileID: 167602335}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 70.28162, y: -1.4932353, z: 504.50385}
+  m_LocalPosition: {x: 68.8, y: -1.4932353, z: -323.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2089,7 +2093,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4805542088995832, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 69.77
+      value: 69.21
       objectReference: {fileID: 0}
     - target: {fileID: 4805542088995832, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2097,7 +2101,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4805542088995832, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 498.35
+      value: -311.49
       objectReference: {fileID: 0}
     - target: {fileID: 4805542088995832, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3391,7 +3395,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &1376305606
 AudioListener:
   m_ObjectHideFlags: 0
@@ -5051,7 +5055,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!320 &1724875587
 PlayableDirector:
   m_ObjectHideFlags: 0
@@ -5253,8 +5257,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 4.16
-  m_Speed: 30
-  m_Acceleration: 350
+  m_Speed: 15
+  m_Acceleration: 30
   avoidancePriority: 50
   m_AngularSpeed: 800
   m_StoppingDistance: 0.3
@@ -5278,8 +5282,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypoints:
-  - {fileID: 167602336}
   - {fileID: 1496862462}
+  - {fileID: 167602336}
   gameStart: {fileID: 0}
   player: {fileID: 0}
   cutscene: {fileID: 0}
@@ -5311,7 +5315,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &1802848854
 AudioListener:
   m_ObjectHideFlags: 0

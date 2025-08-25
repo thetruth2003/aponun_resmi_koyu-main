@@ -1347,6 +1347,10 @@ PrefabInstance:
       value: SM_Generic_Ground_Flat_01 (26)
       objectReference: {fileID: 0}
     - target: {fileID: 1406459920354990, guid: 1f2017477e75e5f4d8612c68a631a688, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1406459920354990, guid: 1f2017477e75e5f4d8612c68a631a688, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
@@ -4712,7 +4716,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &458308152
 Transform:
   m_ObjectHideFlags: 0
@@ -9494,7 +9498,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &965914771
 Light:
   m_ObjectHideFlags: 0
@@ -18156,6 +18160,7 @@ MonoBehaviour:
   fullscreenToggle: {fileID: 829331180}
   vSyncToggle: {fileID: 453428624}
   resolutionDropdown: {fileID: 898751603}
+  killOnStart: []
 --- !u!4 &1326511735
 Transform:
   m_ObjectHideFlags: 0
@@ -24561,6 +24566,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1582007174}
   m_CullTransparentMesh: 1
+--- !u!1 &1596949337
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1596949339}
+  - component: {fileID: 1596949338}
+  m_Layer: 0
+  m_Name: test
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1596949338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1596949337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ec6c82d14cfe0548a2d44e32bb51404, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetCamera: {fileID: 0}
+  defaultSkybox: {fileID: 0}
+  disableDDOLCameras: 1
+  disableDDOLVolumes: 1
+  disableDDOLAudioListeners: 1
+  logOnly: 1
+--- !u!4 &1596949339
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1596949337}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -50.341732, y: 9.386755, z: 67.621704}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1603702630
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27674,7 +27729,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &1962430242
 Light:
   m_ObjectHideFlags: 0
@@ -28297,7 +28352,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.6666667
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: f3dc7f482e822754294941c4dab9ed2d, type: 2}
   m_BuildHeightMesh: 0
@@ -30418,6 +30473,10 @@ PrefabInstance:
       propertyPath: camera
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7066518301623556370, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 2344084642295416558, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
@@ -30456,3 +30515,4 @@ SceneRoots:
   - {fileID: 2072463164}
   - {fileID: 103768085}
   - {fileID: 1326511735}
+  - {fileID: 1596949339}

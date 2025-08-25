@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
             instance = this;
         }
 
-        DontDestroyOnLoad(this.gameObject);
+        //DontDestroyOnLoad(this.gameObject);
 
         // Bileşenlerin atanıp atanmadığını kontrol ediyoruz
         itemManager = GetComponent<ItemManager>();
