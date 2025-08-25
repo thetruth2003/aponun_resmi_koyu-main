@@ -21,28 +21,28 @@ MonoBehaviour:
     optionalSideQuestNPCID: 
     optionalTrustReward: 0
     optionalSideQuestCompleted: 0
-  - questName: "Sell 12\xD7 elma"
-    questTypeName: SellItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"itemID":"elma","requiredAmount":12}'
-    optionalSideQuestID: 
-    optionalSideQuestDescription: 
-    optionalSideQuestNPCID: 
-    optionalTrustReward: 0
-    optionalSideQuestCompleted: 0
-  - questName: "Buy 23\xD7 \xFCz\xFCm"
-    questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: "{\"itemID\":\"\xFCz\xFCm\",\"requiredAmount\":23}"
-    optionalSideQuestID: 
-    optionalSideQuestDescription: 
-    optionalSideQuestNPCID: 
-    optionalTrustReward: 0
-    optionalSideQuestCompleted: 0
-  - questName: "Harvest 34\xD7 patates"
+  - questName: "Harvest 1\xD7 tomato"
     questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"itemID":"patates","requiredAmount":34}'
+    jsonData: '{"itemID":"tomato","requiredAmount":1}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
+  - questName: "Harvest 1\xD7 carrotseed"
+    questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"itemID":"carrotseed","requiredAmount":1}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
+  - questName: "Harvest 1\xD7 pumpkin white"
+    questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"itemID":"pumpkin white","requiredAmount":1}'
     optionalSideQuestID: 
     optionalSideQuestDescription: 
     optionalSideQuestNPCID: 
