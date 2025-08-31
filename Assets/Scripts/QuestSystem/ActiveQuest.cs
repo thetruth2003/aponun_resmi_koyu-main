@@ -5,11 +5,14 @@ public class ActiveQuestSystem : MonoBehaviour
 {
     public static ActiveQuestSystem Instance;
 
+    // görev-adım değiştiğinde haber verir: (asset, newIndex)
+    public event System.Action<QuestEditorAsset, int> OnActiveStepChanged;
+
     [System.Serializable]
     public class TrackedQuest
     {
         public QuestEditorAsset asset;
-        public int currentIndex = 1;
+        public int currentIndex = 0; // ✅ 0-based başla
 
         // ✅ Şu anki aktif adımı verir (null değilse)
         public QuestContainer GetActiveStep()
@@ -31,13 +34,17 @@ public class ActiveQuestSystem : MonoBehaviour
     {
         foreach (var tracked in allQuests)
         {
-            while (tracked.currentIndex < tracked.asset.quests.Count)
+            while (tracked.asset != null &&
+                   tracked.asset.quests != null &&
+                   tracked.currentIndex < tracked.asset.quests.Count)
             {
                 var container = tracked.asset.quests[tracked.currentIndex];
                 var step = container.GetStepInstance();
+
                 if (step == null || step.IsComplete())
                 {
-                    tracked.currentIndex++; // ⛔ BU YÜZDEN step her zaman null veya tamamlanmış
+                    tracked.currentIndex++;
+                    OnActiveStepChanged?.Invoke(tracked.asset, tracked.currentIndex); // ✅ event
                 }
                 else
                 {
@@ -61,6 +68,7 @@ public class ActiveQuestSystem : MonoBehaviour
     // 🔁 Tüm takip edilen görevleri verir
     public List<TrackedQuest> GetAllTracked()
     {
+        
         return allQuests;
     }
 }

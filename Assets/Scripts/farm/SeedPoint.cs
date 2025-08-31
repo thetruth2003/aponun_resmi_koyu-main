@@ -1,4 +1,4 @@
-    using UnityEngine;
+using UnityEngine;
 
 public enum SeedType { None, Wheat, Corn, Tomato, Potato, Carrot, Pumpkin, Cabbage, Eggplant, Radish, Lettuce }
 
@@ -13,7 +13,7 @@ public struct SeedPointData
     public bool isPesticideApplied;
 }
 
-public class SeedPoint : MonoBehaviour , ISaveable
+public class SeedPoint : MonoBehaviour, ISaveable
 {
     [Header("Seed Configuration")]
     [Tooltip("ScriptableObject ile tohum verisi (varsa buradan okunur)")]
@@ -74,21 +74,21 @@ public class SeedPoint : MonoBehaviour , ISaveable
     {
         return new SeedPointData
         {
-            hasSeed            = hasSeed,
-            seedType           = currentSeed,
-            isWatered          = isWatered,
-            dryDayCount        = dryDayCount,
-            growthStage        = currentGrowthStage,
+            hasSeed = hasSeed,
+            seedType = currentSeed,
+            isWatered = isWatered,
+            dryDayCount = dryDayCount,
+            growthStage = currentGrowthStage,
             isPesticideApplied = isPesticideApplied
         };
     }
 
     public void SetState(in SeedPointData data)
     {
-        hasSeed            = data.hasSeed;
-        currentSeed        = data.seedType;
-        isWatered          = data.isWatered;
-        dryDayCount        = data.dryDayCount;
+        hasSeed = data.hasSeed;
+        currentSeed = data.seedType;
+        isWatered = data.isWatered;
+        dryDayCount = data.dryDayCount;
         currentGrowthStage = data.growthStage;
         isPesticideApplied = data.isPesticideApplied;
 
@@ -106,7 +106,7 @@ public class SeedPoint : MonoBehaviour , ISaveable
     {
         if (hasSeed) return;
 
-        currentSeed   = type;
+        currentSeed = type;
 
         // SeedData atanmışsa ve tiple uyumluysa, growthStages ve diğer değerleri kopyala
         if (seedData != null)
@@ -121,20 +121,20 @@ public class SeedPoint : MonoBehaviour , ISaveable
                 growthStages = seedData.growthStages;
 
             maxDryDays = seedData.maxDryDays;   // istersen kopyala
-            // sellPrice gibi başka alanları da burada alabilirsin (SeedPoint'te varsa)
+                                                // sellPrice gibi başka alanları da burada alabilirsin (SeedPoint'te varsa)
 
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(this); // Inspector'da güncellemeyi işaretle
-            #endif
+#endif
         }
         else
         {
             Debug.LogWarning("[SeedPoint] PlantSeed çağrıldı ama seedData atanmış değil. Fallback (growthStages) kullanılacak.");
         }
 
-        hasSeed            = true;
-        isWatered          = false;
-        dryDayCount        = 0;
+        hasSeed = true;
+        isWatered = false;
+        dryDayCount = 0;
         currentGrowthStage = 0;
 
         SpawnStage(0);
@@ -240,14 +240,18 @@ public class SeedPoint : MonoBehaviour , ISaveable
         plantedInstance = Instantiate(prefab, transform.position, Quaternion.identity, transform);
         plantedInstance.transform.SetParent(transform, worldPositionStays: true);
     }
-    
+
     public string GetUniqueID() => transform.GetInstanceID().ToString();
 
     public string UniqueID { get; }
     public void SaveData()
     {
-        PlayerPrefs.SetInt(GetUniqueID() + "_HasSeed",  hasSeed ? 1 : 0);
-        
+        PlayerPrefs.SetInt(GetUniqueID() + "_HasSeed", hasSeed ? 1 : 0);
+        PlayerPrefs.SetString(GetUniqueID() + "_SeedType", currentSeed.ToString());
+        PlayerPrefs.SetInt(GetUniqueID() + "_IsWatered", isWatered ? 1 : 0);
+        PlayerPrefs.SetInt(GetUniqueID() + "_DryDayCount", dryDayCount);
+        PlayerPrefs.SetInt(GetUniqueID() + "_GrowthStage", currentGrowthStage);
+        PlayerPrefs.SetInt(GetUniqueID() + "_IsPesticideApplied", isPesticideApplied ? 1 : 0);
         throw new System.NotImplementedException();
     }
 

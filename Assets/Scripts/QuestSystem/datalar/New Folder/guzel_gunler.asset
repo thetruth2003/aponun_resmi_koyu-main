@@ -21,28 +21,19 @@ MonoBehaviour:
     optionalSideQuestNPCID: 
     optionalTrustReward: 0
     optionalSideQuestCompleted: 0
-  - questName: "Harvest 1\xD7 tomato"
-    questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  - questName: Go to garaj
+    questTypeName: GoToLocationStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"itemID":"tomato","requiredAmount":1}'
+    jsonData: '{"locationID":"garaj"}'
     optionalSideQuestID: 
     optionalSideQuestDescription: 
     optionalSideQuestNPCID: 
     optionalTrustReward: 0
     optionalSideQuestCompleted: 0
-  - questName: "Harvest 1\xD7 carrotseed"
-    questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  - questName: Talk to aleyna (Section 1)
+    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"itemID":"carrotseed","requiredAmount":1}'
-    optionalSideQuestID: 
-    optionalSideQuestDescription: 
-    optionalSideQuestNPCID: 
-    optionalTrustReward: 0
-    optionalSideQuestCompleted: 0
-  - questName: "Harvest 1\xD7 pumpkin white"
-    questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"itemID":"pumpkin white","requiredAmount":1}'
+    jsonData: '{"npcID":"aleyna","dialogSectionIndex":1}'
     optionalSideQuestID: 
     optionalSideQuestDescription: 
     optionalSideQuestNPCID: 

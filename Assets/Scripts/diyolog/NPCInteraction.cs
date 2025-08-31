@@ -5,13 +5,13 @@ using System.Collections.Generic;
 [RequireComponent(typeof(UniversalIdentifier))]
 public class NPCInteraction : MonoBehaviour
 {
-    public string npcID; // Inspector’dan girilebilir, ama Start'ta da UniversalIdentifier üzerinden çözülür
+    public string npcID;
     public TextMeshProUGUI dialogText;
     public GameObject player;
     public SC_FPSController fpsController;
     public Camera currentCamera;
     public GameObject[] storedElements;
-    public QuestEditorAsset linkedAsset;
+    public QuestEditorAsset linkedAsset;          // 🔄 çalışma sırasında otomatik güncellenecek
 
     public NPCDialogData dialogData;
     public List<DialogLine> currentLines = new List<DialogLine>();
@@ -24,7 +24,37 @@ public class NPCInteraction : MonoBehaviour
     public float fovLerpSpeed = 20f;
     private bool isZoomFOVActive = false;
     private int currentSectionIndex = 0;
-    
+
+    void OnEnable()
+    {
+        if (ActiveQuestSystem.Instance != null)
+            ActiveQuestSystem.Instance.OnActiveStepChanged += HandleStepChanged;
+    }
+
+    void OnDisable()
+    {
+        if (ActiveQuestSystem.Instance != null)
+            ActiveQuestSystem.Instance.OnActiveStepChanged -= HandleStepChanged;
+    }
+
+    // aktif adım değişince, bu NPC’ye bakan görev varsa linkedAsset’i güncelle
+    void HandleStepChanged(QuestEditorAsset asset, int newIndex)
+    {
+        var aqs = ActiveQuestSystem.Instance;
+        if (aqs == null) return;
+
+        var tracked = aqs.GetTracked(asset);
+        var container = tracked?.GetActiveStep();
+        var step = container?.GetStepInstance() as TalkToNPCStep;
+
+        if (step != null &&
+            !string.IsNullOrEmpty(step.npcID) &&
+            step.npcID.Equals(npcID, System.StringComparison.OrdinalIgnoreCase))
+        {
+            linkedAsset = asset; // ✅ cache güncel
+            // Debug.Log($"[NPC:{npcID}] linkedAsset -> {asset.name} (idx {newIndex})");
+        }
+    }
 
     void Start()
     {
@@ -35,7 +65,6 @@ public class NPCInteraction : MonoBehaviour
 
         audioSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
 
-        // Universal ID çözümleme
         if (string.IsNullOrEmpty(npcID))
             npcID = GetComponent<UniversalIdentifier>()?.ID;
 
@@ -45,39 +74,46 @@ public class NPCInteraction : MonoBehaviour
             return;
         }
 
-        // ⛳️ TAG ile TextMeshPro yazısını bul
         if (dialogText == null)
         {
             GameObject dialogObj = GameObject.FindGameObjectWithTag("DialogText");
-            if (dialogObj != null)
-            {
-                dialogText = dialogObj.GetComponent<TextMeshProUGUI>();
-            }
-
-            if (dialogText == null)
-            {
-                Debug.LogError("[NPCInteraction] 'DialogText' tagine sahip bir TextMeshProUGUI bulunamadı!");
-            }
+            if (dialogObj != null) dialogText = dialogObj.GetComponent<TextMeshProUGUI>();
+            if (dialogText == null) Debug.LogError("[NPCInteraction] 'DialogText' tagine sahip bir TextMeshProUGUI bulunamadı!");
         }
-        if (dialogText != null)
-        Debug.Log("✅ DialogText bulundu: " + dialogText.gameObject.name);
-        else
-        Debug.LogError("❌ DialogText bulunamadı, metin gösterilmeyecek.");
-
+        if (dialogText != null) Debug.Log("✅ DialogText bulundu: " + dialogText.gameObject.name);
     }
 
-
+    // 🔎 TÜM tracked görevleri tarar, bu NPC’ye bakan adımı bulur ve linkedAsset’i canlı günceller
     TalkToNPCStep FindMatchingStep()
     {
-        if (linkedAsset == null) return null;
-        var tracked = ActiveQuestSystem.Instance?.GetTracked(linkedAsset);
-        if (tracked == null) return null;
+        var aqs = ActiveQuestSystem.Instance;
+        if (aqs != null)
+        {
+            foreach (var tracked in aqs.GetAllTracked())
+            {
+                var container = tracked.GetActiveStep();
+                var step = container?.GetStepInstance() as TalkToNPCStep;
 
-        var container = tracked.GetActiveStep();
-        var step = container?.GetStepInstance() as TalkToNPCStep;
+                if (step != null &&
+                    !string.IsNullOrEmpty(step.npcID) &&
+                    step.npcID.Equals(npcID, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    linkedAsset = tracked.asset; // ✅ anlık geçiş
+                    return step;
+                }
+            }
+        }
 
-        if (step != null && step.npcID == npcID)
-            return step;
+        // fallback: inspector’dan bağlı eski yöntem
+        if (linkedAsset != null)
+        {
+            var tracked = aqs?.GetTracked(linkedAsset);
+            var container = tracked?.GetActiveStep();
+            var step = container?.GetStepInstance() as TalkToNPCStep;
+            if (step != null &&
+                step.npcID.Equals(npcID, System.StringComparison.OrdinalIgnoreCase))
+                return step;
+        }
 
         return null;
     }
@@ -99,11 +135,12 @@ public class NPCInteraction : MonoBehaviour
         }
 
         currentLines = dialogData.sections[sectionIndex].lines;
-        if (currentLines.Count == 0)
+        if (currentLines == null || currentLines.Count == 0)
         {
             Debug.LogWarning("[NPCInteraction] Diyalog bölümü boş.");
             return;
         }
+
         dialogText.gameObject.SetActive(true);
         currentLine = 0;
         isDialogActive = true;
@@ -126,14 +163,13 @@ public class NPCInteraction : MonoBehaviour
         var line = currentLines[currentLine];
         dialogText.text = line.text;
 
-        if (audioSource.isPlaying)
-            audioSource.Stop();
+        if (audioSource.isPlaying) audioSource.Stop();
 
         if (line.voiceClip != null)
         {
             audioSource.clip = line.voiceClip;
             audioSource.Play();
-            Debug.Log($"🔊 Oynatılıyor: {line.voiceClip.name}");
+            // Debug.Log($"🔊 Oynatılıyor: {line.voiceClip.name}");
         }
     }
 
@@ -141,13 +177,10 @@ public class NPCInteraction : MonoBehaviour
     {
         if (isDialogActive && Input.GetKeyDown(KeyCode.Space))
         {
-            audioSource.Stop(); // geçerken sesi durdur
-
+            audioSource.Stop();
             currentLine++;
-            if (currentLine < currentLines.Count)
-                PlayCurrentLine();
-            else
-                EndDialog();
+            if (currentLine < currentLines.Count) PlayCurrentLine();
+            else EndDialog();
         }
 
         if (isZoomFOVActive && currentCamera.fieldOfView > zoomFOV)
@@ -172,6 +205,6 @@ public class NPCInteraction : MonoBehaviour
 
         string key = $"{npcID.ToLower()}_{currentSectionIndex}";
         GameStateTracker.Instance.SetFlag(key, true);
-        Debug.Log($"✅ Diyalog tamamlandı, flag ayarlandı: {key}");
+        // Debug.Log($"✅ Diyalog tamamlandı, flag ayarlandı: {key}");
     }
 }

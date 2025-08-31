@@ -1,11 +1,13 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
+using System.Collections.Generic;
 
 public class QuestUI : MonoBehaviour
 {
     public TMP_Text mainQuestText;
     public TMP_Text questTypeText;
     public TMP_Text requirementText;
+
     public void Update()
     {
         UpdateQuestUI();
@@ -35,27 +37,22 @@ public class QuestUI : MonoBehaviour
             if (step == null || step.IsComplete())
                 continue;
 
-            mainQuestText.text = tracked.asset.quests[0].questName;
+            // ✅ aktif adımın container adını göster
+            mainQuestText.text = container.questName;
 
-
-            // Alt görev tipi
             if (step is TalkToNPCStep talk)
             {
-                questTypeText.text = $"Talk Whit {talk.npcID}";
-                requirementText.text = !string.IsNullOrEmpty(talk.npcID)
-                    ? ""
-                    : "No NPC ID assigned";
+                questTypeText.text = $"Talk With {talk.npcID}";
+                requirementText.text = !string.IsNullOrEmpty(talk.npcID) ? "" : "No NPC ID assigned";
             }
             else if (step is GoToLocationStep go)
             {
                 questTypeText.text = $"Go To {go.locationID}";
-                requirementText.text = !string.IsNullOrEmpty(go.locationID)
-                    ? $""
-                    : "No location ID assigned";
+                requirementText.text = !string.IsNullOrEmpty(go.locationID) ? "" : "No location ID assigned";
             }
             else if (step is SellItemStep sell)
             {
-                questTypeText.text = $"Sell {sell.requiredAmount} {sell.itemID} ";
+                questTypeText.text = $"Sell {sell.requiredAmount} {sell.itemID}";
                 int sold = GameStateTracker.Instance.GetCount($"Sold_{sell.itemID}");
                 requirementText.text = $"{sold}/{sell.requiredAmount}";
             }
@@ -77,10 +74,9 @@ public class QuestUI : MonoBehaviour
                 requirementText.text = "";
             }
 
-            return; // bulduğun ilk aktif görevden sonra UI güncellendi, çık
+            return; // ilk aktif görevi yaz ve çık
         }
 
-        // Hiç görev bulunamadıysa:
         mainQuestText.text = "✔️ All quests complete!";
         questTypeText.text = "";
         requirementText.text = "";

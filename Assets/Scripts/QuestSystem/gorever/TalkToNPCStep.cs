@@ -4,7 +4,7 @@
 public class TalkToNPCStep : IQuestStep
 {
     public string npcID;  // 🔄 Artık GameObject değil, string ID kullanıyoruz
-    public int dialogSectionIndex = 0;
+    public int dialogSectionIndex = 1;
 
     public string GetKey()
     {
