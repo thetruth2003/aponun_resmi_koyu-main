@@ -14,19 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sections:
   - lines:
-    - text: Dialog1
+    - text: "merhabalar yeni komsum s\u0131z\u0131n san\u0131\u0131rm "
       voiceClip: {fileID: 8300000, guid: 46554ad7e2219be49975003372e7a223, type: 3}
-    - text: Dialog2
+    - text: "evet ben\u0131m yen\u0131 tas\u0131nd\u0131m"
       voiceClip: {fileID: 8300000, guid: 8d998b8ac0b4c0b45848ab0f61591515, type: 3}
-    - text: Dialog3
+    - text: "memnun oldum beyfend\u0131"
       voiceClip: {fileID: 8300000, guid: 05531d6aa4addea479c8d7775d21450b, type: 3}
     viewKey: aleyna_0
   - lines:
-    - text: "guzel g\u0131t ve garaj kap\u0131s\u0131n\u0131 kontrol et"
+    - text: "garaj\u0131n anahtar\u0131 s\u0131zde m\u0131"
       voiceClip: {fileID: 0}
-    - text: "kapal\u0131ysa gel "
+    - text: "evet bende ne \u0131c\u0131n laz\u0131m "
       voiceClip: {fileID: 0}
-    - text: "ve g\u0131t ustunu bas\u0131n\u0131 topla"
+    - text: "arabam\u0131n last\u0131kler\u0131n\u0131 koyucam"
       voiceClip: {fileID: 0}
     viewKey: aleyna_1
   - lines:

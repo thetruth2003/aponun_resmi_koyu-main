@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b44069f1ff866bf4b9a4d4a2c0632d82, type: 3}
-  m_Name: ikizlere_takke
+  m_Name: "g\xF6rev 5"
   m_EditorClassIdentifier: 
   quests:
-  - questName: Alperen
+  - questName: "eski g\xFCzel g\xFCnler"
     questTypeName: 
     jsonData: 
     optionalSideQuestID: 
@@ -21,28 +21,19 @@ MonoBehaviour:
     optionalSideQuestNPCID: 
     optionalTrustReward: 0
     optionalSideQuestCompleted: 0
-  - questName: "Buy 1\xD7 asd"
-    questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"itemID":"asd","requiredAmount":1}'
-    optionalSideQuestID: 
-    optionalSideQuestDescription: 
-    optionalSideQuestNPCID: 
-    optionalTrustReward: 0
-    optionalSideQuestCompleted: 0
-  - questName: "Sell 2\xD7 qwe"
-    questTypeName: SellItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    jsonData: '{"itemID":"qwe","requiredAmount":2}'
-    optionalSideQuestID: 
-    optionalSideQuestDescription: 
-    optionalSideQuestNPCID: 
-    optionalTrustReward: 0
-    optionalSideQuestCompleted: 0
-  - questName: "Harvest 3\xD7 zxc"
+  - questName: "Harvest 1\xD7 tomato"
     questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"itemID":"zxc","requiredAmount":3}'
+    jsonData: '{"itemID":"tomato","requiredAmount":1}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
+  - questName: Talk to aleyna (Section 2)
+    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"npcID":"aleyna","dialogSectionIndex":2}'
     optionalSideQuestID: 
     optionalSideQuestDescription: 
     optionalSideQuestNPCID: 

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b44069f1ff866bf4b9a4d4a2c0632d82, type: 3}
-  m_Name: guzel_gunler
+  m_Name: "g\xF6rev 2"
   m_EditorClassIdentifier: 
   quests:
-  - questName: "g\xFCzel eski g\xFCnler"
+  - questName: Alperen
     questTypeName: 
     jsonData: 
     optionalSideQuestID: 
@@ -21,19 +21,28 @@ MonoBehaviour:
     optionalSideQuestNPCID: 
     optionalTrustReward: 0
     optionalSideQuestCompleted: 0
-  - questName: Go to garaj
-    questTypeName: GoToLocationStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  - questName: "Buy 1\xD7 asd"
+    questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"locationID":"garaj"}'
+    jsonData: '{"itemID":"asd","requiredAmount":1}'
     optionalSideQuestID: 
     optionalSideQuestDescription: 
     optionalSideQuestNPCID: 
     optionalTrustReward: 0
     optionalSideQuestCompleted: 0
-  - questName: Talk to aleyna (Section 1)
-    questTypeName: TalkToNPCStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  - questName: "Sell 2\xD7 qwe"
+    questTypeName: SellItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    jsonData: '{"npcID":"aleyna","dialogSectionIndex":1}'
+    jsonData: '{"itemID":"qwe","requiredAmount":2}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
+  - questName: "Harvest 3\xD7 zxc"
+    questTypeName: HarvestItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    jsonData: '{"itemID":"zxc","requiredAmount":3}'
     optionalSideQuestID: 
     optionalSideQuestDescription: 
     optionalSideQuestNPCID: 
