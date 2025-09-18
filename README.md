@@ -111,7 +111,7 @@ Dialogue assets are assigned to NPC prefabs and selected via `TrustLevel` condit
 
 ---
 
-## 🚜 Vehicle Mechanics
+## 🚜 Plant Mechanics
 
 <img src="Images/build.gif" width="600" />
 
@@ -153,6 +153,63 @@ Dialogue assets are assigned to NPC prefabs and selected via `TrustLevel` condit
 
 Data can be saved using JSON or Binary format.  
 Connected via `GameManager.SaveGame()` and `LoadGame()`.
+
+---
+
+## 📖 Quest Journal & Tracker UI
+
+* UI panel for **active and completed quests**  
+* Displays quest title, description, and current step  
+* Updates automatically via `GameStateTracker`  
+* Provides player with a clear **quest history and progress tracking**  
+
+---
+
+## 🎥 Cutscene & Camera System
+
+* **Fade-in/out transitions** for smooth scene changes  
+* **Trigger-based camera shifts** (dialogue, quest events)  
+* **CarAutoDrive integration** for waypoint-driven cutscenes  
+* Enables cinematic storytelling while remaining fully data-driven  
+
+---
+
+## 🤖 NPC AI & NavMesh Integration
+
+* **NavMesh-based movement** for NPCs and vehicles  
+* Waypoint-driven logic for **patrolling and AutoDrive**  
+* **NPC interactions** tied to location and quest steps  
+* Ensures believable and automated world simulation  
+
+---
+
+## 🧠 GameStateTracker (Detailed)
+
+* Central system handling global state synchronization:  
+  * Quest progress  
+  * Dialogue & trust levels  
+  * Inventory contents  
+  * Crop growth & watering state  
+  * Vehicle states and positions  
+* Connects directly with **save/load system** for persistence  
+
+---
+
+## 🗂️ Data-Driven Architecture
+
+* **ScriptableObject-based design** across all systems:  
+  * `QuestData`, `ItemData`, `DialogueData`, `SeedData`  
+* All gameplay logic is **editable via Inspector** (non-hardcoded)  
+* **Easily extensible**: new quest steps, items, or NPC behaviors can be added without modifying core systems  
+
+---
+
+## ⚡ Optimization & Extensibility
+
+* **Modular SaveData structure** (supports crops, NPCs, quests, vehicles, inventory)  
+* Efficient use of **NavMesh baking & occlusion culling**  
+* Architecture designed for **scalability and performance**  
+* Focus on writing **clean, reusable, and modular gameplay code**  
 
 ---
 
