@@ -1,6 +1,9 @@
 using UnityEngine;
 
-public enum SeedType { None, Wheat, Corn, Tomato, Potato, Carrot, Pumpkin, Cabbage, Eggplant, Radish, Lettuce }
+public enum SeedType {
+    None, Wheat, Corn, Tomato, Potato, Carrot, Pumpkin, Cabbage, Eggplant, Radish, Lettuce,
+    Cucumber, Grape, Pepper, Bean, Chilli, Onion, Melon, Watermelon 
+}
 
 [System.Serializable]
 public struct SeedPointData
