@@ -318,14 +318,14 @@ public class VehicleControl : MonoBehaviour
             forwardFriction.extremumSlip = 0.6f;
             forwardFriction.asymptoteSlip = 1.2f;
             forwardFriction.asymptoteValue = 7000f;
-            forwardFriction.stiffness = 4f;
+            forwardFriction.stiffness = 2.5f;
             col.forwardFriction = forwardFriction;
 
             WheelFrictionCurve sidewaysFriction = col.sidewaysFriction;
             sidewaysFriction.extremumSlip = 0.4f;
             sidewaysFriction.asymptoteSlip = 0.9f;
             sidewaysFriction.asymptoteValue = 8000f;
-            sidewaysFriction.stiffness = 4.5f;
+            sidewaysFriction.stiffness = 3f;
             col.sidewaysFriction = sidewaysFriction;
 
         }

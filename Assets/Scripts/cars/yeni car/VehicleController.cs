@@ -30,6 +30,13 @@ public class VehicleController : MonoBehaviour
     private float shiftTimer;
     private float throttleInput;
 
+    // === Stability params ===
+    [Header("Stability Settings")]
+    public Vector3 comOffset = new Vector3(0, -0.5f, 0); // COM alçalt
+    public float antiRollForce = 5000f;                  // stabilizer bar gücü
+    public float sideStability = 5f;                     // yan kayma bastırma gücü
+    public float highSpeedSteerReducer = 120f;           // bu hızda steer yarıya düşer
+
     public float CurrentRPM => currentRPM;
     public int CurrentGear => currentGear;
 
@@ -38,6 +45,7 @@ public class VehicleController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.mass = config.mass;
         rb.drag = config.drag;
+        rb.centerOfMass += comOffset; // COM offset uygula
         SetupWheels();
     }
 
@@ -51,6 +59,14 @@ public class VehicleController : MonoBehaviour
         UpdateUI();
     }
 
+    private void FixedUpdate()
+    {
+        // Stabilize edici sistemler physics update’te
+        ApplyAntiRoll(frontLeft, frontRight);
+        ApplyAntiRoll(rearLeft, rearRight);
+        StabilizeSideSlip();
+    }
+
     private void HandleInput()
     {
         throttleInput = Input.GetAxis("Vertical");
@@ -59,7 +75,11 @@ public class VehicleController : MonoBehaviour
     private void HandleSteering()
     {
         float steerInput = Input.GetAxis("Horizontal");
-        float steerAngle = steerInput * config.maxSteerAngle;
+
+        float speed = rb.velocity.magnitude * 3.6f; // km/h
+        float steerLimiter = Mathf.Lerp(1f, 0.5f, speed / highSpeedSteerReducer); // hız arttıkça steer azalır
+
+        float steerAngle = steerInput * config.maxSteerAngle * steerLimiter;
 
         frontLeft.steerAngle = steerAngle;
         frontRight.steerAngle = steerAngle;
@@ -71,7 +91,7 @@ public class VehicleController : MonoBehaviour
         float gearRatio = config.gearRatios[currentGear];
         float wheelRPM = (rearLeft.rpm + rearRight.rpm) * 0.5f;
 
-        // RPM hesaplama - motor RPM'ini wheelRPM'den alıyoruz
+        // RPM hesapla
         currentRPM = Mathf.Lerp(currentRPM,
             Mathf.Clamp(wheelRPM * gearRatio * config.differentialRatio, config.idleRPM, config.maxRPM),
             Time.deltaTime * 5f);
@@ -216,5 +236,35 @@ public class VehicleController : MonoBehaviour
             float speed = rb.velocity.magnitude * 3.6f;
             speedText.text = "Speed: " + Mathf.RoundToInt(speed) + " km/h";
         }
+    }
+
+    // === STABILITY HELPERS ===
+
+    void ApplyAntiRoll(WheelCollider left, WheelCollider right)
+    {
+        WheelHit hit;
+        float travelL = 1.0f, travelR = 1.0f;
+
+        bool groundedL = left.GetGroundHit(out hit);
+        if (groundedL)
+            travelL = (-left.transform.InverseTransformPoint(hit.point).y - left.radius) / left.suspensionDistance;
+
+        bool groundedR = right.GetGroundHit(out hit);
+        if (groundedR)
+            travelR = (-right.transform.InverseTransformPoint(hit.point).y - right.radius) / right.suspensionDistance;
+
+        float antiRoll = (travelL - travelR) * antiRollForce;
+
+        if (groundedL)
+            rb.AddForceAtPosition(left.transform.up * -antiRoll, left.transform.position);
+        if (groundedR)
+            rb.AddForceAtPosition(right.transform.up * antiRoll, right.transform.position);
+    }
+
+    void StabilizeSideSlip()
+    {
+        Vector3 localVel = transform.InverseTransformDirection(rb.velocity);
+        localVel.x = Mathf.Lerp(localVel.x, 0f, sideStability * Time.fixedDeltaTime);
+        rb.velocity = transform.TransformDirection(localVel);
     }
 }

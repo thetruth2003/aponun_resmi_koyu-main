@@ -3,52 +3,33 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Vehicle/Config")]
 public class VehicleConfig : ScriptableObject
 {
-    [Header("Physics")]
-    public float mass = 1300f;
-    public float drag = 0.05f;
-
-    [Header("Motor")]
-    public float torque = 50000f; // Motor gücü (bunu artırırsan hızlanma artar)
-    public AnimationCurve torqueCurve = AnimationCurve.Linear(0, 0.3f, 1, 1); // RPM eğrisi
+    public float mass = 1200f;
+    public float drag = 0.02f;
+    public float[] gearRatios = { 2.5f, 1.8f, 1.3f, 1.0f, 0.8f };
+    public float differentialRatio = 3.42f;
+    public float idleRPM = 800f;
     public float maxRPM = 7000f;
-    public float idleRPM = 900f;
-
-    [Header("Gearing")]
-    public float[] gearRatios = { 3.2f, 2.3f, 1.6f, 1.2f, 1.0f, 0.85f };
-    public GearSpeedRange[] gearSpeedRanges; // Inspector'dan ayarla
-    public float shiftUpRPM = 6200f;
-    public float shiftDownRPM = 2500f;
-    public float forceShiftRPM = 6800f;
-    public float shiftDuration = 0.6f;
-    public float differentialRatio = 3.42f; // Default value, adjust as needed
-
-    [Header("Steering")]
-    public float maxSteerAngle = 35f;
-
-    [Header("Brakes")]
-    public float handbrakeForce = 3000f;
-
-    [Header("Suspension")]
+    public float torque = 400f;
+    public AnimationCurve torqueCurve = AnimationCurve.Linear(0, 0, 1, 1);
+    public float maxSteerAngle = 30f;
+    public float shiftUpRPM = 6500f;
+    public float shiftDownRPM = 1500f;
+    public float shiftDuration = 0.3f;
+    public GearSpeedRange[] gearSpeedRanges;
+    public float handbrakeForce = 5000f;
     public float suspensionSpring = 35000f;
     public float suspensionDamper = 4500f;
     public float suspensionDistance = 0.2f;
-
-    [Header("Wheel Friction")]
-    public float forwardFrictionStiffness = 1.1f;
-    public float sidewaysFrictionStiffness = 1.4f;
-
-    [Header("Drivetrain")]
+    public float forwardFrictionStiffness = 1.5f;
+    public float sidewaysFrictionStiffness = 2.0f;
     public DrivetrainType drivetrain = DrivetrainType.RWD;
 }
 
 [System.Serializable]
-public class GearSpeedRange
+public struct GearSpeedRange
 {
-    public float maxSpeed = 40f;        // Max km/h for gear
-    public float shiftUpSpeed = 35f;    // Speed to shift up
+    public float shiftUpSpeed;
+    public float shiftDownSpeed;
 }
 
-public enum DrivetrainType
-{
-    FWD, RWD, AWD
-}
+public enum DrivetrainType { FWD, RWD, AWD }
