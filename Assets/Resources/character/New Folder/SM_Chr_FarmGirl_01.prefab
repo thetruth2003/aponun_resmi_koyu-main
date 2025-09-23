@@ -52,6 +52,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Chr_FarmGirl_01
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 6db976c998e17e3429476d6af86062b5, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: 6db976c998e17e3429476d6af86062b5, type: 3}
+    - target: {fileID: 5866666021909216657, guid: 6db976c998e17e3429476d6af86062b5, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: -4400321094591340415, guid: 6db976c998e17e3429476d6af86062b5, type: 3}
