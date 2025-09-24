@@ -21,7 +21,7 @@ This project is a fully modular and extensible system built in Unity. It feature
 
 ## 🌺 Harvest System
 
-<img src="Images/bad_pigges.gif" width="600" />
+<img src="Images/collect.gif" width="600" />
 
 Plants (from seed to crop) follow a multi-stage growth cycle. The system covers the entire farming loop:
 
