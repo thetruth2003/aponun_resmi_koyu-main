@@ -59,7 +59,7 @@ void Update()
     /// </summary>
     public void PlayInteractAnimation()
     {
-        animator.SetTrigger("Interact");
+        //animator.SetTrigger("Interact");
     }
 
     /// <summary>

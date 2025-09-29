@@ -77,7 +77,7 @@ public IEnumerator CheckMidNight()
             int hour = UniStormSystem.Instance.Hour;
             int minute = UniStormSystem.Instance.Minute;
 
-            Debug.Log($"[CheckMidNight] Saat: {hour:D2}:{minute:D2} | isMidNight: {isMidNight}");
+            //Debug.Log($"[CheckMidNight] Saat: {hour:D2}:{minute:D2} | isMidNight: {isMidNight}");
 
             if (hour == 0 && minute == 0 && !isMidNight)
             {

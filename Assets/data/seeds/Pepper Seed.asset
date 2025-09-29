@@ -15,10 +15,10 @@ MonoBehaviour:
   seedType: 13
   growthStages:
   - {fileID: 1163311251083476, guid: c9fcf85374b714e4e9525abaae880483, type: 3}
-  - {fileID: 1712200964176758, guid: a74d9e41a3e780f47b3278a49fe842da, type: 3}
-  - {fileID: 1290591311347902, guid: d87f295218b7b4245906cd9610c542da, type: 3}
-  - {fileID: 1879033853735152, guid: 6d30e14ec4d9bf240be449faa7956c55, type: 3}
-  - {fileID: 1301151405176600, guid: 56aff3ec1fc023d43855db67754849a1, type: 3}
-  - {fileID: 1071326183674264, guid: 499ba49ca58a64f468b997cdd7d6112c, type: 3}
+  - {fileID: 1163311251083476, guid: c9fcf85374b714e4e9525abaae880483, type: 3}
+  - {fileID: 1903297692978248, guid: 575d2a2a93afb724f89e9ef17f7dadb5, type: 3}
+  - {fileID: 1244697753454076, guid: 8c64118ce05103a49965da9b0265081f, type: 3}
+  - {fileID: 1244697753454076, guid: 8c64118ce05103a49965da9b0265081f, type: 3}
+  - {fileID: 1685243190553880, guid: 29df816d417eed347aaa7625fecdf976, type: 3}
   maxDryDays: 100
   sellPrice: 100

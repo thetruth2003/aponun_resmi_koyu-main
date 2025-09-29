@@ -5,7 +5,6 @@
     using System.Text.RegularExpressions; // En üste
     public class Crosshair : MonoBehaviour
 {
-    public AnimationController animController;
     public Money money; // Para yönetimi için Money script referansı
     public Camera playerCamera; // Oyuncunun kamerası
     public float maxDistance = 100f; // Maksimum atış mesafesi
@@ -37,7 +36,6 @@
             HitTree();
             AddSeed();
             Watering();
-            animController.PlayInteractAnimation();
         }
         if (Input.GetMouseButtonDown(1))
         {
@@ -217,8 +215,9 @@
 
             // Collectable bileşeni olup olmadığını kontrol et
             Collectable collectable = hit.collider.GetComponent<Collectable>();
+            Tools tools = hit.collider.GetComponent<Tools>();
 
-            if (collectable != null)
+            if (collectable != null && tools == null)
             {
                 // Nesnenin Collect metodunu çağırarak tetikle
                 collectable.Collect();
