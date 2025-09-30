@@ -20,6 +20,7 @@ public class UI_Manager : MonoBehaviour
     public GameObject Crosshair;
     public GameObject CrosshairCanvas;
     private bool isMenuOpen = false; // Menü durumu
+
     private void Awake()
     {
         Initialize();
@@ -27,8 +28,17 @@ public class UI_Manager : MonoBehaviour
 
     private void Start()
     {
-       ToggleInventoryUI();
+        // OYUN AÇILIR AÇILMAZ ENVANTERİ AÇMA – erken refresh’e sebep oluyordu.
+        // Eğer başlangıçta açmak istiyorsan, 1 frame geciktir:
+        // StartCoroutine(OpenInventoryNextFrame());
     }
+
+    private IEnumerator OpenInventoryNextFrame()
+    {
+        yield return null; // bir frame bekle
+        ToggleInventoryUI();
+    }
+
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
@@ -47,10 +57,10 @@ public class UI_Manager : MonoBehaviour
         else if (Input.GetKeyUp(KeyCode.Q) && isMenuOpen)
         {
             ToggleMenuUI(); // Menü kapat
-
             isMenuOpen = false;         // Durum güncellenir
         }
     }
+
     private void ChestOpen()
     {
         Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition); // Ekrandan ray oluştur
@@ -58,125 +68,161 @@ public class UI_Manager : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, maxDistance))
         {
-            // Raycast'in vurduğu objenin tag'ini kontrol et
             if (hit.collider.CompareTag("Chest"))
             {
                 ToggleInventoryUI(); // Sandık açıldığında envanteri aç
             }
             else
             {
-                ToggleInventoryUI(); // Sandık açıldığında envanteri aç
+                ToggleInventoryUI();
             }
         }
 
-        if (Input.GetKey(KeyCode.LeftShift))
+        dragSingle = Input.GetKey(KeyCode.LeftShift);
+    }
+
+    // Envanteri açma/kapama fonksiyonu
+    public void ToggleInventoryUI()
+    {
+        if (inventoryPanel == null) return;
+
+        bool willOpen = !inventoryPanel.activeSelf;
+        inventoryPanel.SetActive(willOpen);
+
+        if (willOpen)
         {
-            dragSingle = true; // Shift tuşu ile sürükleme tekli yapılacak
+            // Mouse
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
+            // ✅ Güvenli refresh: 1 frame geciktir + hazır olana kadar bekle
+            StartCoroutine(SafeRefreshInventoryUI("backpack"));
         }
         else
         {
-            dragSingle = false;
+            // Mouse
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
-    // Envanteri açma/kapama fonksiyonu
 
-    public void ToggleInventoryUI()
-    {
-        if (inventoryPanel != null)
-        {
-            if (!inventoryPanel.activeSelf)
-            {
-                inventoryPanel.SetActive(true);
-                RefreshInventoryUI("backpack");
-                // Mouse imlecini serbest bırak
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-            }
-            else
-            {
-                inventoryPanel.SetActive(false);
-                // Envanter kapatıldığında imleci yeniden kilitle
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
-        }
-    }
     public void ToggleMenuUI()
     {
-        if (MenuPanel != null)
+        if (MenuPanel == null) return;
+
+        bool willOpen = !MenuPanel.activeSelf;
+        MenuPanel.SetActive(willOpen);
+
+        if (willOpen)
         {
-            if (!MenuPanel.activeSelf)
-            {
-                // Envanter açılacaksa
-                MenuPanel.SetActive(true); // Envanteri aç
-                // Mouse imlecini serbest bırak
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = false;
-                playerMovementScript.enabled = false;
-                Crosshair.SetActive(false);
-                CrosshairCanvas.SetActive(false);
-            }
-            else
-            {
-                MenuPanel.SetActive(false); // Envanteri kapat
-                // Envanter kapatıldığında imleci yeniden kilitle
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                playerMovementScript.enabled = true;
-                Crosshair.SetActive(true);
-                CrosshairCanvas.SetActive(true);
-                DeactivateMenuAndChildren(MenuPanel);
-            }
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = false;
+            if (playerMovementScript != null) playerMovementScript.enabled = false;
+            if (Crosshair != null) Crosshair.SetActive(false);
+            if (CrosshairCanvas != null) CrosshairCanvas.SetActive(false);
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            if (playerMovementScript != null) playerMovementScript.enabled = true;
+            if (Crosshair != null) Crosshair.SetActive(true);
+            if (CrosshairCanvas != null) CrosshairCanvas.SetActive(true);
+            DeactivateMenuAndChildren(MenuPanel);
         }
     }
+
     void DeactivateMenuAndChildren(GameObject menu)
     {
-        // Menü ve tüm child'larını pasif yap
-
-        // Eğer menü altındaki nesneleri manuel olarak da kapatmak isterseniz
         foreach (Transform child in menu.transform)
         {
             child.gameObject.SetActive(false);
-            menu.transform.GetChild(0).gameObject.SetActive(true);
         }
+        if (menu.transform.childCount > 0)
+            menu.transform.GetChild(0).gameObject.SetActive(true);
     }
-    // Envanter UI'sını yenileme fonksiyonu
+
+    // === GÜVENLİ REFRESH ===
     public void RefreshInventoryUI(string inventoryName)
     {
-        if (inventoryUIByName.ContainsKey(inventoryName))
+        // Eski doğrudan çağrı NRE’ye sebep oluyordu.
+        StartCoroutine(SafeRefreshInventoryUI(inventoryName));
+    }
+
+    private IEnumerator SafeRefreshInventoryUI(string inventoryName)
+    {
+        // 1 frame bekle: tüm Awake/Start zinciri tamamlansın
+        yield return null;
+
+        if (!inventoryUIByName.TryGetValue(inventoryName, out var invUI) || invUI == null)
         {
-            inventoryUIByName[inventoryName].Refresh(); // Envanteri yenile
+            Debug.LogWarning($"[UI_Manager] Inventory UI bulunamadı: '{inventoryName}'");
+            yield break;
         }
+
+        // En fazla ~1 saniye bekle (60 frame) – Inventory_UI tarafı hazır olana kadar
+        const int maxWait = 60;
+        int waited = 0;
+        while (!invUI.InventoryIsReady() && waited < maxWait)
+        {
+            waited++;
+            yield return null;
+        }
+
+        if (!invUI.InventoryIsReady())
+        {
+            Debug.LogWarning($"[UI_Manager] '{inventoryName}' inventory hazır olmadı (timeout). Refresh atlandı.");
+            yield break;
+        }
+
+        invUI.Refresh();
     }
 
     // Tüm envanterleri yenileme
     public void RefreshAll()
     {
-        foreach (KeyValuePair<string, Inventory_UI> keyValuePair in inventoryUIByName)
+        foreach (KeyValuePair<string, Inventory_UI> kv in inventoryUIByName)
         {
-            keyValuePair.Value.Refresh(); // Her envanteri yenile
+            var ui = kv.Value;
+            if (ui == null) continue;
+
+            if (ui.InventoryIsReady())
+                ui.Refresh();
+            else
+                StartCoroutine(SafeRefreshInventoryUI(kv.Key));
         }
     }
 
     // Envanteri al
     public Inventory_UI GetInventoryUI(string inventoryName)
     {
-        if (inventoryUIByName.ContainsKey(inventoryName))
-        {
-            return inventoryUIByName[inventoryName]; // Envanter UI'sini al
-        }
-
+        if (inventoryUIByName.TryGetValue(inventoryName, out var ui))
+            return ui;
         return null;
     }
 
     // Envanter UI'lerini başlat
     private void Initialize()
     {
+        inventoryUIByName.Clear();
+        if (inventoryUIs == null) return;
+
         foreach (Inventory_UI ui in inventoryUIs)
         {
-            if (!inventoryUIByName.ContainsKey(ui.inventoryName))
+            if (ui == null) continue;
+            var key = (ui.inventoryName ?? "").Trim();
+            if (string.IsNullOrEmpty(key))
             {
-                inventoryUIByName.Add(ui.inventoryName, ui); // Envanter UI'lerini sözlüğe ekle
+                Debug.LogWarning("[UI_Manager] Inventory_UI 'inventoryName' boş.", ui);
+                continue;
+            }
+            if (!inventoryUIByName.ContainsKey(key))
+            {
+                inventoryUIByName.Add(key, ui);
+            }
+            else
+            {
+                Debug.LogWarning($"[UI_Manager] Aynı isimli Inventory_UI zaten var: '{key}'", ui);
             }
         }
     }

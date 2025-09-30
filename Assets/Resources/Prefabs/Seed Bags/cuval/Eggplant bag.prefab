@@ -124,7 +124,7 @@ MonoBehaviour:
   duration: 0
   itemName: Eggplant bag
   price: 100
-  amount: 99
+  amount: 9
 --- !u!114 &-1823580510070525727
 MonoBehaviour:
   m_ObjectHideFlags: 0

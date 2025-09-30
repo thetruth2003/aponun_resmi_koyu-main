@@ -3,6 +3,7 @@ using TMPro;
 
 public class Money : MonoBehaviour
 {
+    public static Money Instance;
     public int currentMoney = 0;
     public TextMeshProUGUI moneyText; // UI'daki para yazısı (isteğe bağlı)
 

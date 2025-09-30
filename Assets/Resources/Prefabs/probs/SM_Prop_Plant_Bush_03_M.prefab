@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 4295698938646752}
   - component: {fileID: 33056778001132996}
   - component: {fileID: 23855058149919356}
-  - component: {fileID: -6352876892563020267}
-  - component: {fileID: -1934401462954407330}
   - component: {fileID: 1020794363619692276}
   m_Layer: 0
   m_Name: SM_Prop_Plant_Bush_03_M
@@ -87,31 +85,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-6352876892563020267
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1369296744457648}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da0b18645ffddb44ead407a3f459a00d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  data: {fileID: 0}
---- !u!114 &-1934401462954407330
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1369296744457648}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 334870c622a7fdd4fa8cadd335c913d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!65 &1020794363619692276
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -124,7 +124,7 @@ MonoBehaviour:
   duration: 0
   itemName: Pumpkin bag
   price: 100
-  amount: 99
+  amount: 9
 --- !u!114 &6891681768957823563
 MonoBehaviour:
   m_ObjectHideFlags: 0

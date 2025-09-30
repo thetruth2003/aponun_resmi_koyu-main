@@ -124,7 +124,7 @@ MonoBehaviour:
   duration: 0
   itemName: Pepper bag
   price: 100
-  amount: 99
+  amount: 9
 --- !u!114 &-6049807873104582409
 MonoBehaviour:
   m_ObjectHideFlags: 0

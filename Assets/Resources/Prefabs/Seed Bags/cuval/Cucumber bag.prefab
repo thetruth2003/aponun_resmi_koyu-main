@@ -124,7 +124,7 @@ MonoBehaviour:
   duration: 0
   itemName: Cucumber bag
   price: 100
-  amount: 99
+  amount: 9
 --- !u!114 &-6016484333557524410
 MonoBehaviour:
   m_ObjectHideFlags: 0

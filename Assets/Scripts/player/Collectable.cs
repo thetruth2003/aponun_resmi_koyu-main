@@ -28,4 +28,20 @@ public class Collectable : MonoBehaviour
             }
         
     }
+    public void Buy(int amount)
+    {
+        Item item = GetComponent<Item>();
+
+        if (item != null)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                InventoryManager.Instance.Add("backpack", item);
+            }
+            Debug.Log($"{amount} adet {gameObject.name} satın alındı!");
+            string key = $"Harvested_{item.data.itemName.ToLower()}";
+            GameStateTracker.Instance.IncrementCount(key, amount);
+            Destroy(item.gameObject);
+        }
+    }
 }

@@ -124,7 +124,7 @@ MonoBehaviour:
   duration: 0
   itemName: Grape bag
   price: 100
-  amount: 99
+  amount: 9
 --- !u!114 &6701973838509334902
 MonoBehaviour:
   m_ObjectHideFlags: 0

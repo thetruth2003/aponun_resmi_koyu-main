@@ -22,6 +22,7 @@ TagManager:
   - Fire
   - Street
   - DialogText
+  - Money
   layers:
   - Default
   - TransparentFX

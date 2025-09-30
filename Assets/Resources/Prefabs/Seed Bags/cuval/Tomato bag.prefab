@@ -124,7 +124,7 @@ MonoBehaviour:
   duration: 0
   itemName: Tomato bag
   price: 100
-  amount: 99
+  amount: 9
 --- !u!114 &-7078647929328247623
 MonoBehaviour:
   m_ObjectHideFlags: 0

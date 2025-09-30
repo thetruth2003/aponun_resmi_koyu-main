@@ -124,7 +124,7 @@ MonoBehaviour:
   duration: 0
   itemName: Cabbage bag
   price: 100
-  amount: 99
+  amount: 9
 --- !u!114 &-765587088456899570
 MonoBehaviour:
   m_ObjectHideFlags: 0

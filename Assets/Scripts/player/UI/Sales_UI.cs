@@ -9,7 +9,7 @@ public class Sales_UI : MonoBehaviour
     public GameObject panel;
     public List<Slot_UI> saleSlots;
     public TextMeshProUGUI totalMoneyText;
-    public Money money; // Para UI referansı    
+    public Muhasebeci money; // Para UI referansı    
 
     private int totalEarnings;
 
@@ -30,7 +30,7 @@ public class Sales_UI : MonoBehaviour
             Debug.LogWarning("Satış yapılacak slot bulunamadı!");
             return;
         }
-        int currentMoney = money.currentMoney; // Mevcut para miktarını al
+        int currentMoney = money.playerMoney; // Mevcut para miktarını al
         foreach (var slot in saleSlots)
         {
             if (!slot.IsEmpty())

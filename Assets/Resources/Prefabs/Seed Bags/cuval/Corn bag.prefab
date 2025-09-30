@@ -124,7 +124,7 @@ MonoBehaviour:
   duration: 0
   itemName: Corn bag
   price: 100
-  amount: 99
+  amount: 9
 --- !u!114 &2075381225412536283
 MonoBehaviour:
   m_ObjectHideFlags: 0

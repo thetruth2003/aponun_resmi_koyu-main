@@ -124,7 +124,7 @@ MonoBehaviour:
   duration: 0
   itemName: Potato bag
   price: 100
-  amount: 99
+  amount: 9
 --- !u!114 &-2253522519546526298
 MonoBehaviour:
   m_ObjectHideFlags: 0

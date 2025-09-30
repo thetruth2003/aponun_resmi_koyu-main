@@ -15,7 +15,7 @@ public class update_info : MonoBehaviour
     public GameObject itemInfoPanel;
     public TextMeshProUGUI itemNameText;
     public TextMeshProUGUI itemPriceText;
-    public Money money;   // mevcut Money script'in
+    public Muhasebeci money;   // mevcut Money script'in
 
     private void Update()
     {

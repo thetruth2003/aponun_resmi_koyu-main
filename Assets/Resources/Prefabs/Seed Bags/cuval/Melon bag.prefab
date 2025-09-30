@@ -124,7 +124,7 @@ MonoBehaviour:
   duration: 0
   itemName: Melon bag
   price: 100
-  amount: 99
+  amount: 9
 --- !u!114 &-6317464970845752135
 MonoBehaviour:
   m_ObjectHideFlags: 0

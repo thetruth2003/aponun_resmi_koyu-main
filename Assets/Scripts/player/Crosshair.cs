@@ -5,7 +5,7 @@
     using System.Text.RegularExpressions; // En üste
     public class Crosshair : MonoBehaviour
 {
-    public Money money; // Para yönetimi için Money script referansı
+
     public Camera playerCamera; // Oyuncunun kamerası
     public float maxDistance = 100f; // Maksimum atış mesafesi
     public LayerMask interactableLayer; // Etkileşimde bulunulacak katman
@@ -24,6 +24,7 @@
     public Inventory_UI inventory_uı; // Envanter sistemi
     public GameObject itemInfoPanel; // UI Panel
     public GameObject NpcInfoPanel; // UI Panel
+    public Muhasebeci muhasebeci; // Muhasebeci script referansı
 
     public void Update()
     {
@@ -132,77 +133,80 @@
         // Eğer hiçbir uygun iteme çarpmadıysa paneli gizle
         NpcInfoPanel.SetActive(false);
     }
-    void UpdateItemInfo()
+// ...existing code...
+
+void UpdateItemInfo()
+{
+    Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+    RaycastHit hit;
+
+    if (Physics.Raycast(ray, out hit, maxDistance))
     {
-        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-        RaycastHit hit;
+        Tools item = hit.collider.GetComponent<Tools>();
 
-        if (Physics.Raycast(ray, out hit, maxDistance))
+        if (item != null)
         {
-            Tools item = hit.collider.GetComponent<Tools>();
+            // UI'yı güncelle
+            itemInfoPanel.SetActive(true);
+            itemNameText.text = item.itemName;
+            itemPriceText.text = item.price.ToString();
 
-            if (item != null)
+            // Muhasebeci'den güncel parayı al
+            int currentMoney = muhasebeci.playerMoney;
+
+            // Renk değişimi
+            if (currentMoney >= item.price)
             {
-                // UI'yı güncelle
-                itemInfoPanel.SetActive(true);
-                itemNameText.text = item.itemName;
-                itemPriceText.text = item.price.ToString();
-
-                int currentMoney;
-                if (!int.TryParse(money.moneyText.text, out currentMoney))
-                {
-                    Debug.LogWarning("Parayı parse edemedim: " + money.moneyText.text);
-                    currentMoney = 0; // Hatalıysa 0 kabul et veya çık
-                }
-
-
-                // Renk değişimi
-                if (currentMoney >= item.price)
-                {
-                    itemNameText.color = Color.green; // Yeterli para varsa yeşil
-                    itemPriceText.color = Color.green; // Yeterli para varsa yeşil
-                }
-                else
-                {
-                    itemNameText.color = Color.red; // Yetersizse kırmızı
-                    itemPriceText.color = Color.red; // Yeterli para varsa yeşil
-                }
-
-                return;
+                itemNameText.color = Color.green;
+                itemPriceText.color = Color.green;
             }
-        }
+            else
+            {
+                itemNameText.color = Color.red;
+                itemPriceText.color = Color.red;
+            }
 
-        // Eğer hiçbir uygun iteme çarpmadıysa paneli gizle
-        itemInfoPanel.SetActive(false);
-    }
-
-    public void BuyItem()
-    {
-        Debug.Log("BuyItem tetiklendi!");
-
-        // Sadece rakamları ayıkla
-        string cleanText = Regex.Replace(money.moneyText.text, @"[^\d]", "");
-
-        int currentMoney = 0;
-        if (!int.TryParse(cleanText, out currentMoney))
-        {
-            Debug.LogWarning("Para parse edilemedi! Metin: " + money.moneyText.text);
             return;
         }
+    }
 
-        if (currentMoney >= currentItem.price)
-        {
-            currentMoney -= currentItem.price;
-            money.moneyText.text = currentMoney.ToString(); // sadece sayı göster
+    // Eğer hiçbir uygun iteme çarpmadıysa paneli gizle
+    itemInfoPanel.SetActive(false);
+}
 
-            ShootRay();
-            Debug.Log(currentItem.itemName + " satın alındı!");
-        }
-        else
+public void BuyItem()
+{
+    Debug.Log("BuyItem tetiklendi!");
+
+    // Muhasebeci'den güncel parayı al
+    int currentMoney = muhasebeci.playerMoney;
+
+    if (currentMoney >= currentItem.price)
+    {
+        // Parayı Muhasebeci üzerinden güncelle
+        muhasebeci.playerMoney -= currentItem.price;
+        if (muhasebeci.moneyText != null)
+            muhasebeci.moneyText.text = muhasebeci.playerMoney.ToString();
+
+        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, maxDistance, interactableLayer))
         {
-            Debug.Log("Yetersiz altın!");
+            Debug.Log("Etkileşim: " + hit.collider.name);
+
+            Collectable collectable = hit.collider.GetComponent<Collectable>();
+            Tools tools = hit.collider.GetComponent<Tools>();
+            if (collectable != null && tools != null)
+            {
+                collectable.Buy(tools.amount);
+            }
         }
     }
+    else
+    {
+        Debug.Log("Yetersiz altın!");
+    }
+}
     public void ShootRay()
     {
         Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);

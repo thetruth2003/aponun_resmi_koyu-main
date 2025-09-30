@@ -124,7 +124,7 @@ MonoBehaviour:
   duration: 0
   itemName: Lettuce bag
   price: 100
-  amount: 99
+  amount: 9
 --- !u!114 &-7133881650327134916
 MonoBehaviour:
   m_ObjectHideFlags: 0

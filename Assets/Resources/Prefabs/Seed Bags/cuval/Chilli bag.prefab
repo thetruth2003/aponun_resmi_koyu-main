@@ -124,7 +124,7 @@ MonoBehaviour:
   duration: 0
   itemName: 
   price: 100
-  amount: 99
+  amount: 9
 --- !u!114 &7394809995164580067
 MonoBehaviour:
   m_ObjectHideFlags: 0

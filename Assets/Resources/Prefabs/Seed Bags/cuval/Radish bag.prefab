@@ -124,7 +124,7 @@ MonoBehaviour:
   duration: 0
   itemName: Radish bag
   price: 100
-  amount: 99
+  amount: 9
 --- !u!114 &-2517568619832771815
 MonoBehaviour:
   m_ObjectHideFlags: 0
