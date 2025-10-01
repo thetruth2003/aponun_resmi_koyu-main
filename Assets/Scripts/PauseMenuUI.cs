@@ -5,7 +5,6 @@ using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-// +++ EKLENEN using'ler:
 using UnityEngine.AI;
 using UnityEngine.Playables;
 using UnityEngine.Video;
@@ -21,7 +20,7 @@ public class PauseMenuUI : MonoBehaviour
     [Header("Main Buttons")]
     [SerializeField] private Button resumeButton;
     [SerializeField] private Button optionsButton;
-    [SerializeField] private Button quitToMenuButton;     // Main Menu sahnesine dön (opsiyonel)
+    [SerializeField] private Button quitToMenuButton;     // Main Menu sahnesine dön
     [SerializeField] private Button quitToDesktopButton;  // Masaüstüne çık
 
     // ========= OPTIONS: TABS =========
@@ -65,13 +64,16 @@ public class PauseMenuUI : MonoBehaviour
     [Header("Hard Freeze (her şeyi dondur)")]
     [SerializeField] private bool hardFreezeEverything = true;
 
-    // Donmuş bileşenleri geri yüklemek için cache
-    private readonly Dictionary<Animator, float> _animatorSpeeds = new();
-    private readonly List<ParticleSystem> _pausedParticles = new();
-    private readonly List<VideoPlayer> _pausedVideos = new();
-    private readonly List<PlayableDirector> _pausedDirectors = new();
-    private readonly List<NavMeshAgent> _stoppedAgents = new();
-    private readonly List<AudioSource> _pausedSourcesIgnoringListener = new();
+    [Header("Scenes")]
+    [SerializeField] private string mainMenuSceneName = "MainMenu";
+
+    // Donmuş bileşen cache’leri
+    private readonly Dictionary<Animator, float> _animatorSpeeds = new Dictionary<Animator, float>();
+    private readonly List<ParticleSystem> _pausedParticles = new List<ParticleSystem>();
+    private readonly List<VideoPlayer> _pausedVideos = new List<VideoPlayer>();
+    private readonly List<PlayableDirector> _pausedDirectors = new List<PlayableDirector>();
+    private readonly List<NavMeshAgent> _stoppedAgents = new List<NavMeshAgent>();
+    private readonly List<AudioSource> _pausedSourcesIgnoringListener = new List<AudioSource>();
 
     // ========= PREF KEYS (MenuUI ile aynı) =========
     private const string KEY_VOL        = "opt_masterVol";
@@ -98,7 +100,7 @@ public class PauseMenuUI : MonoBehaviour
     {
         if (resumeButton)        resumeButton.onClick.AddListener(Resume);
         if (optionsButton)       optionsButton.onClick.AddListener(ShowOptions);
-        if (quitToMenuButton)    quitToMenuButton.onClick.AddListener(() => { ResumeHard(); SceneManager.LoadScene("MainMenu", LoadSceneMode.Single); });
+        if (quitToMenuButton)    quitToMenuButton.onClick.AddListener(QuitToMenu); // önemli: cursor açık kalır
         if (quitToDesktopButton) quitToDesktopButton.onClick.AddListener(QuitToDesktop);
         if (backButton)          backButton.onClick.AddListener(HideOptions);
 
@@ -193,6 +195,30 @@ public class PauseMenuUI : MonoBehaviour
         IsPaused = false;
     }
 
+    // Menüyü yüklerken cursor'ı açık/serbest bırak
+    private void QuitToMenu()
+    {
+        if (hardFreezeEverything) UnfreezeWorld();
+
+        Time.timeScale = 1f;
+        AudioListener.pause = false;
+
+        // Cursor'u ZORLA AÇ
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        SetPausedOnComponents(false);
+        SetHiddenWhilePaused(false);
+        SetBlockedWhilePaused(false);
+        IsPaused = false;
+
+        if (string.IsNullOrEmpty(mainMenuSceneName))
+            mainMenuSceneName = "MainMenu";
+
+        SceneManager.LoadScene(mainMenuSceneName, LoadSceneMode.Single);
+    }
+
+    // Masaüstüne çıkarken toparlayan versiyon (cursor'u da açıyoruz)
     private void ResumeHard()
     {
         if (hardFreezeEverything) UnfreezeWorld();
@@ -203,8 +229,8 @@ public class PauseMenuUI : MonoBehaviour
         Time.timeScale = 1f;
         AudioListener.pause = false;
 
-        Cursor.visible = lockCursorOnResume ? false : _prevCursorVisible;
-        Cursor.lockState = lockCursorOnResume ? CursorLockMode.Locked : _prevCursorLock;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
 
         SetPausedOnComponents(false);
         SetHiddenWhilePaused(false);
@@ -243,9 +269,22 @@ public class PauseMenuUI : MonoBehaviour
     }
 
     // ========= HARD FREEZE IMPLEMENTASYONU =========
+
+    // Yalnızca sahnede aktif, enabled ve NavMesh üzerinde olan ajanlara dokun
+    private bool AgentUsable(NavMeshAgent ag)
+    {
+        if (ag == null) return false;
+        if (!ag.isActiveAndEnabled || !ag.gameObject.activeInHierarchy) return false;
+        if (!ag.enabled) return false;
+        bool onMesh;
+        try { onMesh = ag.isOnNavMesh; }
+        catch { onMesh = false; }
+        return onMesh;
+    }
+
     private void FreezeWorld()
     {
-        // Animator: UnscaledTime kullananlar bile dursun
+        // Animator (UnscaledTime bile dursun)
         _animatorSpeeds.Clear();
         foreach (var a in FindObjectsOfType<Animator>(true))
         {
@@ -290,11 +329,11 @@ public class PauseMenuUI : MonoBehaviour
             }
         }
 
-        // NavMeshAgent (emin olmak için durdur)
+        // NavMeshAgent (sadece usable olanları durdur)
         _stoppedAgents.Clear();
         foreach (var ag in FindObjectsOfType<NavMeshAgent>(true))
         {
-            if (!ag) continue;
+            if (!AgentUsable(ag)) continue;
             if (!ag.isStopped)
             {
                 ag.isStopped = true;
@@ -302,7 +341,7 @@ public class PauseMenuUI : MonoBehaviour
             }
         }
 
-        // AudioSource: AudioListener.pause'ı dinlemeyenleri de durdur
+        // AudioSource: Listener pause'u dinlemeyenler
         _pausedSourcesIgnoringListener.Clear();
         foreach (var src in FindObjectsOfType<AudioSource>(true))
         {
@@ -317,34 +356,29 @@ public class PauseMenuUI : MonoBehaviour
 
     private void UnfreezeWorld()
     {
-        // Animator
         foreach (var kv in _animatorSpeeds)
-        {
             if (kv.Key) kv.Key.speed = kv.Value;
-        }
         _animatorSpeeds.Clear();
 
-        // ParticleSystem
         foreach (var ps in _pausedParticles)
             if (ps) ps.Play(true);
         _pausedParticles.Clear();
 
-        // VideoPlayer
         foreach (var vp in _pausedVideos)
             if (vp) vp.Play();
         _pausedVideos.Clear();
 
-        // Timeline
         foreach (var dir in _pausedDirectors)
             if (dir) dir.Play();
         _pausedDirectors.Clear();
 
-        // NavMeshAgent
         foreach (var ag in _stoppedAgents)
-            if (ag) ag.isStopped = false;
+        {
+            if (!AgentUsable(ag)) continue;
+            ag.isStopped = false;
+        }
         _stoppedAgents.Clear();
 
-        // AudioSource (ignoreListenerPause olanlar)
         foreach (var src in _pausedSourcesIgnoringListener)
             if (src) src.UnPause();
         _pausedSourcesIgnoringListener.Clear();
@@ -498,7 +532,7 @@ public class PauseMenuUI : MonoBehaviour
 
     private void QuitToDesktop()
     {
-        ResumeHard(); // editor dışında kalırsa timeScale 1 olsun
+        ResumeHard(); // timeScale/Audio/cursor/inputs toparla
         Application.Quit();
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;

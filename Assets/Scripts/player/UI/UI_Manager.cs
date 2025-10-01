@@ -91,9 +91,13 @@ public class UI_Manager : MonoBehaviour
 
         if (willOpen)
         {
+            
             // Mouse
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            if (playerMovementScript != null) playerMovementScript.enabled = false;
+            if (Crosshair != null) Crosshair.SetActive(false);
+            if (CrosshairCanvas != null) CrosshairCanvas.SetActive(false);
 
             // ✅ Güvenli refresh: 1 frame geciktir + hazır olana kadar bekle
             StartCoroutine(SafeRefreshInventoryUI("backpack"));
@@ -101,6 +105,9 @@ public class UI_Manager : MonoBehaviour
         else
         {
             // Mouse
+            if (playerMovementScript != null) playerMovementScript.enabled = true;
+            if (Crosshair != null) Crosshair.SetActive(true);
+            if (CrosshairCanvas != null) CrosshairCanvas.SetActive(true);
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
