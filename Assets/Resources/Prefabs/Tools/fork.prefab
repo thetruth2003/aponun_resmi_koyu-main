@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 3941508722341428251}
   - component: {fileID: 3941508722344852539}
   - component: {fileID: 3941508722343722747}
-  - component: {fileID: 8985681634707463133}
   - component: {fileID: 1382502679677397976}
   - component: {fileID: -293087497827861024}
+  - component: {fileID: 1504182522832385127}
   m_Layer: 0
   m_Name: fork
   m_TagString: Untagged
@@ -86,28 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8985681634707463133
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3941508722341453883}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: b2af3d54eea93e24b9f99f7e181ab81f, type: 3}
 --- !u!114 &1382502679677397976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,3 +115,25 @@ MonoBehaviour:
   duration: 100
   itemName: 
   price: 100
+  amount: 0
+--- !u!65 &1504182522832385127
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3941508722341453883}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.32081848, y: 1.4653039, z: 0.052570533}
+  m_Center: {x: 0, y: -0.6066792, z: 0}

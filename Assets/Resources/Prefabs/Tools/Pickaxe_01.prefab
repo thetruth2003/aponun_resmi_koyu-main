@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 1908265424593269542}
   - component: {fileID: 1908265424596693766}
   - component: {fileID: 1908265424595694022}
-  - component: {fileID: 3021601740306810619}
   - component: {fileID: -6201207121658056298}
   - component: {fileID: -7435887687535455595}
+  - component: {fileID: -6745816765310556593}
   m_Layer: 0
   m_Name: Pickaxe_01
   m_TagString: Untagged
@@ -86,28 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3021601740306810619
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1908265424593432326}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: e5461b63b177c5f4596f346a3242da05, type: 3}
 --- !u!114 &-6201207121658056298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,5 +113,27 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: b60c04ec6fd0d4040a0f516e8c844dd7, type: 2}
   seedData: {fileID: 0}
   duration: 100
-  itemName: 
+  itemName: pickaxe
   price: 100
+  amount: 0
+--- !u!65 &-6745816765310556593
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1908265424593432326}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.07558528, y: 1.1215748, z: 0.38306808}
+  m_Center: {x: 0, y: 0.5607874, z: -0.14906922}

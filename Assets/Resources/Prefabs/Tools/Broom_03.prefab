@@ -11,7 +11,9 @@ GameObject:
   - component: {fileID: 882245550450757708}
   - component: {fileID: 882245550454149228}
   - component: {fileID: 882245550453052076}
-  - component: {fileID: 10712207956532057}
+  - component: {fileID: 6082392923983531588}
+  - component: {fileID: 8457280209836739060}
+  - component: {fileID: -9055867704313704850}
   m_Layer: 0
   m_Name: Broom_03
   m_TagString: Untagged
@@ -84,8 +86,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &10712207956532057
-MeshCollider:
+--- !u!65 &6082392923983531588
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -102,7 +104,36 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 3af06ab3f44c8e44db8002abd670b7dc, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.24389249, y: 1.7273588, z: 0.25537315}
+  m_Center: {x: 0.003428489, y: 0.8647101, z: 0.008747041}
+--- !u!114 &8457280209836739060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 882245550451117164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36c967cbd60ec78469b61869c071b382, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: {fileID: 11400000, guid: 3e00cd8943817754f8a7589373fd8c72, type: 2}
+  seedData: {fileID: 0}
+  duration: 0
+  itemName: broom
+  price: 100
+  amount: 1
+--- !u!114 &-9055867704313704850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 882245550451117164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 334870c622a7fdd4fa8cadd335c913d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

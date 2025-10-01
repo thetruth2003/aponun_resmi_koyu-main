@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4097933001265708949}
   - component: {fileID: 4097933001269100469}
   - component: {fileID: 4097933001268133237}
-  - component: {fileID: 3039365648085535943}
   - component: {fileID: 4957549643613143771}
   - component: {fileID: -5679607007746870920}
+  - component: {fileID: -2984210855512950329}
   m_Layer: 0
   m_Name: Sickle_01
   m_TagString: Untagged
@@ -86,28 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3039365648085535943
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4097933001265865653}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: c0c50af3024f15647a8be0929fdb2c2b, type: 3}
 --- !u!114 &4957549643613143771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,3 +115,25 @@ MonoBehaviour:
   duration: 100
   itemName: 
   price: 100
+  amount: 0
+--- !u!65 &-2984210855512950329
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4097933001265865653}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.07285531, y: 0.6369263, z: 0.3568962}
+  m_Center: {x: 0, y: 0.31846315, z: 0.0825731}

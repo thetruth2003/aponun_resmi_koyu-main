@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4061292131536004}
   - component: {fileID: 33715295612872982}
   - component: {fileID: 23500716982492788}
-  - component: {fileID: 64538877369633014}
   - component: {fileID: 1855935035440294109}
   - component: {fileID: -8487944844451390310}
+  - component: {fileID: 6367720345117832882}
   m_Layer: 0
   m_Name: SM_Prop_Tool_Pitchfork_01
   m_TagString: Untagged
@@ -86,28 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64538877369633014
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1682383683704824}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43583295601519772, guid: cd8db66205945544d94bcde0594b3f59, type: 2}
 --- !u!114 &1855935035440294109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,5 +113,27 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: c0b3fcad7964c624596ddd43edbf6fc8, type: 2}
   seedData: {fileID: 0}
   duration: 100
-  itemName: 
+  itemName: fork
   price: 100
+  amount: 0
+--- !u!65 &6367720345117832882
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1682383683704824}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.29429954, y: 1.5077295, z: 0.082587495}
+  m_Center: {x: -0.000000022351742, y: -0.7246481, z: 0.004268447}

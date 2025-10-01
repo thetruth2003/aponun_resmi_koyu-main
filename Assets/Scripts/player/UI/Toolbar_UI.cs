@@ -11,7 +11,7 @@ public class Toolbar_UI : MonoBehaviour
     private void Start()
     {
         // Başlangıçta ilk slotu seç
-        SelectSlot(0);
+        //SelectSlot(0);
     }
 
     private void Update()

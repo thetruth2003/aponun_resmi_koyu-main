@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4552791840064620}
   - component: {fileID: 33057262343104484}
   - component: {fileID: 23326297064241404}
-  - component: {fileID: 64839053812705698}
   - component: {fileID: -8598362901483699944}
   - component: {fileID: 6888666685796518120}
+  - component: {fileID: 2919332022854119251}
   m_Layer: 0
   m_Name: SM_Prop_Tool_Scythe_01
   m_TagString: Untagged
@@ -86,28 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64839053812705698
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1547028232771016}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43610028939821184, guid: f02c72b195363fb4bab065a3c9bdcf1f, type: 2}
 --- !u!114 &-8598362901483699944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,5 +113,27 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: ba15aaca22e309443b55ab3b23dbf88c, type: 2}
   seedData: {fileID: 0}
   duration: 100
-  itemName: 
+  itemName: "t\u0131rpan"
   price: 100
+  amount: 0
+--- !u!65 &2919332022854119251
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1547028232771016}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.875758, y: 1.2198755, z: 0.23430172}
+  m_Center: {x: -0.3403605, y: -0.26480782, z: 0.09732674}

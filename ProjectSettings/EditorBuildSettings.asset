@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/main/aponun orjinal koyu.unity
     guid: e2ce4ba2aaec52844a739037b74414f7
   - enabled: 1
-    path: "Assets/Scenes/yen\u0131 menu cal\u0131s\u0131yo.unity"
+    path: Assets/Scenes/Main Menu.unity
     guid: 0bc17779059b91c4baac22fbe74c7c97
   - enabled: 1
     path: Assets/Scenes/main menu 1/main menu 1.unity

@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 511906573499310285}
   - component: {fileID: 511906573500113133}
   - component: {fileID: 511906573501080109}
-  - component: {fileID: 1981824074753252890}
   - component: {fileID: -7288226016201564527}
   - component: {fileID: 5978118136039819753}
+  - component: {fileID: 8260602240754313086}
   m_Layer: 0
   m_Name: Hammer
   m_TagString: Untagged
@@ -86,28 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1981824074753252890
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 511906573499153645}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: bb9dbb21f04dfcd46a15a446305dcf95, type: 3}
 --- !u!114 &-7288226016201564527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,5 +113,27 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: 933a3aa6b0608554aaf44e983a997528, type: 2}
   seedData: {fileID: 0}
   duration: 100
-  itemName: 
+  itemName: hammer
   price: 100
+  amount: 0
+--- !u!65 &8260602240754313086
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511906573499153645}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.11789963, y: 0.4857791, z: 0.16026963}
+  m_Center: {x: 0.0000000055879354, y: 0.24288955, z: -0.000000014901161}

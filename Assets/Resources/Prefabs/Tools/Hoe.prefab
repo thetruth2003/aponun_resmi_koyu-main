@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 3912317613997614406}
   - component: {fileID: 3912317613998384486}
   - component: {fileID: 3912317613999515558}
-  - component: {fileID: 150724446979664191}
   - component: {fileID: 3265118113580317831}
   - component: {fileID: 1342950669315134647}
+  - component: {fileID: 8594022085331325842}
   m_Layer: 0
   m_Name: Hoe
   m_TagString: Untagged
@@ -86,28 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &150724446979664191
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3912317613997521254}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: de3a499618d6ab244820052269a555a9, type: 3}
 --- !u!114 &3265118113580317831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,5 +113,27 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: b60c04ec6fd0d4040a0f516e8c844dd7, type: 2}
   seedData: {fileID: 0}
   duration: 100
-  itemName: 
+  itemName: hoe
   price: 100
+  amount: 0
+--- !u!65 &8594022085331325842
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3912317613997521254}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.17113864, y: 0.71647686, z: 0.34490314}
+  m_Center: {x: 0, y: 0.35305497, z: -0.037024483}

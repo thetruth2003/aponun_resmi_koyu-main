@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4635547304238950}
   - component: {fileID: 33378670413616736}
   - component: {fileID: 23217558634234440}
-  - component: {fileID: 64754146005894494}
   - component: {fileID: 4816603401931929978}
   - component: {fileID: -1334611994359214648}
+  - component: {fileID: -8656994245651465953}
   m_Layer: 0
   m_Name: SM_Prop_Tool_Hoe_01
   m_TagString: Untagged
@@ -86,28 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64754146005894494
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1309936475503278}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43440568680353900, guid: db843e3c659f2c545a5195146c879e59, type: 2}
 --- !u!114 &4816603401931929978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,5 +113,27 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: b60c04ec6fd0d4040a0f516e8c844dd7, type: 2}
   seedData: {fileID: 0}
   duration: 100
-  itemName: 
+  itemName: capa
   price: 100
+  amount: 0
+--- !u!65 &-8656994245651465953
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1309936475503278}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.33423984, y: 1.31382, z: 0.3204164}
+  m_Center: {x: -0.000000022351742, y: -0.62769336, z: 0.04902492}

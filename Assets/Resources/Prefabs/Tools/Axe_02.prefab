@@ -11,7 +11,9 @@ GameObject:
   - component: {fileID: 2895331030391679383}
   - component: {fileID: 2895331030390876599}
   - component: {fileID: 2895331030389779319}
-  - component: {fileID: 398368253250978309}
+  - component: {fileID: -4696101549758624792}
+  - component: {fileID: -544799460876095257}
+  - component: {fileID: -7903340083204459754}
   m_Layer: 0
   m_Name: Axe_02
   m_TagString: Untagged
@@ -84,8 +86,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &398368253250978309
-MeshCollider:
+--- !u!65 &-4696101549758624792
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -102,7 +104,36 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 1a7e342c560a8b04cb916b2964647c84, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.06491052, y: 0.70381147, z: 0.22869785}
+  m_Center: {x: 0.0000005066395, y: 0.34344998, z: -0.06515535}
+--- !u!114 &-544799460876095257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2895331030392042935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36c967cbd60ec78469b61869c071b382, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: {fileID: 11400000, guid: 98459a973ec7a2e489b6b24073b98bfb, type: 2}
+  seedData: {fileID: 0}
+  duration: 0
+  itemName: axe
+  price: 100
+  amount: 1
+--- !u!114 &-7903340083204459754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2895331030392042935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 334870c622a7fdd4fa8cadd335c913d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

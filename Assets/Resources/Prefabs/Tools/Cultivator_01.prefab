@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7348661498513106748}
   - component: {fileID: 7348661498509715228}
   - component: {fileID: 7348661498510812636}
-  - component: {fileID: 4944807333662227390}
+  - component: {fileID: 3358234078707526559}
   m_Layer: 0
   m_Name: Cultivator_01
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4944807333662227390
-MeshCollider:
+--- !u!65 &3358234078707526559
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -102,7 +102,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: bde439144ee94a448b26ababf7b0b56d, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 4.1352, y: 0.70356965, z: 1.5777361}
+  m_Center: {x: 0, y: 0.33570457, z: 0.7360972}

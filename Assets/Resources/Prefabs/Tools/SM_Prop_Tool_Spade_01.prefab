@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4435005775557140}
   - component: {fileID: 33870873370199102}
   - component: {fileID: 23013961179343866}
-  - component: {fileID: 64363378658756098}
   - component: {fileID: 2794700448214687375}
   - component: {fileID: -2867828998451531125}
+  - component: {fileID: 6123280293365869067}
   m_Layer: 0
   m_Name: SM_Prop_Tool_Spade_01
   m_TagString: Untagged
@@ -86,28 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64363378658756098
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1968298529172754}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43483883168258754, guid: c63c4e60edbc9d04bb1eb6680630914b, type: 2}
 --- !u!114 &2794700448214687375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,5 +113,27 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: c377bff8930c79c40afd851cdfc73fda, type: 2}
   seedData: {fileID: 0}
   duration: 100
-  itemName: 
+  itemName: shovel
   price: 100
+  amount: 0
+--- !u!65 &6123280293365869067
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968298529172754}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.24722795, y: 1.467587, z: 0.07206643}
+  m_Center: {x: -0.000000029802322, y: -0.70457685, z: -0.010697075}

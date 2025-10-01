@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 6077448018494538045}
   - component: {fileID: 6077448018497405213}
   - component: {fileID: 6077448018496439261}
-  - component: {fileID: 5183201394060586899}
   - component: {fileID: 546081274808284817}
   - component: {fileID: 1702053660208068727}
+  - component: {fileID: -5321853011562048765}
   m_Layer: 0
   m_Name: Rake_01
   m_TagString: Untagged
@@ -86,28 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5183201394060586899
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6077448018494446877}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 5a120a00a70c23c4aba5d3d1114763ff, type: 3}
 --- !u!114 &546081274808284817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,5 +113,27 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: 2c2657facf4975844b4b013d4f930ff4, type: 2}
   seedData: {fileID: 0}
   duration: 100
-  itemName: 
+  itemName: rake
   price: 100
+  amount: 0
+--- !u!65 &-5321853011562048765
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6077448018494446877}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.44919685, y: 1.5433228, z: 0.19934493}
+  m_Center: {x: -0.0025816709, y: 0.7716614, z: -0.045359615}

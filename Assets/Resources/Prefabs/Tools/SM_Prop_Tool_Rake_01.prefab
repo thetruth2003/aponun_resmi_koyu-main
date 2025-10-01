@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4770423201946952}
   - component: {fileID: 33611111512496144}
   - component: {fileID: 23314695237528980}
-  - component: {fileID: 64685747391557590}
   - component: {fileID: 5240410071607916080}
   - component: {fileID: 8984122723355001272}
+  - component: {fileID: 3489493330251101235}
   m_Layer: 0
   m_Name: SM_Prop_Tool_Rake_01
   m_TagString: Untagged
@@ -86,28 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64685747391557590
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1851300905487520}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 43283881004401904, guid: d833f9b994fb32e41aa77ec37337ea78, type: 2}
 --- !u!114 &5240410071607916080
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,5 +113,27 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: 5c602d5f56b93b348a51ffcfc29d620c, type: 2}
   seedData: {fileID: 0}
   duration: 100
-  itemName: 
+  itemName: broom
   price: 100
+  amount: 0
+--- !u!65 &3489493330251101235
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1851300905487520}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.51689446, y: 1.3937845, z: 0.15578468}
+  m_Center: {x: 0, y: -0.6676756, z: 0.047930874}

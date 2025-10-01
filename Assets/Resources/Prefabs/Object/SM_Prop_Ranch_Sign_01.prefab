@@ -96,7 +96,6 @@ GameObject:
   - component: {fileID: 23245452818025712}
   - component: {fileID: 64521590793685856}
   - component: {fileID: 64313082496126092}
-  - component: {fileID: 4644451861790172087}
   m_Layer: 0
   m_Name: SM_Prop_Ranch_Sign_01
   m_TagString: Untagged
@@ -214,24 +213,3 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 43940836050791532, guid: 6f303de5375c2be4cae2e8a46f1150aa, type: 2}
---- !u!65 &4644451861790172087
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1674799794316044}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 7.5931177, y: 4.236341, z: 0.48504028}
-  m_Center: {x: 0.00000011920929, y: 2.1181705, z: 0}
