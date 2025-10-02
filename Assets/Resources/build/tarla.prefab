@@ -66,12 +66,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seedData: {fileID: 0}
+  wateringEffectPrefab: {fileID: 5006882218157402728, guid: 74dcbc35e3d00a34c9c44b17a8b5e6bc, type: 3}
+  waterIndicatorYOffset: -0.1
   hasSeed: 0
   isWatered: 0
   currentSeed: 0
-  dryDayCount: 0
   maxDryDays: 2
   plantPrefab: {fileID: 0}
+  growthStages: []
+  isPesticideApplied: 0
 --- !u!1 &431145404223085917
 GameObject:
   m_ObjectHideFlags: 0
@@ -138,12 +142,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seedData: {fileID: 0}
+  wateringEffectPrefab: {fileID: 5006882218157402728, guid: 74dcbc35e3d00a34c9c44b17a8b5e6bc, type: 3}
+  waterIndicatorYOffset: -0.1
   hasSeed: 0
   isWatered: 0
   currentSeed: 0
-  dryDayCount: 0
   maxDryDays: 2
   plantPrefab: {fileID: 0}
+  growthStages: []
+  isPesticideApplied: 0
 --- !u!1 &622034637012851075
 GameObject:
   m_ObjectHideFlags: 0
@@ -210,12 +218,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seedData: {fileID: 0}
+  wateringEffectPrefab: {fileID: 5006882218157402728, guid: 74dcbc35e3d00a34c9c44b17a8b5e6bc, type: 3}
+  waterIndicatorYOffset: -0.1
   hasSeed: 0
   isWatered: 0
   currentSeed: 0
-  dryDayCount: 0
   maxDryDays: 2
   plantPrefab: {fileID: 0}
+  growthStages: []
+  isPesticideApplied: 0
 --- !u!1 &1893874971047153002
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,12 +347,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seedData: {fileID: 0}
+  wateringEffectPrefab: {fileID: 5006882218157402728, guid: 74dcbc35e3d00a34c9c44b17a8b5e6bc, type: 3}
+  waterIndicatorYOffset: -0.1
   hasSeed: 0
   isWatered: 0
   currentSeed: 0
-  dryDayCount: 0
   maxDryDays: 2
   plantPrefab: {fileID: 0}
+  growthStages: []
+  isPesticideApplied: 0
 --- !u!1 &2102039325700640016
 GameObject:
   m_ObjectHideFlags: 0
@@ -407,12 +423,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seedData: {fileID: 0}
+  wateringEffectPrefab: {fileID: 5006882218157402728, guid: 74dcbc35e3d00a34c9c44b17a8b5e6bc, type: 3}
+  waterIndicatorYOffset: -0.1
   hasSeed: 0
   isWatered: 0
   currentSeed: 0
-  dryDayCount: 0
   maxDryDays: 2
   plantPrefab: {fileID: 0}
+  growthStages: []
+  isPesticideApplied: 0
 --- !u!1 &2745339515094903116
 GameObject:
   m_ObjectHideFlags: 0
@@ -726,12 +746,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seedData: {fileID: 0}
+  wateringEffectPrefab: {fileID: 5006882218157402728, guid: 74dcbc35e3d00a34c9c44b17a8b5e6bc, type: 3}
+  waterIndicatorYOffset: -0.1
   hasSeed: 0
   isWatered: 0
   currentSeed: 0
-  dryDayCount: 0
   maxDryDays: 2
   plantPrefab: {fileID: 0}
+  growthStages: []
+  isPesticideApplied: 0
 --- !u!1 &5760815711971788158
 GameObject:
   m_ObjectHideFlags: 0
@@ -798,12 +822,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seedData: {fileID: 0}
+  wateringEffectPrefab: {fileID: 5006882218157402728, guid: 74dcbc35e3d00a34c9c44b17a8b5e6bc, type: 3}
+  waterIndicatorYOffset: -0.1
   hasSeed: 0
   isWatered: 0
   currentSeed: 0
-  dryDayCount: 0
   maxDryDays: 2
   plantPrefab: {fileID: 0}
+  growthStages: []
+  isPesticideApplied: 0
 --- !u!1 &6341003764343220984
 GameObject:
   m_ObjectHideFlags: 0
@@ -870,12 +898,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seedData: {fileID: 0}
+  wateringEffectPrefab: {fileID: 5006882218157402728, guid: 74dcbc35e3d00a34c9c44b17a8b5e6bc, type: 3}
+  waterIndicatorYOffset: -0.1
   hasSeed: 0
   isWatered: 0
   currentSeed: 0
-  dryDayCount: 0
   maxDryDays: 2
   plantPrefab: {fileID: 0}
+  growthStages: []
+  isPesticideApplied: 0
 --- !u!1 &8384887083689732905
 GameObject:
   m_ObjectHideFlags: 0
@@ -995,9 +1027,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad49a63851473444ac6981ed44fdaef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seedData: {fileID: 0}
+  wateringEffectPrefab: {fileID: 5006882218157402728, guid: 74dcbc35e3d00a34c9c44b17a8b5e6bc, type: 3}
+  waterIndicatorYOffset: -0.1
   hasSeed: 0
   isWatered: 0
   currentSeed: 0
-  dryDayCount: 0
   maxDryDays: 2
   plantPrefab: {fileID: 0}
+  growthStages: []
+  isPesticideApplied: 0

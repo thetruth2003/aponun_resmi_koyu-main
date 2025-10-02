@@ -372,7 +372,7 @@ public void BuyItem()
             Debug.LogWarning("Raycast bir objeye çarpmadı.");
         }
     }
-    public void Watering()
+public void Watering()
 {
     // Nişangah pozisyonuna göre ray oluştur
     Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
@@ -381,40 +381,68 @@ public void BuyItem()
     if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer))
     {
         GameObject clickedCell = hit.collider.gameObject; // Tıklanan hücre
-        Debug.Log($"Raycast başarılı, çarpılan obje: {clickedCell.name}, Layer: {clickedCell.layer}");
 
-        // Katman ve seçili tag kontrolü
+        // SeedBox + su aracı kontrolü (ikisini de destekleyelim)
         int seedBoxLayer = LayerMask.NameToLayer("SeedBox");
-        string selectedTag = toolbar.GetSelectedPrefabTag();
-        Debug.Log($"SeedBox Layer Index: {seedBoxLayer}");
-        Debug.Log($"Seçili Tag: {selectedTag}");
+        bool isWaterSelected =
+            (toolbar.GetSelectedPrefabTag() == "water") ||
+            (toolbar.GetSelectedPrefab() == "WateringCan_full");
 
-        // Eğer tıklanan yer SeedBox katmanında ve seçili tag "water" ise
-        if (clickedCell.layer == seedBoxLayer && selectedTag == "water")
+        if (clickedCell.layer == seedBoxLayer && isWaterSelected)
         {
-            // Hücrede SeedPoint var mı kontrol et
-            SeedPoint seedPoint = clickedCell.GetComponent<SeedPoint>();
-            if (seedPoint != null)
+            // Hücrede SeedPoint var mı?
+            SeedPoint sp = clickedCell.GetComponent<SeedPoint>();
+            if (sp == null)
             {
-                seedPoint.isWatered = true;
-                Debug.Log($"💧 Hücre sulandı: {clickedCell.name}");
-                StartCoroutine(waterfall()); // Görsel efekt varsa çalıştır
+                Debug.LogWarning($"[Watering] SeedPoint yok: {clickedCell.name}");
+                return;
+            }
+
+            // Tohum yoksa suyu işleme (istersen kaldır)
+            if (!sp.hasSeed)
+            {
+                Debug.Log($"[Watering] Hücrede tohum yok: {clickedCell.name}");
+                // return; // tohum yokken su vermeyi iptal etmek istersen aç
+            }
+
+            // Sulandı flag'i
+            sp.isWatered = true;
+
+            // --- SADECE BURADA SPAWN / TEK KOPYA ---
+            if (sp.wateringEffectPrefab != null)
+            {
+                // Aynı objeyi çoğaltmamak için önce var mı bak
+                Transform marker = sp.transform.Find("WaterIndicator");
+                if (marker == null)
+                {
+                    GameObject fx = Instantiate(
+                        sp.wateringEffectPrefab,
+                        sp.transform.position + Vector3.up * 0.1f,
+                        Quaternion.identity,
+                        sp.transform
+                    );
+                    fx.name = "WaterIndicator";
+                }
             }
             else
             {
-                Debug.LogWarning($"SeedPoint component bulunamadı: {clickedCell.name}");
+                Debug.LogWarning($"[Watering] {sp.name} için wateringEffectPrefab atanmadı.");
             }
+
+            Debug.Log($"Hücre sulandı: {clickedCell.name}");
         }
         else
         {
-            Debug.LogWarning($"Layer veya tag uyuşmuyor! clickedCell.layer: {clickedCell.layer}, seedBoxLayer: {seedBoxLayer}, tag: {selectedTag}");
+            // Şartlar sağlanmadı
+            // Debug.Log($"[Watering] Layer/tag şartları tutmuyor.");
         }
     }
     else
     {
-        Debug.LogWarning("Raycast bir objeye çarpmadı.");
+        Debug.Log("Raycast bir objeye çarpmadı.");
     }
 }
+
 
     public IEnumerator waterfall()
     {

@@ -22,6 +22,14 @@ public class SeedPoint : MonoBehaviour, ISaveable
     [Tooltip("ScriptableObject ile tohum verisi (varsa buradan okunur)")]
     public SeedData seedData;
 
+    [Header("Watering Indicator")]
+    [Tooltip("Sulanmış görseli (mavi çember)")]
+    public GameObject wateringEffectPrefab;
+    private GameObject wateringEffectInstance;
+
+    [Tooltip("Mavi çemberin dikey offset'i (negatif → biraz aşağı)")]
+    public float waterIndicatorYOffset = -0.02f;
+
     [Header("Seed State")]
     public bool hasSeed = false;
     public bool isWatered = false;
@@ -43,7 +51,6 @@ public class SeedPoint : MonoBehaviour, ISaveable
     private int dryDayCount = 0;
     public bool isPesticideApplied = false; // opsiyonel
 
-    // Aktif verileri SeedData varsa oradan, yoksa yerelden okuyan yardımcılar
     private GameObject[] ActiveGrowthStages =>
         (seedData != null && seedData.growthStages != null && seedData.growthStages.Length > 0)
             ? seedData.growthStages
@@ -56,15 +63,21 @@ public class SeedPoint : MonoBehaviour, ISaveable
     {
         if (GameTime.Instance != null)
             GameTime.Instance.OnNewDay += HandleNewDay;
+
+        // Açılışta mevcut duruma göre halkayı senkronla
+        SyncWaterObject();
     }
+
     private void OnEnable()
     {
         game_start.OnDayChanged += HandleNewDay;
     }
+
     private void OnDisable()
     {
         game_start.OnDayChanged -= HandleNewDay;
     }
+
     private void OnDestroy()
     {
         if (GameTime.Instance != null)
@@ -90,7 +103,6 @@ public class SeedPoint : MonoBehaviour, ISaveable
     {
         hasSeed = data.hasSeed;
         currentSeed = data.seedType;
-        isWatered = data.isWatered;
         dryDayCount = data.dryDayCount;
         currentGrowthStage = data.growthStage;
         isPesticideApplied = data.isPesticideApplied;
@@ -100,34 +112,32 @@ public class SeedPoint : MonoBehaviour, ISaveable
 
         if (hasSeed)
             SpawnStage(currentGrowthStage);
+
+        // isWatered görselini de state'e göre uygula
+        SetWatered(data.isWatered);
     }
 
     // ===================== CORE MEKANİK =====================
 
-    /// <summary> Tohum eker, aşama 0’ı spawn eder. </summary>
+    /// <summary>Tohum eker, aşama 0’ı spawn eder.</summary>
     public void PlantSeed(SeedType type)
     {
         if (hasSeed) return;
 
         currentSeed = type;
 
-        // SeedData atanmışsa ve tiple uyumluysa, growthStages ve diğer değerleri kopyala
         if (seedData != null)
         {
             if (seedData.seedType != SeedType.None && seedData.seedType != type)
-            {
                 Debug.LogWarning($"[SeedPoint] SeedData.seedType ({seedData.seedType}) ile ekilen tip ({type}) farklı.");
-            }
 
-            // >>> SENKRON: SO -> komponent
             if (seedData.growthStages != null && seedData.growthStages.Length > 0)
                 growthStages = seedData.growthStages;
 
-            maxDryDays = seedData.maxDryDays;   // istersen kopyala
-                                                // sellPrice gibi başka alanları da burada alabilirsin (SeedPoint'te varsa)
+            maxDryDays = seedData.maxDryDays;
 
 #if UNITY_EDITOR
-            UnityEditor.EditorUtility.SetDirty(this); // Inspector'da güncellemeyi işaretle
+            UnityEditor.EditorUtility.SetDirty(this);
 #endif
         }
         else
@@ -136,24 +146,29 @@ public class SeedPoint : MonoBehaviour, ISaveable
         }
 
         hasSeed = true;
-        isWatered = false;
         dryDayCount = 0;
         currentGrowthStage = 0;
 
+        SetWatered(false); // yeni ekimde sulama yok
         SpawnStage(0);
     }
 
-    /// <summary> Bu noktada sulama yapıldı olarak işaretle. </summary>
-    public void Water()
-    {
-        if (!hasSeed) return;
-        isWatered = true;
-    }
+    /// <summary>Oyuncu suladı: isWatered = true ve halkayı yönet.</summary>
+    public void Water() => SetWatered(true);
 
     /// <summary>
-    /// Her yeni gün tetiklendiğinde sulama kontrolü; sulandıysa büyür,
-    /// sulanmadıysa kurur ve MaxDryDays'e ulaşınca ölür.
+    /// isWatered durumunu merkezi yönetir (true→spawn, false→destroy).
+    /// Yağmur, kova, sprinkler hepsi bunu çağırmalı.
     /// </summary>
+    public void SetWatered(bool state)
+    {
+        if (state && !hasSeed) return; // tohum yoksa sulama yok
+
+        isWatered = state;
+        SyncWaterObject();
+    }
+
+    /// <summary>Yeni gün: sulandıysa büyüt, değilse kurut; sonunda sulama sıfırlanır.</summary>
     private void HandleNewDay()
     {
         if (!hasSeed) return;
@@ -174,11 +189,10 @@ public class SeedPoint : MonoBehaviour, ISaveable
             }
         }
 
-        // Gün sonunda sıfırla
-        isWatered = false;
+        // Gün sonunda sulamayı kapat (halkayla birlikte)
+        SetWatered(false);
     }
 
-    /// <summary> Bir sonraki growth stage’ine geçer ve prefab’ı yeniler. </summary>
     private void AdvanceGrowth()
     {
         var stages = ActiveGrowthStages;
@@ -189,22 +203,20 @@ public class SeedPoint : MonoBehaviour, ISaveable
                 currentGrowthStage++;
                 SpawnStage(currentGrowthStage);
             }
-            // en son aşamadaysa burada hasat/loot/flag vs. ekleyebilirsin
         }
         else
         {
-            // Fallback tek prefab
             if (plantPrefab != null)
                 SpawnPrefab(plantPrefab);
         }
     }
 
-    /// <summary> Bitkiyi yok eder ve tüm state’i sıfırlar. </summary>
     private void KillCrop()
     {
+        SetWatered(false); // halkayı da temizle
+
         hasSeed = false;
         currentSeed = SeedType.None;
-        isWatered = false;
         dryDayCount = 0;
         currentGrowthStage = 0;
 
@@ -212,7 +224,6 @@ public class SeedPoint : MonoBehaviour, ISaveable
             Destroy(plantedInstance);
     }
 
-    /// <summary> Verilen aşamaya uygun prefab’ı instantiate eder. </summary>
     private void SpawnStage(int stageIndex)
     {
         var stages = ActiveGrowthStages;
@@ -226,7 +237,6 @@ public class SeedPoint : MonoBehaviour, ISaveable
         }
         else
         {
-            // SeedData yoksa ve stages boşsa fallback olarak tek prefab
             prefab = plantPrefab;
         }
 
@@ -243,6 +253,38 @@ public class SeedPoint : MonoBehaviour, ISaveable
         plantedInstance = Instantiate(prefab, transform.position, Quaternion.identity, transform);
         plantedInstance.transform.SetParent(transform, worldPositionStays: true);
     }
+
+    // ===================== WATER OBJ HELPER =====================
+
+    /// <summary>isWatered == true ise halkayı spawnlar, false ise varsa destroy eder.</summary>
+    private void SyncWaterObject()
+    {
+        if (isWatered)
+        {
+            Vector3 basePos = transform.position;
+            Vector3 finalPos = basePos + new Vector3(0f, -1.0f, 0f);
+
+            if (wateringEffectPrefab != null && wateringEffectInstance == null)
+            {
+                wateringEffectInstance = Instantiate(
+                    wateringEffectPrefab,
+                    finalPos,
+                    Quaternion.identity,
+                    null // önce parent verme, test için
+                );
+            }
+        }
+        else
+        {
+            if (wateringEffectInstance != null)
+            {
+                Destroy(wateringEffectInstance);
+                wateringEffectInstance = null;
+            }
+        }
+    }
+
+    // ===================== SAVEABLE API (stub) =====================
 
     public string GetUniqueID() => transform.GetInstanceID().ToString();
 
