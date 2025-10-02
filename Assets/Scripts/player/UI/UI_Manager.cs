@@ -41,6 +41,8 @@ public class UI_Manager : MonoBehaviour
 
     public void Update()
     {
+                if (PauseMenuUI.IsInputLocked)
+        return; // 👈 Menü açıkken hiçbir tuş çalışmaz (ESC dışında)
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             ToggleInventoryUI();

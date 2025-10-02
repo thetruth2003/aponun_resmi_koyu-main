@@ -28,6 +28,8 @@
 
     public void Update()
     {
+        if (PauseMenuUI.IsInputLocked)
+        return; // 👈 Menü açıkken hiçbir tuş çalışmaz (ESC dışında)
         UpdateItemInfo();
         Updateinfo();
 
@@ -371,51 +373,49 @@ public void BuyItem()
         }
     }
     public void Watering()
+{
+    // Nişangah pozisyonuna göre ray oluştur
+    Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+
+    // Raycast ile tıklanan hücreyi bul
+    if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer))
     {
-        // Nişangah pozisyonuna göre ray oluştur
-        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+        GameObject clickedCell = hit.collider.gameObject; // Tıklanan hücre
+        Debug.Log($"Raycast başarılı, çarpılan obje: {clickedCell.name}, Layer: {clickedCell.layer}");
 
-        // Raycast ile tıklanan hücreyi bul
-        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer))
+        // Katman ve seçili tag kontrolü
+        int seedBoxLayer = LayerMask.NameToLayer("SeedBox");
+        string selectedTag = toolbar.GetSelectedPrefabTag();
+        Debug.Log($"SeedBox Layer Index: {seedBoxLayer}");
+        Debug.Log($"Seçili Tag: {selectedTag}");
+
+        // Eğer tıklanan yer SeedBox katmanında ve seçili tag "water" ise
+        if (clickedCell.layer == seedBoxLayer && selectedTag == "water")
         {
-            GameObject clickedCell = hit.collider.gameObject; // Tıklanan hücreyi al
-
-            // Tıklanan hücre SeedBox katmanında mı ve seçili öğe "seed" mi kontrol et
-            if (clickedCell.layer == LayerMask.NameToLayer("SeedBox") && toolbar.GetSelectedPrefab() == "WateringCan_full")
+            // Hücrede SeedPoint var mı kontrol et
+            SeedPoint seedPoint = clickedCell.GetComponent<SeedPoint>();
+            if (seedPoint != null)
             {
-                string selectedItemUsedPrefab = toolbar.GetSelectedUsedPrefab();
-
-                if (!string.IsNullOrEmpty(selectedItemUsedPrefab))
-                {
-                    // Resources klasöründen prefab'ı yükle
-                    GameObject newItem = Resources.Load<GameObject>($"Prefabs/{selectedItemUsedPrefab}");
-
-                    if (newItem != null)
-                    {
-                        // Yeni prefab'ı hücrenin merkezine spawnla
-                        Vector3 spawnPosition = clickedCell.transform.position; // Hücrenin pozisyonu
-                        Quaternion spawnRotation = Quaternion.identity; // Varsayılan rotasyon
-                        Instantiate(newItem, spawnPosition, spawnRotation);
-                        Debug.Log($"Seed prefab spawned: {selectedItemUsedPrefab} at {spawnPosition}");
-                        StartCoroutine(waterfall());
-                    }
-                    else
-                    {
-                        //Debug.LogWarning($"Prefab bulunamadı: {selectedItemUsedPrefab}");
-                    }
-                }
+                seedPoint.isWatered = true;
+                Debug.Log($"💧 Hücre sulandı: {clickedCell.name}");
+                StartCoroutine(waterfall()); // Görsel efekt varsa çalıştır
             }
             else
             {
-                // Şartlar sağlanmadığında kullanıcıyı bilgilendir
-                //Debug.Log("Tıklanan hücre SeedBox değil veya seçili öğe 'seed' değil.");
+                Debug.LogWarning($"SeedPoint component bulunamadı: {clickedCell.name}");
             }
         }
         else
         {
-            Debug.Log("Raycast bir objeye çarpmadı.");
+            Debug.LogWarning($"Layer veya tag uyuşmuyor! clickedCell.layer: {clickedCell.layer}, seedBoxLayer: {seedBoxLayer}, tag: {selectedTag}");
         }
     }
+    else
+    {
+        Debug.LogWarning("Raycast bir objeye çarpmadı.");
+    }
+}
+
     public IEnumerator waterfall()
     {
         //WateringCan_full.transform.GetChild(0).gameObject.SetActive(true);

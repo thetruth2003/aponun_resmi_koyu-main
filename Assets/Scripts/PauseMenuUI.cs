@@ -48,6 +48,8 @@ public class PauseMenuUI : MonoBehaviour
     [SerializeField] private Dropdown resolutionDropdown; // opsiyonel
 
     // ========= INPUT / UI KİLİDİ =========
+    [Header("Player Controller")]
+    public SC_FPSController playerController;
     [Header("Disable these while paused (player controls)")]
     [SerializeField] private MonoBehaviour[] disableWhilePaused; // örn: SC_FPSController, StateManger, vb.
 
@@ -63,7 +65,7 @@ public class PauseMenuUI : MonoBehaviour
     // ========= HARD FREEZE =========
     [Header("Hard Freeze (her şeyi dondur)")]
     [SerializeField] private bool hardFreezeEverything = true;
-
+    public static bool IsInputLocked = false;
     [Header("Scenes")]
     [SerializeField] private string mainMenuSceneName = "MainMenu";
 
@@ -141,7 +143,8 @@ public class PauseMenuUI : MonoBehaviour
     public void Pause()
     {
         if (IsPaused) return;
-
+        IsInputLocked = true;   // 🔒 Tüm inputlar devre dışı
+        IsPaused = true;
         if (rootPanel) rootPanel.SetActive(true);
         if (optionsPanel) optionsPanel.SetActive(false);
 
@@ -167,7 +170,8 @@ public class PauseMenuUI : MonoBehaviour
     public void Resume()
     {
         if (!IsPaused) return;
-
+        IsInputLocked = false;  // 🔓 Inputlar yeniden aktif
+        IsPaused = false;
         if (hardFreezeEverything)
             UnfreezeWorld(); // <<< HER ŞEYİ ESKİ HALİNE GETİR
 
@@ -237,17 +241,6 @@ public class PauseMenuUI : MonoBehaviour
         SetBlockedWhilePaused(false);
 
         IsPaused = false;
-    }
-
-    private void SetPausedOnComponents(bool paused)
-    {
-        if (disableWhilePaused == null) return;
-        foreach (var mb in disableWhilePaused)
-        {
-            if (!mb) continue;
-            mb.enabled = !paused;
-            // if (mb is SC_FPSController fps) fps.canMove = !paused;
-        }
     }
 
     private void SetHiddenWhilePaused(bool hidden)
@@ -509,6 +502,14 @@ public class PauseMenuUI : MonoBehaviour
         PlayerPrefs.SetInt(KEY_RESOLUTION, idx);
         SetResolutionByIndex(idx);
     }
+    private void SetPausedOnComponents(bool paused)
+    {
+        if (playerController != null)
+        {
+            playerController.enabled = !paused;
+        }
+    }
+
 
     // ========= HELPERS =========
     private void ApplyVolume(float v)

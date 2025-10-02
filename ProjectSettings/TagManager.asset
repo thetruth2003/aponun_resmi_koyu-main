@@ -23,6 +23,7 @@ TagManager:
   - Street
   - DialogText
   - Money
+  - water
   layers:
   - Default
   - TransparentFX

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6359013924171190640}
   m_Layer: 0
   m_Name: WateringCan_empty
-  m_TagString: Untagged
+  m_TagString: water
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -100,6 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 0146d420a74af8c4fb98256aaf561e04, type: 2}
+  seedData: {fileID: 0}
 --- !u!114 &3816462595557100800
 MonoBehaviour:
   m_ObjectHideFlags: 0

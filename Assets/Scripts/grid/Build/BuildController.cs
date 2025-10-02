@@ -10,6 +10,8 @@ public class BuildController : MonoBehaviour
 
     void Update()
     {
+        if (PauseMenuUI.IsInputLocked)
+        return; // 👈 Menü açıkken hiçbir tuş çalışmaz (ESC dışında)
         if (foundationPreview != null)
         {
             RaycastHit hit;

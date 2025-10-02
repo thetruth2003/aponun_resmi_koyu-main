@@ -48,7 +48,8 @@ public class SC_FPSController : MonoBehaviour
     void Update()
     {
         if (!canMove) return;
-
+        if (PauseMenuUI.IsInputLocked)
+        return; // 👈 Menü açıkken hiçbir tuş çalışmaz (ESC dışında)
         HandleMovementInput();
         HandleCameraLook();
         HandleStamina();
