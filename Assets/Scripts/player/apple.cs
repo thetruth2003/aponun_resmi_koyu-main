@@ -31,7 +31,7 @@ public class apple : Collectable
         {
             // Yerçekimini devre dışı bırak
             rb.gravityScale = 0;
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
 
             // Eğer henüz düşürülmemişse, Drop() metodunu çağır
 

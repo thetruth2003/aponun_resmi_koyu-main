@@ -55,7 +55,7 @@ public class TreeFall : MonoBehaviour
 
             // Ağaç yere düşene kadar bekle
             Rigidbody rbFall = GetComponent<Rigidbody>();
-            while (rbFall.velocity.magnitude > 0.1f)
+            while (rbFall.linearVelocity.magnitude > 0.1f)
             {
                 yield return null;
             }

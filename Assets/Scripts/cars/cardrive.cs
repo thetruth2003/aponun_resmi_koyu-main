@@ -67,9 +67,9 @@ public DriveAxle driveAxle = DriveAxle.Rear;
         if (frontRight) frontRight.steerAngle = steerAngle;
 
         // ---- Hız / yön tespiti ----
-        float speedMS  = rb.velocity.magnitude;
+        float speedMS  = rb.linearVelocity.magnitude;
         float speedKPH = speedMS * 3.6f;
-        float signedFwdMS = Vector3.Dot(rb.velocity, transform.forward); // + ileri, - geri
+        float signedFwdMS = Vector3.Dot(rb.linearVelocity, transform.forward); // + ileri, - geri
 
         // ---- İleri mi geri mi gitmek istiyoruz? ----
         bool wantReverse = vAxis < -0.1f;
@@ -137,9 +137,9 @@ public DriveAxle driveAxle = DriveAxle.Rear;
         // ---- Basit yol tutuş / yanal kayma sönümleme ----
         if (lateralGrip > 0f && speedMS > 0.1f)
         {
-            Vector3 localVel = transform.InverseTransformDirection(rb.velocity);
+            Vector3 localVel = transform.InverseTransformDirection(rb.linearVelocity);
             localVel.x = Mathf.Lerp(localVel.x, 0f, lateralGrip * Time.fixedDeltaTime);
-            rb.velocity = transform.TransformDirection(localVel);
+            rb.linearVelocity = transform.TransformDirection(localVel);
         }
 
         // ---- Dirençler ----
@@ -174,7 +174,7 @@ public DriveAxle driveAxle = DriveAxle.Rear;
 
     void ApplyResistances()
     {
-        var v = rb.velocity;
+        var v = rb.linearVelocity;
         float speed = v.magnitude;
         if (speed < 1e-3f) return;
         Vector3 dir = v / speed;

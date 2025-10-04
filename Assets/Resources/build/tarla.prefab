@@ -446,6 +446,7 @@ GameObject:
   - component: {fileID: 2745339515096905612}
   - component: {fileID: 4281874745746023033}
   - component: {fileID: 8893924564624938071}
+  - component: {fileID: 4262431624048156873}
   m_Layer: 0
   m_Name: tarla
   m_TagString: Platform
@@ -506,6 +507,11 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -527,6 +533,7 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
@@ -574,6 +581,20 @@ MonoBehaviour:
   - {fileID: 622034637012851075}
   - {fileID: 6341003764343220984}
   - {fileID: 431145404223085917}
+--- !u!114 &4262431624048156873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2745339515094903116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4b463699739da047b90c6990670cbf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Building
+  building_name: tarla
+  building: {fileID: 2745339515094903116}
 --- !u!1 &3327490269083964999
 GameObject:
   m_ObjectHideFlags: 0

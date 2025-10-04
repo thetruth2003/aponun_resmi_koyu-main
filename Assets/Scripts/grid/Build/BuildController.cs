@@ -3,74 +3,81 @@
 public class BuildController : MonoBehaviour
 {
     public GameObject foundation;          // Seçilen yapı prefab'ı
-    public GameObject foundationPreview;  // Önizleme prefab'ı
-    private Transform socket;             // Seçili "Socket" transformu
+    public GameObject foundationPreview;   // Önizleme prefab'ı
+    private Transform socket;              // Seçili "Socket"
     public Camera playerCamera;
     private bool canBuild = true;
 
+    [Header("Rotation (Mouse Wheel)")]
+    [SerializeField] private float rotationPerNotch = 15f; // teker bir 'tik' için derece
+    [SerializeField] private bool invertScroll = false;    // yön ters gelirse işaretle
+    private float currentYaw = 0f;
+    private Quaternion basePreviewRotation = Quaternion.identity;
+
     void Update()
     {
-        if (PauseMenuUI.IsInputLocked)
-        return; // 👈 Menü açıkken hiçbir tuş çalışmaz (ESC dışında)
+        if (PauseMenuUI.IsInputLocked) return;
+
         if (foundationPreview != null)
         {
+            // --- ORTA TEKER: ROTASYON ---
+            float scroll = Input.mouseScrollDelta.y; // genelde +1 / -1
+            if (Mathf.Abs(scroll) > 0.0001f)
+            {
+                if (invertScroll) scroll = -scroll;
+                currentYaw += scroll * rotationPerNotch;
+                // 0..360 aralığında tut
+                if (currentYaw >= 360f) currentYaw -= 360f;
+                else if (currentYaw < 0f) currentYaw += 360f;
+
+                foundationPreview.transform.rotation =
+                    basePreviewRotation * Quaternion.Euler(0f, currentYaw, 0f);
+            }
+
             RaycastHit hit;
             Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-            Renderer renderer = foundationPreview.GetComponent<Renderer>();
+
+            var renderer = foundationPreview.GetComponent<Renderer>();
             if (renderer != null)
             {
-                if (canBuild)
-                    renderer.sharedMaterial.SetColor("_Color", Color.green);
-                else
-                    renderer.sharedMaterial.SetColor("_Color", Color.red);
+                renderer.sharedMaterial.SetColor("_Color", canBuild ? Color.green : Color.red);
             }
 
             if (Physics.Raycast(ray, out hit, 10f))
             {
-                foundationPreview.transform.position = hit.point + new Vector3(3, 0.1f, 3); // Zeminden 0.1 birim yukarı
-
-                if (hit.transform.tag == "Platform")
-                    canBuild = false;
-                else
-                    canBuild = true;
+                // basit engel kuralı
+                canBuild = !hit.transform.CompareTag("Platform");
 
                 if (hit.transform.CompareTag("socket"))
                 {
                     socket = hit.transform;
-                    if (canBuild)
-                    {
-                        foundationPreview.transform.position = socket.transform.position;
-                        foundationPreview.SetActive(true);
-                    }
-                    else
-                    {
-                        foundationPreview.SetActive(true);
-                    }
+                    foundationPreview.transform.position = socket.position;
+                    foundationPreview.SetActive(true);
 
                     if (Input.GetMouseButtonDown(0) && canBuild)
                     {
-                        GameObject spawnFoundation = Instantiate(foundation, socket.position, Quaternion.identity);
+                        // preview rotasyonunu kullan
+                        Quaternion rot = foundationPreview.transform.rotation;
+                        Instantiate(foundation, socket.position, rot);
                         Destroy(socket.gameObject);
                     }
                 }
                 else
                 {
-                    if (foundationPreview != null)
-                    {
-                        foundationPreview.transform.position = hit.point;
-                        foundationPreview.SetActive(true);
-                    }
+                    foundationPreview.transform.position = hit.point;
+                    foundationPreview.SetActive(true);
 
                     if (Input.GetMouseButtonDown(0) && canBuild)
                     {
-                        GameObject spawnFoundation = Instantiate(foundation, hit.point, Quaternion.identity);
+                        Quaternion rot = foundationPreview.transform.rotation;
+                        Instantiate(foundation, hit.point, rot);
                     }
                 }
             }
         }
 
-        // Sağ tıklama ile prefab'ları "none" yap ve preview'i kapat
-        if (Input.GetMouseButtonDown(1)) // 1 sağ tık için
+        // Sağ tık: sıfırla
+        if (Input.GetMouseButtonDown(1))
         {
             ResetPrefabs();
         }
@@ -78,7 +85,6 @@ public class BuildController : MonoBehaviour
 
     public void SetFoundation(string foundationName)
     {
-        // Foundation prefab'ını ayarla
         GameObject loadedFoundation = Resources.Load<GameObject>($"build/{foundationName}");
         if (loadedFoundation != null)
         {
@@ -96,13 +102,14 @@ public class BuildController : MonoBehaviour
         GameObject loadedPreview = Resources.Load<GameObject>($"build/{previewName}");
         if (loadedPreview != null)
         {
-            if (foundationPreview != null)
-            {
-                Destroy(foundationPreview); // Eski preview prefab'ını yok et
-            }
+            if (foundationPreview != null) Destroy(foundationPreview);
 
-            foundationPreview = Instantiate(loadedPreview); // Yeni preview prefab'ını yarat
-            foundationPreview.SetActive(false); // Başlangıçta görünmez yap
+            foundationPreview = Instantiate(loadedPreview);
+            foundationPreview.SetActive(false);
+
+            basePreviewRotation = foundationPreview.transform.rotation; // referans
+            currentYaw = 0f; // teker açısını sıfırla
+
             Debug.Log("Preview prefab yüklendi ve sahnede yaratıldı: " + previewName);
         }
         else
@@ -111,15 +118,17 @@ public class BuildController : MonoBehaviour
         }
     }
 
-    // Sağ tık ile prefab'ları sıfırlama ve preview'i kapatma
     private void ResetPrefabs()
     {
         foundation = null;
         if (foundationPreview != null)
         {
-            foundationPreview.SetActive(false);  // Preview prefab'ını kapat
-            Destroy(foundationPreview);  // Eğer aktifse, sahneden tamamen yok et
+            foundationPreview.SetActive(false);
+            Destroy(foundationPreview);
         }
+        currentYaw = 0f;
+        basePreviewRotation = Quaternion.identity;
+
         Debug.Log("Prefabs sıfırlandı.");
     }
 }

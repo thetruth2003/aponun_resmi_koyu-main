@@ -22,7 +22,7 @@ public class Speedometer : MonoBehaviour
 
             {
                 // Hızı al ve UI'yi güncelle
-                float speed = activeCarRb.velocity.magnitude * 3.6f; // m/s -> km/h dönüşümü
+                float speed = activeCarRb.linearVelocity.magnitude * 3.6f; // m/s -> km/h dönüşümü
                 speedText.text = Mathf.RoundToInt(speed).ToString() + " km/h";
 
                 // İğnenin açısını hesapla

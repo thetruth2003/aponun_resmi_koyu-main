@@ -414,7 +414,7 @@ public class VehicleControl : MonoBehaviour
             collision.transform.root.GetComponent<VehicleControl>().slip2 = Mathf.Clamp(collision.relativeVelocity.magnitude, 0.0f, 10.0f);
 
             MyRigidbody.angularVelocity = new Vector3(-MyRigidbody.angularVelocity.x * 0.5f, MyRigidbody.angularVelocity.y * 0.5f, -MyRigidbody.angularVelocity.z * 0.5f);
-            MyRigidbody.velocity = new Vector3(MyRigidbody.velocity.x, MyRigidbody.velocity.y * 0.5f, MyRigidbody.velocity.z);
+            MyRigidbody.linearVelocity = new Vector3(MyRigidbody.linearVelocity.x, MyRigidbody.linearVelocity.y * 0.5f, MyRigidbody.linearVelocity.z);
 
 
         }
@@ -444,7 +444,7 @@ public class VehicleControl : MonoBehaviour
 
     void FixedUpdate()
     {
-        speed = MyRigidbody.velocity.magnitude * 2.7f;
+        speed = MyRigidbody.linearVelocity.magnitude * 2.7f;
 
         if (speed < lastSpeed - 10 && slip < 10)
         {

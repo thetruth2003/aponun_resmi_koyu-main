@@ -44,7 +44,7 @@ public class VehicleController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.mass = config.mass;
-        rb.drag = config.drag;
+        rb.linearDamping = config.drag;
         rb.centerOfMass += comOffset; // COM offset uygula
         SetupWheels();
     }
@@ -76,7 +76,7 @@ public class VehicleController : MonoBehaviour
     {
         float steerInput = Input.GetAxis("Horizontal");
 
-        float speed = rb.velocity.magnitude * 3.6f; // km/h
+        float speed = rb.linearVelocity.magnitude * 3.6f; // km/h
         float steerLimiter = Mathf.Lerp(1f, 0.5f, speed / highSpeedSteerReducer); // hız arttıkça steer azalır
 
         float steerAngle = steerInput * config.maxSteerAngle * steerLimiter;
@@ -87,7 +87,7 @@ public class VehicleController : MonoBehaviour
 
     private void HandleEngine(float delta)
     {
-        float vehicleSpeed = rb.velocity.magnitude * 3.6f; // km/h
+        float vehicleSpeed = rb.linearVelocity.magnitude * 3.6f; // km/h
         float gearRatio = config.gearRatios[currentGear];
         float wheelRPM = (rearLeft.rpm + rearRight.rpm) * 0.5f;
 
@@ -233,7 +233,7 @@ public class VehicleController : MonoBehaviour
 
         if (speedText != null)
         {
-            float speed = rb.velocity.magnitude * 3.6f;
+            float speed = rb.linearVelocity.magnitude * 3.6f;
             speedText.text = "Speed: " + Mathf.RoundToInt(speed) + " km/h";
         }
     }
@@ -263,8 +263,8 @@ public class VehicleController : MonoBehaviour
 
     void StabilizeSideSlip()
     {
-        Vector3 localVel = transform.InverseTransformDirection(rb.velocity);
+        Vector3 localVel = transform.InverseTransformDirection(rb.linearVelocity);
         localVel.x = Mathf.Lerp(localVel.x, 0f, sideStability * Time.fixedDeltaTime);
-        rb.velocity = transform.TransformDirection(localVel);
+        rb.linearVelocity = transform.TransformDirection(localVel);
     }
 }
