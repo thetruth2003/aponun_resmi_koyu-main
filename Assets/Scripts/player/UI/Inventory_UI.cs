@@ -9,12 +9,14 @@ public class Inventory_UI : MonoBehaviour
     public List<Slot_UI> slots = new List<Slot_UI>();
     public Canvas canvas;
     private Inventory inventory;
+    public static Inventory_UI instance;
     public Muhasebeci money;                         // Para UI referansı
 
     public string UniqueID => GetUniqueID();
 
     private void Awake()
     {
+        instance = this;
         // Canvas otomatik bul
         if (canvas == null)
             canvas = FindObjectOfType<Canvas>();

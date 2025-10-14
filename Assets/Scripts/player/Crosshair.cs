@@ -25,6 +25,8 @@
     public GameObject itemInfoPanel; // UI Panel
     public GameObject NpcInfoPanel; // UI Panel
     public Muhasebeci muhasebeci; // Muhasebeci script referansı
+    public Inventory inventory;
+
 
     public void Update()
     {
@@ -44,7 +46,10 @@
         {
             ChangeCell();
         }
-
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            
+        }
         if (Input.GetKeyDown(KeyCode.E)) // E tuşuna basılınca
         {
             Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
@@ -319,59 +324,80 @@ public void BuyItem()
         }
     }
     public void AddSeed()
+{
+    // Nişangah pozisyonuna göre ray oluştur
+    Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+
+    // Raycast ile tıklanan hücreyi bul
+    if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer))
     {
-        // Nişangah pozisyonuna göre ray oluştur
-        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+        GameObject clickedCell = hit.collider.gameObject; // Tıklanan hücreyi al
+        Debug.Log($"Raycast başarılı, çarpılan obje: {clickedCell.name}, Layer: {clickedCell.layer}");
 
-        // Raycast ile tıklanan hücreyi bul
-        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer))
+        // Tıklanan hücre SeedBox katmanında mı ve seçili öğe "seed" mi kontrol et
+        int seedBoxLayer = LayerMask.NameToLayer("SeedBox");
+        Debug.Log($"SeedBox Layer Index: {seedBoxLayer}");
+        Debug.Log($"Seçili prefab tagı: {toolbar.GetSelectedPrefabTag()}");
+
+        if (clickedCell.layer == seedBoxLayer && toolbar.GetSelectedPrefabTag() == "seed")
         {
-            GameObject clickedCell = hit.collider.gameObject; // Tıklanan hücreyi al
-            Debug.Log($"Raycast başarılı, çarpılan obje: {clickedCell.name}, Layer: {clickedCell.layer}");
+            string selectedItemUsedPrefab = toolbar.GetSelectedUsedPrefab();
+            SeedData selectedSeedData = toolbar.GetSelectedPrefabSeedData();
+            Debug.Log($"Prefab adı: {selectedItemUsedPrefab}");
 
-            // Tıklanan hücre SeedBox katmanında mı ve seçili öğe "seed" mi kontrol et
-            int seedBoxLayer = LayerMask.NameToLayer("SeedBox");
-            Debug.Log($"SeedBox Layer Index: {seedBoxLayer}");
-            Debug.Log($"Seçili prefab tagı: {toolbar.GetSelectedPrefabTag()}");
-
-            if (clickedCell.layer == seedBoxLayer && toolbar.GetSelectedPrefabTag() == "seed")
+            if (!string.IsNullOrEmpty(selectedItemUsedPrefab))
             {
-                string selectedItemUsedPrefab = toolbar.GetSelectedUsedPrefab();
-                SeedData selectedSeedData = toolbar.GetSelectedPrefabSeedData();
-                Debug.Log($"Prefab adı: {selectedItemUsedPrefab}");
-
-                if (!string.IsNullOrEmpty(selectedItemUsedPrefab))
+                // Resources klasöründen prefab'ı yükle
+                GameObject newItem = Resources.Load<GameObject>($"Prefabs/foods/{selectedItemUsedPrefab}");
+                Debug.Log($"Prefab yükleniyor: {newItem}");
+                SeedPoint seedPoint = hit.collider.GetComponent<SeedPoint>();
+                if (newItem != null)
                 {
-                    // Resources klasöründen prefab'ı yükle
-                    GameObject newItem = Resources.Load<GameObject>($"Prefabs/foods/{selectedItemUsedPrefab}");
-                    Debug.Log($"Prefab yükleniyor: {newItem}");
-                    SeedPoint seedPoint = hit.collider.GetComponent<SeedPoint>();
-                    if (newItem != null)
+                    seedPoint.seedData = selectedSeedData;
+                    seedPoint.PlantSeed(selectedSeedData.seedType); // 🌱 ekim yap
+
+                    // === 🌾 Envanterden 1 tohum azalt ===
+                    var selectedInvSlot = toolbar.GetSelectedInventorySlot(); // aktif toolbar slotunu al
+                    var inv = inventory ?? InventoryManager.Instance?.toolbar;
+
+                    if (inv != null && selectedInvSlot != null)
                     {
-                        seedPoint.seedData = selectedSeedData;
-                        seedPoint.PlantSeed(selectedSeedData.seedType); // Sadece bu satır yeterli!
-                        Debug.Log($"SeedPoint'e ekim yapıldı: {selectedSeedData.seedType}");
+                        inv.selectedSlot = selectedInvSlot;
+                        inv.TryConsumeSelectedSlot(1);
+                        Debug.Log("[AddSeed] Aktif slot azaltıldı.");
                     }
                     else
                     {
-                        Debug.LogWarning($"Prefab bulunamadı: {selectedItemUsedPrefab}");
+                        Debug.LogWarning("[AddSeed] Slot veya envanter bulunamadı, azaltılamadı.");
                     }
+
+                    // UI yenile
+                    //inventory_uı?.Refresh();
+                    //toolbar?.RefreshUI();
+
+                    Debug.Log($"SeedPoint'e ekim yapıldı: {selectedSeedData.seedType}");
                 }
                 else
                 {
-                    Debug.LogWarning("Seçili prefab adı boş!");
+                    Debug.LogWarning($"Prefab bulunamadı: {selectedItemUsedPrefab}");
                 }
             }
             else
             {
-                Debug.LogWarning($"Layer veya tag uyuşmuyor! clickedCell.layer: {clickedCell.layer}, seedBoxLayer: {seedBoxLayer}, tag: {toolbar.GetSelectedPrefabTag()}");
+                Debug.LogWarning("Seçili prefab adı boş!");
             }
         }
         else
         {
-            Debug.LogWarning("Raycast bir objeye çarpmadı.");
+            Debug.LogWarning($"Layer veya tag uyuşmuyor! clickedCell.layer: {clickedCell.layer}, seedBoxLayer: {seedBoxLayer}, tag: {toolbar.GetSelectedPrefabTag()}");
         }
     }
+    else
+    {
+        Debug.LogWarning("Raycast bir objeye çarpmadı.");
+    }
+}
+
 public void Watering()
 {
     // Nişangah pozisyonuna göre ray oluştur

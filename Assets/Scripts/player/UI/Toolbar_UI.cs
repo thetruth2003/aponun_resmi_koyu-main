@@ -44,6 +44,17 @@ public class Toolbar_UI : MonoBehaviour
      ? selectedSlot.inventorySlot.itemUsedPrefab != null
          ? selectedSlot.inventorySlot.itemUsedPrefab.name : null : null;
     }
+    // Toolbar_UI.cs içine ekle (mevcut koda dokunmadan)
+    public int GetSelectedIndex()
+    {
+        // selectedSlot hangi indexteyse onu döndür
+        return toolbarSlots != null ? toolbarSlots.IndexOf(selectedSlot) : -1;
+    }
+
+    public Inventory.Slot GetSelectedInventorySlot()
+    {
+        return (selectedSlot != null) ? selectedSlot.inventorySlot : null;
+    }
 
     public void SelectSlot(int index)
     {

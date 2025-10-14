@@ -1,207 +1,226 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using static UnityEditor.Progress;
+﻿    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEngine;
+    using static UnityEditor.Progress;
 
-[System.Serializable]
-public class Inventory
-{
     [System.Serializable]
-    public class Slot
-    {   
-        public ItemData item;
-        public string itemName;
-        public int count;
-        public int maxAllowed;
-        public GameObject itemPrefab;
-        public Sprite icon;
-        public GameObject itemUsedPrefab;
-        public Slot(ItemData item, int count)
+    public class Inventory
+    {
+        [System.Serializable]
+        public class Slot
         {
-            this.item = item;
-            this.count = count;
-        }
-
-        public void Clear()
-        {
-            item = null;
-            itemName = "";
-            count = 0;
-            maxAllowed = 99;
-            itemPrefab = null;
-            itemUsedPrefab = null;  
-        }
-        public Slot()
-        {
-            item = null;
-            itemName = "";
-            count = 0;
-            maxAllowed = 99;
-            itemPrefab = null;
-            itemUsedPrefab = null;
-        }
-
-        public bool IsEmpty
-        {
-            get
+            public ItemData item;
+            public string itemName;
+            public int count;
+            public int maxAllowed;
+            public GameObject itemPrefab;
+            public Sprite icon;
+            public GameObject itemUsedPrefab;
+            public Slot(ItemData item, int count)
             {
-                return string.IsNullOrEmpty(itemName) && count == 0;
+                this.item = item;
+                this.count = count;
+            }
+
+            public void Clear()
+            {
+                item = null;
+                itemName = "";
+                count = 0;
+                maxAllowed = 99;
+                itemPrefab = null;
+                itemUsedPrefab = null;
+            }
+            public Slot()
+            {
+                item = null;
+                itemName = "";
+                count = 0;
+                maxAllowed = 99;
+                itemPrefab = null;
+                itemUsedPrefab = null;
+            }
+
+            public bool IsEmpty
+            {
+                get
+                {
+                    return string.IsNullOrEmpty(itemName) && count == 0;
+                }
+            }
+
+            public bool CanAddItem(string itemName)
+            {
+                // Aynı item türündense ve mevcut slotta maksimum sınırı aşmıyorsa eklenebilir
+                return this.itemName == itemName && count < maxAllowed;
+            }
+
+            public void AddItem(ItemData item, string itemName, Sprite icon, int maxAllowed, GameObject itemPrefab, GameObject itemUsedPrefab)
+            {
+                // Aynı item türündeyse sayıyı artır, yoksa yeni item ekle
+                if (this.itemName == itemName)
+                {
+                    count++; // Aynı türden ekleniyorsa count artırılır
+                }
+                else
+                {
+                    this.item = item;
+                    this.itemName = itemName;
+                    this.icon = icon;
+                    this.maxAllowed = maxAllowed;
+                    this.itemPrefab = itemPrefab;
+                    this.itemUsedPrefab = itemUsedPrefab;
+                    count = 1; // Yeni item geldiğinde count 1 olur
+                }
+            }
+            public bool RemoveItem() // true: azaldı veya temizlendi, false: zaten boştu
+            {
+                if (count > 0)
+                {
+                    count--;
+                    if (count == 0)
+                    {
+                        item = null;
+                        icon = null;
+                        itemName = "";
+                        itemPrefab = null;
+                        itemUsedPrefab = null;
+                    }
+                    return true;
+                }
+                return false;
+            }
+        }
+        public List<Slot> slots = new List<Slot>();
+        public Slot selectedSlot = null;
+
+        public Inventory(int numSlots)
+        {
+            for (int i = 0; i < numSlots; i++)
+            {
+                slots.Add(new Slot());
             }
         }
 
-        public bool CanAddItem(string itemName)
+        /// <summary>
+        /// Eşyayı envantere ekler. Aynı türden bir eşya varsa, sadece sayıyı artırır. Yoksa yeni bir slot açar.
+        /// </summary>
+        public void Add(Item item)
         {
-            // Aynı item türündense ve mevcut slotta maksimum sınırı aşmıyorsa eklenebilir
-            return this.itemName == itemName && count < maxAllowed;
+            Debug.Log($"Adding item: {item.data.itemName}");
+
+            // 1. Aynı türden bir item bul ve o slota ekle
+            foreach (Slot slot in slots)
+            {
+                if (slot.CanAddItem(item.data.itemName)) // Aynı itemName'e ve kapasiteye bakar
+                {
+                    slot.AddItem(item.data,item.data.itemName, item.data.icon, item.data.maxAllowed, item.data.itemPrefab, item.data.itemUsedPrefab);
+                    Debug.Log($"Item added to existing slot: {slot.itemName}, Count: {slot.count}");
+                    return;
+                }
+            }
+
+            // 2. Eğer aynı türde bir item yoksa, boş bir slot bul ve ekle
+            foreach (Slot slot in slots)
+            {
+                if (slot.IsEmpty)
+                {
+                    slot.AddItem(item.data,item.data.itemName, item.data.icon, item.data.maxAllowed, item.data.itemPrefab, item.data.itemUsedPrefab);
+                    Debug.Log($"Item added to empty slot: {slot.itemName}, Count: {slot.count}");
+                    return;
+                }
+            }
+
+            // 3. Eğer boş bir slot da yoksa, hata mesajı yazdır (isteğe bağlı)
+            Debug.LogWarning("Inventory is full! Cannot add the item.");
         }
 
-        public void AddItem(ItemData item,string itemName, Sprite icon, int maxAllowed, GameObject itemPrefab, GameObject itemUsedPrefab)
+        public void Remove(int index)
         {
-            // Aynı item türündeyse sayıyı artır, yoksa yeni item ekle
-            if (this.itemName == itemName)
+            if (index >= 0 && index < slots.Count)
             {
-                count++; // Aynı türden ekleniyorsa count artırılır
+                slots[index].RemoveItem();
             }
             else
             {
-                this.item = item;
-                this.itemName = itemName;
-                this.icon = icon;
-                this.maxAllowed = maxAllowed;
-                this.itemPrefab = itemPrefab;
-                this.itemUsedPrefab = itemUsedPrefab;
-                count = 1; // Yeni item geldiğinde count 1 olur
+                Debug.LogWarning("Geçersiz slot indeksi!");
             }
         }
 
-        public void RemoveItem()
+        public void Remove(int index, int count)
         {
-            if (count > 0)
+            if (index >= 0 && index < slots.Count && slots[index].count >= count)
             {
-                count--;
-
-                if (count == 0)
+                for (int i = 0; i < count; i++)
                 {
-                    item = null;
-                    icon = null;
-                    itemName = "";
-                    itemPrefab = null;
-                    itemUsedPrefab = null;
+                    Remove(index);
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Geçersiz işlem veya yetersiz eşya!");
+            }
+        }
+
+        public void MoveSlot(int fromIndex, int toIndex, Inventory toInventory, int numToMove = 1)
+        {
+            if (slots == null || toInventory == null) return;
+
+            if (fromIndex < 0 || fromIndex >= slots.Count)
+            {
+                Debug.LogWarning($"MoveSlot: Geçersiz fromIndex: {fromIndex}");
+                return;
+            }
+
+            if (toIndex < 0 || toIndex >= toInventory.slots.Count)
+            {
+                Debug.LogWarning($"MoveSlot: Geçersiz toIndex: {toIndex}");
+                return;
+            }
+
+            Slot fromSlot = slots[fromIndex];
+            Slot toSlot = toInventory.slots[toIndex];
+
+            for (int i = 0; i < numToMove; i++)
+            {
+                if (toSlot.IsEmpty || toSlot.CanAddItem(fromSlot.itemName))
+                {
+                    toSlot.AddItem(fromSlot.item, fromSlot.itemName, fromSlot.icon, fromSlot.maxAllowed, fromSlot.itemPrefab, fromSlot.itemUsedPrefab);
+                    fromSlot.RemoveItem();
                 }
             }
         }
-    }
-
-    public List<Slot> slots = new List<Slot>();
-    public Slot selectedSlot = null;
-
-    public Inventory(int numSlots)
-    {
-        for (int i = 0; i < numSlots; i++)
+        public bool TryConsumeSelectedSlot(int amount = 1)
         {
-            slots.Add(new Slot());
-        }
-    }
-
-    /// <summary>
-    /// Eşyayı envantere ekler. Aynı türden bir eşya varsa, sadece sayıyı artırır. Yoksa yeni bir slot açar.
-    /// </summary>
-    public void Add(Item item)
-    {
-        Debug.Log($"Adding item: {item.data.itemName}");
-
-        // 1. Aynı türden bir item bul ve o slota ekle
-        foreach (Slot slot in slots)
-        {
-            if (slot.CanAddItem(item.data.itemName)) // Aynı itemName'e ve kapasiteye bakar
+            if (selectedSlot == null)
             {
-                slot.AddItem(item.data,item.data.itemName, item.data.icon, item.data.maxAllowed, item.data.itemPrefab, item.data.itemUsedPrefab);
-                Debug.Log($"Item added to existing slot: {slot.itemName}, Count: {slot.count}");
-                return;
+                Debug.LogWarning("[Inventory] selectedSlot null, azaltılamadı.");
+                return false;
             }
-        }
 
-        // 2. Eğer aynı türde bir item yoksa, boş bir slot bul ve ekle
-        foreach (Slot slot in slots)
-        {
-            if (slot.IsEmpty)
+            if (selectedSlot.count <= 0)
             {
-                slot.AddItem(item.data,item.data.itemName, item.data.icon, item.data.maxAllowed, item.data.itemPrefab, item.data.itemUsedPrefab);
-                Debug.Log($"Item added to empty slot: {slot.itemName}, Count: {slot.count}");
-                return;
+                Debug.LogWarning("[Inventory] Seçili slotta item yok veya miktar 0.");
+                return false;
             }
+
+            // sadece count azalt — RemoveItem zaten 0'da temizliyor
+            selectedSlot.RemoveItem();
+            Inventory_UI.instance.Refresh();
+            Debug.Log($"[Inventory] Seçili slot azaltıldı → {selectedSlot.itemName}, kalan: {selectedSlot.count}");
+            return true;
         }
 
-        // 3. Eğer boş bir slot da yoksa, hata mesajı yazdır (isteğe bağlı)
-        Debug.LogWarning("Inventory is full! Cannot add the item.");
-    }
 
-    public void Remove(int index)
-    {
-        if (index >= 0 && index < slots.Count)
+        public void SelectSlot(int index)
         {
-            slots[index].RemoveItem();
-        }
-        else
-        {
-            Debug.LogWarning("Geçersiz slot indeksi!");
-        }
-    }
-
-    public void Remove(int index, int count)
-    {
-        if (index >= 0 && index < slots.Count && slots[index].count >= count)
-        {
-            for (int i = 0; i < count; i++)
+            if (slots != null && slots.Count > 0 && index >= 0 && index < slots.Count)
             {
-                Remove(index);
+                selectedSlot = slots[index];
             }
-        }
-        else
-        {
-            Debug.LogWarning("Geçersiz işlem veya yetersiz eşya!");
-        }
-    }
-
-    public void MoveSlot(int fromIndex, int toIndex, Inventory toInventory, int numToMove = 1)
-    {
-        if (slots == null || toInventory == null) return;
-
-        if (fromIndex < 0 || fromIndex >= slots.Count)
-        {
-            Debug.LogWarning($"MoveSlot: Geçersiz fromIndex: {fromIndex}");
-            return;
-        }
-
-        if (toIndex < 0 || toIndex >= toInventory.slots.Count)
-        {
-            Debug.LogWarning($"MoveSlot: Geçersiz toIndex: {toIndex}");
-            return;
-        }
-
-        Slot fromSlot = slots[fromIndex];
-        Slot toSlot = toInventory.slots[toIndex];
-
-        for (int i = 0; i < numToMove; i++)
-        {
-            if (toSlot.IsEmpty || toSlot.CanAddItem(fromSlot.itemName))
+            else
             {
-                toSlot.AddItem(fromSlot.item, fromSlot.itemName, fromSlot.icon, fromSlot.maxAllowed, fromSlot.itemPrefab, fromSlot.itemUsedPrefab);
-                fromSlot.RemoveItem();
+                Debug.LogWarning("Geçersiz slot indeksi seçildi!");
             }
         }
     }
-
-
-    public void SelectSlot(int index)
-    {
-        if (slots != null && slots.Count > 0 && index >= 0 && index < slots.Count)
-        {
-            selectedSlot = slots[index];
-        }
-        else
-        {
-            Debug.LogWarning("Geçersiz slot indeksi seçildi!");
-        }
-    }
-}
