@@ -38,6 +38,13 @@ public class savetest : MonoBehaviour
         public string id; public string name; public Vector3 pos; public Quaternion rot; public Vector3 scale; public float duration; public float fuel; public int price;
     }
     [Serializable] private class CarsSave { public List<CarRec> cars = new(); }
+    [Header("Muhasebe")]
+    [SerializeField] private Muhasebeci muhasebeci;
+
+    private string MoneyPath => Path.Combine(Application.persistentDataPath, "money_save.json");
+
+    [Serializable] private class MoneySave { public int money; }
+
 
     private string ToolsPath => Path.Combine(Application.persistentDataPath, "tools_save.json");
     private string BuildingsPath => Path.Combine(Application.persistentDataPath, "buildings_save.json");
@@ -45,8 +52,8 @@ public class savetest : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(saveKey)) { SaveTools(); SaveBuildings(); SaveCars(); Debug.Log("[Save] Bitti."); }
-        if (Input.GetKeyDown(loadKey)) { LoadTools(); LoadBuildings(); LoadCars(); Debug.Log("[Load] Bitti."); }
+        if (Input.GetKeyDown(saveKey)) { SaveTools(); SaveMoney(); SaveBuildings(); SaveCars(); Debug.Log("[Save] Bitti."); }
+        if (Input.GetKeyDown(loadKey)) { LoadTools(); LoadMoney(); LoadBuildings(); LoadCars(); Debug.Log("[Load] Bitti."); }
     }
 
     // =============== TOOLS ===============
@@ -287,6 +294,26 @@ public class savetest : MonoBehaviour
 
         Debug.Log($"[Load Cars] Güncellendi: {updated}, Spawn: {spawned}, Prefab Eksik: {missingPrefab}. Toplam {sf.cars.Count}");
     }
+    private void SaveMoney()
+    {
+        if (!muhasebeci) muhasebeci = FindObjectOfType<Muhasebeci>();
+        if (!muhasebeci) { Debug.LogWarning("[Save Money] Muhasebeci bulunamadı."); return; }
+
+        var ms = new MoneySave { money = muhasebeci.GetMoney() };
+        File.WriteAllText(MoneyPath, JsonUtility.ToJson(ms));
+        Debug.Log($"[Save Money] {ms.money} → {MoneyPath}");
+    }
+
+    private void LoadMoney()
+    {
+        if (!File.Exists(MoneyPath)) { Debug.LogWarning("[Load Money] Dosya yok."); return; }
+        if (!muhasebeci) muhasebeci = FindObjectOfType<Muhasebeci>();
+        if (!muhasebeci) { Debug.LogError("[Load Money] Muhasebeci yok."); return; }
+
+        var ms = JsonUtility.FromJson<MoneySave>(File.ReadAllText(MoneyPath));
+        muhasebeci.SetMoney(ms.money);
+        Debug.Log($"[Load Money] {ms.money}");
+    }
 
     // =============== HELPERS ===============
     private static void ApplyTRS(Transform t, Vector3 pos, Quaternion rot, Vector3 scale)
@@ -340,7 +367,7 @@ public class savetest : MonoBehaviour
         }
         return best;
     }
-
+    
     private static Car FindMatchCar(List<Car> list, string name, Vector3 pos, float tolSqr)
     {
         Car best = null; float bestD = float.MaxValue;

@@ -7,6 +7,9 @@ using System.Collections;
 public class VehicleController : MonoBehaviour
 {
     public VehicleConfig config;
+    // VehicleController.cs içinde, alanların arasına ekle:
+    [Header("Exit Point")]
+    public Transform exitPoint; // Oyuncunun ineceği nokta (araç prefabında bir Empty child)
 
     public WheelCollider frontLeft;
     public WheelCollider frontRight;

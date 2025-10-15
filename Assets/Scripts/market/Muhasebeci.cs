@@ -133,6 +133,15 @@ public class Muhasebeci : MonoBehaviour
     // =========================
     //  SATIŞ
     // =========================
+    public int GetMoney() => playerMoney;
+
+// Yükleme sırasında direkt değer atamak için:
+    public void SetMoney(int value)
+    {
+        playerMoney = Mathf.Max(0, value);
+        if (moneyText != null) moneyText.text = playerMoney.ToString();
+    }
+
     public Receipt Sell(string productName, float quantityKg)
     {
         if (productCatalog == null)
