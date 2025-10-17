@@ -7,6 +7,7 @@ public class Toolbar_UI : MonoBehaviour
     public Movement movement;
     public List<Slot_UI> toolbarSlots = new List<Slot_UI>();
     private Slot_UI selectedSlot;
+    
 
     private void Start()
     {

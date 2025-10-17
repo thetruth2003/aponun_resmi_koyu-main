@@ -21,6 +21,8 @@ public class SeedPoint : MonoBehaviour, ISaveable
     [Header("Seed Configuration")]
     [Tooltip("ScriptableObject ile tohum verisi (varsa buradan okunur)")]
     public SeedData seedData;
+    [Header("Save/Load")]
+    [SerializeField] public string persistentId; // sahnede kalıcı ID
 
     [Header("Watering Indicator")]
     [Tooltip("Sulanmış görseli (mavi çember)")]

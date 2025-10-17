@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c9e4f66ecfee954ab1659a67589d083, type: 3}
+  m_Name: Onion Seed
+  m_EditorClassIdentifier: 
+  seedType: 16
+  growthStages:
+  - {fileID: 1163311251083476, guid: c9fcf85374b714e4e9525abaae880483, type: 3}
+  - {fileID: 1163311251083476, guid: c9fcf85374b714e4e9525abaae880483, type: 3}
+  - {fileID: 1037932898391020, guid: f2dcaf4ec916af54db3e2986361dc976, type: 3}
+  - {fileID: 1037932898391020, guid: f2dcaf4ec916af54db3e2986361dc976, type: 3}
+  - {fileID: 1844472924765640, guid: 4e46d6f185e48d64baf0d2527861b434, type: 3}
+  - {fileID: 1682263953301304, guid: ef10db410d4f3974085973a64cd5061e, type: 3}
+  maxDryDays: 100
+  sellPrice: 100

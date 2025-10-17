@@ -1,10 +1,12 @@
 using System.Collections.Generic;
-using System;   
+using System;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Rendering; // Volume için
+using TMPro;
 
 public class MenuUI : MonoBehaviour
 {
@@ -12,6 +14,17 @@ public class MenuUI : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject optionsPanel;
+
+    // ===================== LOAD SUMMARY (Optional) =====================
+    [Header("Load Summary (Optional)")]
+    [SerializeField] private bool useLoadSummaryPanel = true;   // true → Continue panel açar; false → direkt yükler
+    [SerializeField] private GameObject loadPanel;              // özet paneli
+    [SerializeField] private Button loadConfirmButton;          // panel içi "Load/Continue"
+    [SerializeField] private Button loadCancelButton;           // panel içi "Close/Back"
+    [SerializeField] private TMP_Text dayText;
+    [SerializeField] private TMP_Text moneyText;
+    [SerializeField] private TMP_Text questText;
+    [SerializeField] private TMP_Text timeText;
 
     // ===================== MAIN BUTTONS =====================
     [Header("Main Buttons")]
@@ -45,7 +58,6 @@ public class MenuUI : MonoBehaviour
     [SerializeField] private Toggle fullscreenToggle;
     [SerializeField] private Toggle vSyncToggle;
     [SerializeField] private Dropdown resolutionDropdown; // optional
-    
 
     // ===================== PLAYER PREFS KEYS =====================
     private const string KEY_SAVE_EXISTS = "SaveExists";
@@ -58,33 +70,40 @@ public class MenuUI : MonoBehaviour
 
     private Resolution[] _resolutions;
     public GameObject[] killOnStart; // Menu Camera, Global Volume, vs.
-    
 
+    // ===================== META (summary) =====================
+    private string MetaPath => Path.Combine(Application.persistentDataPath, "meta_save.json");
+    [Serializable]
+    private class MetaSave {
+        public int day;
+        public int money;
+        public string lastQuest;
+        public string savedAt;
+    }
 
     private void Start()
     {
         // Paneller
         if (mainPanel) mainPanel.SetActive(true);
         if (optionsPanel) optionsPanel.SetActive(false);
+        if (loadPanel) loadPanel.SetActive(false);
 
         // Continue aktifliği
         bool hasSave = PlayerPrefs.GetInt(KEY_SAVE_EXISTS, 0) == 1;
         if (continueButton) continueButton.interactable = hasSave;
 
-        // --- Main buttons (koddan bağla) ---
+        // Main buttons
         if (newGameButton) newGameButton.onClick.AddListener(OnClick_NewGame);
         if (continueButton) continueButton.onClick.AddListener(OnClick_Continue);
         if (optionsButton) optionsButton.onClick.AddListener(OnClick_Options);
         if (quitButton) quitButton.onClick.AddListener(OnClick_Quit);
         if (backButton) backButton.onClick.AddListener(OnClick_Back);
 
-        // --- Options tab buttons ---
-        if (voiceTabButton) voiceTabButton.onClick.AddListener(OnClick_VoiceTab);
-        if (videoTabButton) videoTabButton.onClick.AddListener(OnClick_VideoTab);
-        if (controlsTabButton) controlsTabButton.onClick.AddListener(OnClick_ControlsTab);
-        if (gameTabButton) gameTabButton.onClick.AddListener(OnClick_GameTab);
+        // Load panel buttons
+        if (loadConfirmButton) loadConfirmButton.onClick.AddListener(OnClick_LoadFromPanel);
+        if (loadCancelButton)  loadCancelButton.onClick.AddListener(OnClick_CloseLoadPanel);
 
-        // --- Options widgets init + listeners ---
+        // Options init + listeners
         InitQualityDropdown();
         InitResolutionDropdown();
         LoadAndApplyOptions();
@@ -103,11 +122,15 @@ public class MenuUI : MonoBehaviour
         SceneManager.LoadScene("aponun orjinal koyu", LoadSceneMode.Single);
     }
 
+    // Continue → panel veya direkt
     private void OnClick_Continue()
     {
-        if (PlayerPrefs.GetInt("SaveExists", 0) != 1) return;
-        string last = PlayerPrefs.GetString("LastScene", "aponun orjinal koyu");
-        SceneManager.LoadScene(last, LoadSceneMode.Single);
+        if (PlayerPrefs.GetInt(KEY_SAVE_EXISTS, 0) != 1) return;
+
+        if (useLoadSummaryPanel)
+            OnClick_OpenLoadPanel();
+        else
+            OnClick_QuickLoad();
     }
 
     private void OnClick_Options()
@@ -132,6 +155,47 @@ public class MenuUI : MonoBehaviour
     #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
     #endif
+    }
+
+    // ===================== LOAD SUMMARY & QUICK LOAD =====================
+    private void OnClick_OpenLoadPanel()
+    {
+        if (loadPanel) loadPanel.SetActive(true);
+
+        if (!File.Exists(MetaPath))
+        {
+            if (dayText)   dayText.text   = "Day: -";
+            if (moneyText) moneyText.text = "Money: -";
+            if (questText) questText.text = "Last Quest: -";
+            if (timeText)  timeText.text  = "Saved: -";
+            return;
+        }
+
+        var meta = JsonUtility.FromJson<MetaSave>(File.ReadAllText(MetaPath));
+        if (dayText)   dayText.text   = $"Day: {meta.day}";
+        if (moneyText) moneyText.text = $"Money: {meta.money}";
+        if (questText) questText.text = $"Last Quest: {(string.IsNullOrWhiteSpace(meta.lastQuest) ? "-" : meta.lastQuest)}";
+        if (timeText)  timeText.text  = $"Saved: {meta.savedAt}";
+    }
+
+    private void OnClick_LoadFromPanel()
+    {
+        if (loadPanel) loadPanel.SetActive(false);
+        OnClick_QuickLoad();
+    }
+
+    // Direkt yükleme (panel yok)
+    public void OnClick_QuickLoad()
+    {
+        if (PlayerPrefs.GetInt(KEY_SAVE_EXISTS, 0) != 1) return;
+        string last = PlayerPrefs.GetString(KEY_LAST_SCENE, "aponun orjinal koyu");
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(last, LoadSceneMode.Single);
+    }
+
+    private void OnClick_CloseLoadPanel()
+    {
+        if (loadPanel) loadPanel.SetActive(false);
     }
 
     // ===================== OPTIONS: TAB LOGIC =====================
@@ -268,7 +332,6 @@ public class MenuUI : MonoBehaviour
         if (_resolutions == null || _resolutions.Length == 0) return;
         idx = Mathf.Clamp(idx, 0, _resolutions.Length - 1);
         var r = _resolutions[idx];
-        // Unity 2022+ API
         Screen.SetResolution(r.width, r.height, Screen.fullScreenMode, r.refreshRateRatio);
     }
 }

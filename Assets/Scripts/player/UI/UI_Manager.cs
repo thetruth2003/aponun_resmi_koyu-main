@@ -20,6 +20,23 @@ public class UI_Manager : MonoBehaviour
     public GameObject Crosshair;
     public GameObject CrosshairCanvas;
     private bool isMenuOpen = false; // Menü durumu
+// --- class alanlarına EKLE (diğer alanların yanına) ---
+[Header("Toolbar (opsiyonel)")]
+[SerializeField] private Toolbar_UI toolbarUI;   // inspector’dan atayabilirsin; boş kalırsa biz buluruz.
+
+// --- Initialize() SONUNA EKLE ---
+
+
+// --- class içine YENİ yardımcılar ---
+public int GetToolbarSelectedIndex()
+{
+    return toolbarUI ? toolbarUI.GetSelectedIndex() : -1;
+}
+
+public void SelectToolbarSlot(int index)
+{
+    if (toolbarUI) toolbarUI.SelectSlot(index);
+}
 
     private void Awake()
     {
@@ -234,5 +251,8 @@ public class UI_Manager : MonoBehaviour
                 Debug.LogWarning($"[UI_Manager] Aynı isimli Inventory_UI zaten var: '{key}'", ui);
             }
         }
+        if (toolbarUI == null)
+        toolbarUI = FindObjectOfType<Toolbar_UI>(includeInactive: true);
     }
+    
 }

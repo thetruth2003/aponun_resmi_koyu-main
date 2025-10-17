@@ -11,13 +11,22 @@ public class savetest : MonoBehaviour
 
     [Header("Resources klasörleri (Assets/Resources/<folder>)")]
     [SerializeField] private string resourcesBuildFolder = "build";
-    [SerializeField] private string resourcesCarsFolder = "cars";
+    [SerializeField] private string resourcesCarsFolder  = "cars";
     [SerializeField] private string resourcesToolsFolder = "tools";
+
+    // SeedData'lar: Assets/Resources/data/seeds/<AssetName>.asset
+    private const string SEEDDATA_RES_PATH = "data/seeds";
 
     [Header("Eski kayıtlar için fallback yakınlık toleransı (metre)")]
     [SerializeField] private float positionTolerance = 0.5f;
 
-    // ---------- SAVE FORMAT ----------
+    // === INVENTORY ===
+    [Header("Inventory (envanter)")]
+    [Tooltip("InventoryManager'da görünen isimler")]
+    [SerializeField] private string backpackInventoryName = "backpack";
+    [SerializeField] private string toolbarInventoryName  = "toolbar";
+
+    // ---------- SAVE FORMAT: TOOLS ----------
     [Serializable]
     private struct ToolRec
     {
@@ -25,6 +34,7 @@ public class savetest : MonoBehaviour
     }
     [Serializable] private class ToolsSave { public List<ToolRec> tools = new(); }
 
+    // ---------- SAVE FORMAT: BUILDINGS ----------
     [Serializable]
     private struct BuildingRec
     {
@@ -32,28 +42,68 @@ public class savetest : MonoBehaviour
     }
     [Serializable] private class BuildingsSave { public List<BuildingRec> buildings = new(); }
 
+    // ---------- SAVE FORMAT: CARS ----------
     [Serializable]
     private struct CarRec
     {
         public string id; public string name; public Vector3 pos; public Quaternion rot; public Vector3 scale; public float duration; public float fuel; public int price;
     }
     [Serializable] private class CarsSave { public List<CarRec> cars = new(); }
+
+    // ---------- SAVE FORMAT: SEEDS ----------
+    [Serializable]
+    private struct SeedRec
+    {
+        public string id;
+        public string name;
+        public Vector3 pos;
+        public string seedDataName; // Resources/data/seeds/<seedDataName>.asset
+        public SeedPointData data;
+    }
+    [Serializable] private class SeedsSave { public List<SeedRec> seeds = new(); }
+
+    // ---------- MONEY ----------
     [Header("Muhasebe")]
     [SerializeField] private Muhasebeci muhasebeci;
-
-    private string MoneyPath => Path.Combine(Application.persistentDataPath, "money_save.json");
-
     [Serializable] private class MoneySave { public int money; }
 
+    // === INVENTORY SAVE MODEL ===
+    [Serializable]
+    private struct InvSlotRec
+    {
+        public string itemName;
+        public int count;
+    }
+    [Serializable]
+    private class InvSave
+    {
+        public List<InvSlotRec> slots = new();
+        public int selectedIndex;
+    }
 
-    private string ToolsPath => Path.Combine(Application.persistentDataPath, "tools_save.json");
-    private string BuildingsPath => Path.Combine(Application.persistentDataPath, "buildings_save.json");
-    private string CarsPath => Path.Combine(Application.persistentDataPath, "cars_save.json");
+    // ---------- PATHS ----------
+    private string MoneyPath        => Path.Combine(Application.persistentDataPath, "money_save.json");
+    private string ToolsPath        => Path.Combine(Application.persistentDataPath, "tools_save.json");
+    private string BuildingsPath    => Path.Combine(Application.persistentDataPath, "buildings_save.json");
+    private string CarsPath         => Path.Combine(Application.persistentDataPath, "cars_save.json");
+    private string SeedsPath        => Path.Combine(Application.persistentDataPath, "seeds_save.json");
+    private string InvBackpackPath  => Path.Combine(Application.persistentDataPath, "inv_backpack.json");
+    private string InvToolbarPath   => Path.Combine(Application.persistentDataPath, "inv_toolbar.json");
 
     void Update()
     {
-        if (Input.GetKeyDown(saveKey)) { SaveTools(); SaveMoney(); SaveBuildings(); SaveCars(); Debug.Log("[Save] Bitti."); }
-        if (Input.GetKeyDown(loadKey)) { LoadTools(); LoadMoney(); LoadBuildings(); LoadCars(); Debug.Log("[Load] Bitti."); }
+        if (Input.GetKeyDown(saveKey))
+        {
+            SaveTools(); SaveMoney(); SaveBuildings(); SaveCars(); SaveSeeds();
+            SaveInventoryBoth();
+            Debug.Log("[Save] Bitti.");
+        }
+        if (Input.GetKeyDown(loadKey))
+        {
+            LoadTools(); LoadMoney(); LoadBuildings(); LoadCars(); LoadSeeds();
+            LoadInventoryBoth();
+            Debug.Log("[Load] Bitti.");
+        }
     }
 
     // =============== TOOLS ===============
@@ -82,10 +132,8 @@ public class savetest : MonoBehaviour
     private void LoadTools()
     {
         if (!File.Exists(ToolsPath)) { Debug.LogWarning("[Load Tools] Dosya yok."); return; }
-
         var sf = JsonUtility.FromJson<ToolsSave>(File.ReadAllText(ToolsPath));
 
-        // Mevcutları ID -> Tools haritası
         var all = FindObjectsOfType<Tools>(includeInactive: true);
         var byId = new Dictionary<string, Tools>();
         foreach (var t in all) if (!string.IsNullOrEmpty(t.persistentId)) byId[t.persistentId] = t;
@@ -95,29 +143,24 @@ public class savetest : MonoBehaviour
 
         foreach (var rec in sf.tools)
         {
-            // 1) ID ile bul
             if (!string.IsNullOrEmpty(rec.id) && byId.TryGetValue(rec.id, out var tool))
             {
                 ApplyTRS(tool.transform, rec.pos, rec.rot, rec.scale);
                 tool.duration = rec.duration; tool.price = rec.price; tool.amount = rec.amount;
                 if (string.IsNullOrWhiteSpace(tool.itemName)) tool.itemName = rec.name;
-                updated++;
-                continue;
+                updated++; continue;
             }
 
-            // 2) Eski kayıt uyumu: isim + yakınlık (opsiyonel)
             tool = FindMatchTool(new List<Tools>(all), rec.name, rec.pos, tolSqr);
             if (tool != null)
             {
                 ApplyTRS(tool.transform, rec.pos, rec.rot, rec.scale);
                 tool.duration = rec.duration; tool.price = rec.price; tool.amount = rec.amount;
                 if (string.IsNullOrWhiteSpace(tool.itemName)) tool.itemName = rec.name;
-                if (string.IsNullOrEmpty(tool.persistentId)) tool.persistentId = string.IsNullOrEmpty(rec.id) ? System.Guid.NewGuid().ToString("N") : rec.id;
-                updated++;
-                continue;
+                if (string.IsNullOrEmpty(tool.persistentId)) tool.persistentId = string.IsNullOrEmpty(rec.id) ? Guid.NewGuid().ToString("N") : rec.id;
+                updated++; continue;
             }
 
-            // 3) Yoksa Resources/tools/<name>’den prefab yükle ve spawn et
             var prefab = LoadFromResources(resourcesToolsFolder, rec.name);
             if (!prefab) { missingPrefab++; continue; }
 
@@ -131,7 +174,7 @@ public class savetest : MonoBehaviour
                 tool.duration = rec.duration;
                 tool.price = rec.price;
                 tool.amount = rec.amount;
-                tool.persistentId = string.IsNullOrEmpty(rec.id) ? System.Guid.NewGuid().ToString("N") : rec.id;
+                tool.persistentId = string.IsNullOrEmpty(rec.id) ? Guid.NewGuid().ToString("N") : rec.id;
             }
             spawned++;
         }
@@ -162,7 +205,6 @@ public class savetest : MonoBehaviour
     private void LoadBuildings()
     {
         if (!File.Exists(BuildingsPath)) { Debug.LogWarning("[Load Buildings] Dosya yok."); return; }
-
         var sf = JsonUtility.FromJson<BuildingsSave>(File.ReadAllText(BuildingsPath));
 
         var all = FindObjectsOfType<Building>(includeInactive: true);
@@ -174,27 +216,22 @@ public class savetest : MonoBehaviour
 
         foreach (var rec in sf.buildings)
         {
-            // 1) ID ile bul
             if (!string.IsNullOrEmpty(rec.id) && byId.TryGetValue(rec.id, out var b))
             {
                 ApplyTRS(b.transform, rec.pos, rec.rot, rec.scale);
                 if (string.IsNullOrEmpty(b.building_name)) b.building_name = rec.name;
-                updated++;
-                continue;
+                updated++; continue;
             }
 
-            // 2) Eski kayıt uyumu: isim + yakınlık
             b = FindMatchBuilding(new List<Building>(all), rec.name, rec.pos, tolSqr);
             if (b != null)
             {
                 ApplyTRS(b.transform, rec.pos, rec.rot, rec.scale);
                 if (string.IsNullOrEmpty(b.building_name)) b.building_name = rec.name;
-                if (string.IsNullOrEmpty(b.persistentId)) b.persistentId = string.IsNullOrEmpty(rec.id) ? System.Guid.NewGuid().ToString("N") : rec.id;
-                updated++;
-                continue;
+                if (string.IsNullOrEmpty(b.persistentId)) b.persistentId = string.IsNullOrEmpty(rec.id) ? Guid.NewGuid().ToString("N") : rec.id;
+                updated++; continue;
             }
 
-            // 3) Yoksa Resources/build/<name>’den prefab yükle ve spawn et
             var prefab = LoadFromResources(resourcesBuildFolder, rec.name);
             if (!prefab) { missingPrefab++; continue; }
 
@@ -205,7 +242,7 @@ public class savetest : MonoBehaviour
             if (nb)
             {
                 nb.building_name = rec.name;
-                nb.persistentId = string.IsNullOrEmpty(rec.id) ? System.Guid.NewGuid().ToString("N") : rec.id;
+                nb.persistentId  = string.IsNullOrEmpty(rec.id) ? Guid.NewGuid().ToString("N") : rec.id;
             }
             spawned++;
         }
@@ -239,7 +276,6 @@ public class savetest : MonoBehaviour
     private void LoadCars()
     {
         if (!File.Exists(CarsPath)) { Debug.LogWarning("[Load Cars] Dosya yok."); return; }
-
         var sf = JsonUtility.FromJson<CarsSave>(File.ReadAllText(CarsPath));
 
         var all = FindObjectsOfType<Car>(includeInactive: true);
@@ -251,29 +287,24 @@ public class savetest : MonoBehaviour
 
         foreach (var rec in sf.cars)
         {
-            // 1) ID ile bul
             if (!string.IsNullOrEmpty(rec.id) && byId.TryGetValue(rec.id, out var car))
             {
                 ApplyTRS(car.transform, rec.pos, rec.rot, rec.scale);
                 car.duration = rec.duration; car.Fuel = rec.fuel; car.price = rec.price;
                 if (string.IsNullOrWhiteSpace(car.car_name)) car.car_name = rec.name;
-                updated++;
-                continue;
+                updated++; continue;
             }
 
-            // 2) Eski kayıt uyumu: isim + yakınlık
             car = FindMatchCar(new List<Car>(all), rec.name, rec.pos, tolSqr);
             if (car != null)
             {
                 ApplyTRS(car.transform, rec.pos, rec.rot, rec.scale);
                 car.duration = rec.duration; car.Fuel = rec.fuel; car.price = rec.price;
                 if (string.IsNullOrWhiteSpace(car.car_name)) car.car_name = rec.name;
-                if (string.IsNullOrEmpty(car.persistentId)) car.persistentId = string.IsNullOrEmpty(rec.id) ? System.Guid.NewGuid().ToString("N") : rec.id;
-                updated++;
-                continue;
+                if (string.IsNullOrEmpty(car.persistentId)) car.persistentId = string.IsNullOrEmpty(rec.id) ? Guid.NewGuid().ToString("N") : rec.id;
+                updated++; continue;
             }
 
-            // 3) Yoksa Resources/cars/<name>’den prefab yükle ve spawn et
             var prefab = LoadFromResources(resourcesCarsFolder, rec.name);
             if (!prefab) { missingPrefab++; continue; }
 
@@ -287,13 +318,214 @@ public class savetest : MonoBehaviour
                 nc.duration = rec.duration;
                 nc.Fuel = rec.fuel;
                 nc.price = rec.price;
-                nc.persistentId = string.IsNullOrEmpty(rec.id) ? System.Guid.NewGuid().ToString("N") : rec.id;
+                nc.persistentId = string.IsNullOrEmpty(rec.id) ? Guid.NewGuid().ToString("N") : rec.id;
             }
             spawned++;
         }
 
         Debug.Log($"[Load Cars] Güncellendi: {updated}, Spawn: {spawned}, Prefab Eksik: {missingPrefab}. Toplam {sf.cars.Count}");
     }
+
+    // =============== SEEDS ===============
+    private void SaveSeeds()
+    {
+        var sf = new SeedsSave();
+
+        foreach (var sp in FindObjectsOfType<SeedPoint>(includeInactive: true))
+        {
+            if (string.IsNullOrEmpty(sp.persistentId))
+                sp.persistentId = Guid.NewGuid().ToString("N");
+
+            sf.seeds.Add(new SeedRec
+            {
+                id   = sp.persistentId,
+                name = sp.name,
+                pos  = sp.transform.position,
+                seedDataName = sp.seedData ? sp.seedData.name : string.Empty,
+                data = sp.GetState()
+            });
+        }
+
+        File.WriteAllText(SeedsPath, JsonUtility.ToJson(sf));
+        Debug.Log($"[Save Seeds] {sf.seeds.Count} kayıt → {SeedsPath}");
+    }
+
+    private void LoadSeeds()
+    {
+        if (!File.Exists(SeedsPath)) { Debug.LogWarning("[Load Seeds] Dosya yok."); return; }
+        var sf = JsonUtility.FromJson<SeedsSave>(File.ReadAllText(SeedsPath));
+
+        var all = FindObjectsOfType<SeedPoint>(includeInactive: true);
+
+        var byId = new Dictionary<string, SeedPoint>();
+        foreach (var sp in all)
+        {
+            if (string.IsNullOrEmpty(sp.persistentId))
+                sp.persistentId = Guid.NewGuid().ToString("N");
+            byId[sp.persistentId] = sp;
+        }
+
+        float tolSqr = positionTolerance * positionTolerance;
+        int applied = 0, matchedByPos = 0, missing = 0;
+
+        foreach (var rec in sf.seeds)
+        {
+            SeedPoint sp = null;
+
+            if (!string.IsNullOrEmpty(rec.id) && byId.TryGetValue(rec.id, out sp))
+            {
+                ApplySeedRecordToSeedPoint(sp, in rec);
+                applied++;
+                continue;
+            }
+
+            float best = float.MaxValue;
+            foreach (var cand in all)
+            {
+                if (!cand) continue;
+                if (!string.Equals(cand.name, rec.name, StringComparison.OrdinalIgnoreCase)) continue;
+                float d = (cand.transform.position - rec.pos).sqrMagnitude;
+                if (d <= tolSqr && d < best) { best = d; sp = cand; }
+            }
+
+            if (sp != null)
+            {
+                if (string.IsNullOrEmpty(sp.persistentId))
+                    sp.persistentId = string.IsNullOrEmpty(rec.id) ? Guid.NewGuid().ToString("N") : rec.id;
+
+                ApplySeedRecordToSeedPoint(sp, in rec);
+                matchedByPos++;
+                applied++;
+            }
+            else
+            {
+                missing++;
+            }
+        }
+
+        Debug.Log($"[Load Seeds] Uygulanan: {applied} (pos-match: {matchedByPos}), Bulunamayan: {missing}, Toplam: {sf.seeds.Count}");
+    }
+
+    private void ApplySeedRecordToSeedPoint(SeedPoint sp, in SeedRec rec)
+    {
+        if (!string.IsNullOrEmpty(rec.seedDataName))
+        {
+            var loaded = Resources.Load<SeedData>($"{SEEDDATA_RES_PATH}/{rec.seedDataName}");
+            if (!loaded && rec.data.seedType != SeedType.None)
+                loaded = Resources.Load<SeedData>($"{SEEDDATA_RES_PATH}/{rec.data.seedType} Seed");
+
+            if (loaded)
+                sp.seedData = loaded;
+            else
+                Debug.LogWarning($"[Load Seeds] SeedData bulunamadı: {SEEDDATA_RES_PATH}/{rec.seedDataName}");
+        }
+
+        sp.SetState(rec.data);
+    }
+
+    // =============== INVENTORY SAVE/LOAD ===============
+    private void SaveInventoryBoth()
+    {
+        SaveInventoryByName(backpackInventoryName, InvBackpackPath);
+        SaveInventoryByName(toolbarInventoryName,  InvToolbarPath);
+    }
+
+    private void LoadInventoryBoth()
+    {
+        LoadInventoryByName(backpackInventoryName, InvBackpackPath, applySelected:false);
+        LoadInventoryByName(toolbarInventoryName,  InvToolbarPath,  applySelected:true);
+        GameManager.instance?.uiManager?.RefreshAll();
+    }
+
+    private void SaveInventoryByName(string invName, string path)
+    {
+        var inv = GameManager.instance?.player?.inventoryManager?.GetInventoryByName(invName);
+        if (inv == null || inv.slots == null) { Debug.LogWarning($"[Save Inventory] Envanter yok: {invName}"); return; }
+
+        var data = new InvSave();
+        for (int i = 0; i < inv.slots.Count; i++)
+        {
+            var s = inv.slots[i];
+            if (s.IsEmpty)
+                data.slots.Add(new InvSlotRec { itemName = "", count = 0 });
+            else
+                data.slots.Add(new InvSlotRec { itemName = s.itemName, count = s.count });
+        }
+
+        // seçili slotu UI_Manager üzerinden al
+        var ui = GameManager.instance?.uiManager;
+        data.selectedIndex = ui ? ui.GetToolbarSelectedIndex() : -1;
+
+        File.WriteAllText(path, JsonUtility.ToJson(data));
+        Debug.Log($"[Save Inventory] {invName} → {path}");
+    }
+
+    private void LoadInventoryByName(string invName, string path, bool applySelected)
+    {
+        var inv = GameManager.instance?.player?.inventoryManager?.GetInventoryByName(invName);
+        if (inv == null || inv.slots == null) { Debug.LogWarning($"[Load Inventory] Envanter yok: {invName}"); return; }
+        if (!File.Exists(path)) { Debug.LogWarning($"[Load Inventory] Dosya yok: {path}"); return; }
+
+        var data = JsonUtility.FromJson<InvSave>(File.ReadAllText(path));
+        if (data == null) { Debug.LogWarning($"[Load Inventory] Json boş: {path}"); return; }
+
+        // temizle
+        for (int i = 0; i < inv.slots.Count; i++)
+        {
+            inv.slots[i].itemName = "";
+            inv.slots[i].count = 0;
+            inv.slots[i].icon = null;
+            inv.slots[i].maxAllowed = 0;
+            inv.slots[i].itemPrefab = null;
+            inv.slots[i].itemUsedPrefab = null;
+        }
+
+        // geri yükle
+        int n = Mathf.Min(inv.slots.Count, data.slots.Count);
+        for (int i = 0; i < n; i++)
+        {
+            var r = data.slots[i];
+            if (string.IsNullOrEmpty(r.itemName) || r.count <= 0) continue;
+
+            // 1) Resources -> data/items/<name>
+            ItemData itemData = Resources.Load<ItemData>($"data/items/{r.itemName}");
+
+            // 2) yoksa ItemManager üzerinden al
+            if (itemData == null)
+            {
+                var itemObj = GameManager.instance?.itemManager?.GetItemByName(r.itemName);
+                itemData = itemObj ? itemObj.data : null;
+            }
+
+            if (itemData == null)
+            {
+                Debug.LogWarning($"[Load Inventory] ItemData bulunamadı: {r.itemName}");
+                continue;
+            }
+
+            var s = inv.slots[i];
+            s.itemName = r.itemName;
+            s.count = r.count;
+
+            s.icon           = itemData.icon;
+            s.maxAllowed     = itemData.maxAllowed;
+            s.itemPrefab     = itemData.itemPrefab;
+            s.itemUsedPrefab = itemData.itemUsedPrefab;
+        }
+
+        // seçili slot uygula (UI_Manager üzerinden)
+        if (applySelected && data.selectedIndex >= 0)
+        {
+            var ui = GameManager.instance?.uiManager;
+            int idx = Mathf.Clamp(data.selectedIndex, 0, Mathf.Max(0, inv.slots.Count - 1));
+            if (ui) ui.SelectToolbarSlot(idx);
+            else    inv.SelectSlot(idx);
+        }
+
+        Debug.Log($"[Load Inventory] {invName} ← {path}");
+    }
+
+    // =============== MONEY ===============
     private void SaveMoney()
     {
         if (!muhasebeci) muhasebeci = FindObjectOfType<Muhasebeci>();
@@ -321,16 +553,18 @@ public class savetest : MonoBehaviour
         var rb = t.GetComponent<Rigidbody>();
         if (rb)
         {
-            rb.linearVelocity = Vector3.zero;     // << düzeltildi (linearVelocity değil)
+            rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
             rb.position = pos;
             rb.rotation = rot;
             t.localScale = scale;
+            Physics.SyncTransforms();
         }
         else
         {
             t.SetPositionAndRotation(pos, rot);
             t.localScale = scale;
+            Physics.SyncTransforms();
         }
     }
 
@@ -361,13 +595,21 @@ public class savetest : MonoBehaviour
         foreach (var b in list)
         {
             if (!b) continue;
-            if (!string.Equals(Clean(b.building_name), Clean(name), StringComparison.OrdinalIgnoreCase)) continue;
+            if (!string.IsNullOrEmpty(b.building_name))
+            {
+                if (!string.Equals(Clean(b.building_name), Clean(name), StringComparison.OrdinalIgnoreCase)) continue;
+            }
+            else
+            {
+                if (!string.Equals(Clean(b.name), Clean(name), StringComparison.OrdinalIgnoreCase)) continue;
+            }
+
             float d = (b.transform.position - pos).sqrMagnitude;
             if (d <= tolSqr && d < bestD) { bestD = d; best = b; }
         }
         return best;
     }
-    
+
     private static Car FindMatchCar(List<Car> list, string name, Vector3 pos, float tolSqr)
     {
         Car best = null; float bestD = float.MaxValue;

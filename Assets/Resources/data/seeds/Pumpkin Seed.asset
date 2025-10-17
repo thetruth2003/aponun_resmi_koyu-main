@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c9e4f66ecfee954ab1659a67589d083, type: 3}
+  m_Name: Pumpkin Seed
+  m_EditorClassIdentifier: 
+  seedType: 6
+  growthStages:
+  - {fileID: 1163311251083476, guid: c9fcf85374b714e4e9525abaae880483, type: 3}
+  - {fileID: 1163311251083476, guid: c9fcf85374b714e4e9525abaae880483, type: 3}
+  - {fileID: 1282951659646498, guid: ef45cada154f50b4490e89499cd3aaba, type: 3}
+  - {fileID: 1482622457389426, guid: 01b831e6d82274540a0966e6c3900187, type: 3}
+  - {fileID: 1421407134049668, guid: 160cd81b94a4a9b47a9649e44fe75a15, type: 3}
+  - {fileID: 1029079860058270, guid: fdb809c80f4c35d4fb535ab2501069e7, type: 3}
+  maxDryDays: 100
+  sellPrice: 100

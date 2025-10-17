@@ -747,6 +747,105 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &5940612733498237435
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3381247898071927971}
+  - component: {fileID: 3380539300698367562}
+  - component: {fileID: 7883549046796740614}
+  m_Layer: 6
+  m_Name: Camera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3381247898071927971
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5940612733498237435}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8851557265243109094}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!20 &3380539300698367562
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5940612733498237435}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 1
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!114 &7883549046796740614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5940612733498237435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d6bafdb48a97204d92d8f8ba1b829ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraFollow
+  target: {fileID: 8851557265243109094}
+  offset: {x: 0, y: 5, z: -10}
+  followSpeed: 5
 --- !u!1 &6564686541548801226
 GameObject:
   m_ObjectHideFlags: 0
@@ -864,6 +963,7 @@ GameObject:
   - component: {fileID: 741877625343897907}
   - component: {fileID: 1345167878314982825}
   - component: {fileID: 4127619628218046813}
+  - component: {fileID: 1778196979247612243}
   m_Layer: 6
   m_Name: SM_Veh_Pickup_01
   m_TagString: Car
@@ -884,6 +984,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 3381247898071927971}
   - {fileID: 5482571352628280950}
   - {fileID: 521284326112579963}
   - {fileID: 4409477871285131242}
@@ -1008,6 +1109,15 @@ MonoBehaviour:
   rpmText: {fileID: 0}
   gearText: {fileID: 0}
   speedText: {fileID: 0}
+  instantBrakeTorque: 6000
+  engineBrakeTorque: 1500
+  useAutoReverse: 1
+  reverseGearRatio: 3
+  maxReverseSpeedKmh: 20
+  stopForReverseKmh: 1
+  recoverLift: 1.5
+  recoverCooldown: 2
+  safeSpeedKmh: 5
   comOffset: {x: 0, y: -0.5, z: 0}
   antiRollForce: 5000
   sideStability: 5
@@ -1124,6 +1234,23 @@ MonoBehaviour:
   vehicle: {fileID: 741877625343897907}
   engineClip: {fileID: 0}
   shiftClip: {fileID: 0}
+--- !u!114 &1778196979247612243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9048617033434181741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 217bc9039df6ce0409d0c0e7f6a1106b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarEnterable
+  carCamera: {fileID: 3380539300698367562}
+  exitPoint: {fileID: 6513111516440401874}
+  primaryDriveScript: {fileID: 741877625343897907}
+  extraDriveScripts: []
+  disableSiblingCameras: 1
 --- !u!1 &9088366643552335501
 GameObject:
   m_ObjectHideFlags: 0

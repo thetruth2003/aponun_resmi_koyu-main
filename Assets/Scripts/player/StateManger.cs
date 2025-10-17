@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using static CarController;
 
 public enum gamestate { player, Car }
+
 public class StateManger : MonoBehaviour
 {
-    public Camera playerCamera;                 // Oyuncunun kamerası
+    public Camera playerCamera;                 // Oyuncu kamerası
     public float maxDistance = 100f;            // Maksimum atış mesafesi
     public LayerMask interactableLayer;         // Etkileşim katmanı
     public GameObject player;                   // Oyuncu karakteri
@@ -17,6 +17,9 @@ public class StateManger : MonoBehaviour
 
     [Header("Arabaya binince KAPANACAKLAR (HUD vb.)")]
     [SerializeField] private List<GameObject> closeWhenInCar = new();
+
+    // Seçtiğimiz aktif sürüş scriptini tutalım (VehicleController veya CarController olabilir)
+    private Behaviour _activeDriveScript;
 
     private void Awake()
     {
@@ -41,69 +44,63 @@ public class StateManger : MonoBehaviour
         }
     }
 
-    private void ExitCar()
-    {
-        CarController carController = car ? car.GetComponent<CarController>() : null;
-
-        // >>> EK: VehicleController.exitPoint varsa önce onu kullan
-        var vc2 = car ? car.GetComponent<VehicleController>() : null;
-        if (vc2 && vc2.exitPoint && player)
-        {
-            player.transform.SetPositionAndRotation(vc2.exitPoint.position, vc2.exitPoint.rotation);
-        }
-        else if (carController != null && carController.playerpoint != null && player) // mevcut fallback
-        {
-            player.transform.position = carController.playerpoint.transform.position;
-        }
-
-        // (devamı senin mevcut kodun)
-        player.transform.parent = null;
-        state = gamestate.player;
-        player.SetActive(true);
-        Speedometer.SetActive(false);
-        stamina.SetActive(true);
-        SetActiveList(closeWhenInCar, true);
-        var vc = car ? car.GetComponent<VehicleController>() : null;
-        if (vc) vc.enabled = false;
-        car = null;
-    }
-
     private void EnterCar()
     {
         Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
+        if (!Physics.Raycast(ray, out var hit, maxDistance, interactableLayer)) return;
+        if (!hit.collider.CompareTag("Car")) return;
 
-        if (Physics.Raycast(ray, out hit, maxDistance, interactableLayer))
+        GameObject root = hit.rigidbody ? hit.rigidbody.gameObject : hit.collider.transform.root.gameObject;
+
+        // 1) CarEnterable bul
+        var enterable = root.GetComponentInParent<CarEnterable>() ?? root.GetComponentInChildren<CarEnterable>(true);
+        if (!enterable)
         {
-            if (hit.collider.CompareTag("Car"))
-            {
-                // Köke çık (tekerlek collerine vurabilir)
-                GameObject root = hit.rigidbody ? hit.rigidbody.gameObject : hit.collider.gameObject;
-
-                car = root;
-                if (player) player.SetActive(false);
-                state = gamestate.Car;
-
-                if (Speedometer) Speedometer.SetActive(true);
-                if (stamina) stamina.SetActive(false);
-
-                // Arabaya binince listede olanları KAPAT
-                SetActiveList(closeWhenInCar, false);
-
-                // >>> sadece sürüş scriptini AÇ
-                var vc = root.GetComponent<VehicleController>();      // yeni scriptin
-                if (vc) vc.enabled = true;
-
-                // Eski isimli bir script kullanıyorsan opsiyonel:
-                var vcOld = root.GetComponent<VehicleControl>();      // eski sürüm
-                if (vcOld) vcOld.enabled = true;
-
-                // (İstersen kullan)
-                CarController carController = root.GetComponent<CarController>();
-            }
+            Debug.LogWarning($"[StateManger] CarEnterable yok: {root.name}");
+            return;
         }
+
+        // 2) Enter
+        bool ok = enterable.Enter(player, playerCamera);
+        if (!ok) return;
+
+        // 3) Senin HUD/state
+        car = root;
+        if (player) player.SetActive(false);
+        state = gamestate.Car;
+        if (Speedometer) Speedometer.SetActive(true);
+        if (stamina) stamina.SetActive(false);
+        SetActiveList(closeWhenInCar, false);
     }
 
+    private void ExitCar()
+    {
+        if (!car) return;
+
+        // 1) CarEnterable bul
+        var enterable = car.GetComponentInParent<CarEnterable>() ?? car.GetComponentInChildren<CarEnterable>(true);
+        if (enterable) enterable.Exit();
+
+        // 2) Senin HUD/state
+        state = gamestate.player;
+        if (player) player.SetActive(true);
+        if (Speedometer) Speedometer.SetActive(false);
+        if (stamina) stamina.SetActive(true);
+        SetActiveList(closeWhenInCar, true);
+
+        car = null;
+    }
+    // Hangi sürüş scriptini kullanacağımıza karar ver (öncelik VehicleController)
+    private Behaviour PickDriveScript(GameObject root)
+    {
+        var vc = root.GetComponent<VehicleController>();
+        if (vc) return vc;
+
+        var cc = root.GetComponent<CarController>();
+        if (cc) return cc;
+
+        return null;
+    }
 
     // === helper ===
     private void SetActiveList(List<GameObject> list, bool active)
