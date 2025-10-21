@@ -218,6 +218,14 @@ public class CutsceneDialog : MonoBehaviour
     IEnumerator CoEndCutscene()
     {
         isPlaying = false;
+        if (fadePanel)
+        {
+            fadePanel.SetActive(true);
+            SetFadeAlpha(0f);
+            yield return FadeTo(1f, fadeOutDuration);
+            if (fadeHold > 0f) yield return new WaitForSecondsRealtime(fadeHold);
+        }
+
 
         if (audioSource && audioSource.isPlaying) audioSource.Stop();
 
@@ -229,21 +237,11 @@ public class CutsceneDialog : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        // === BİTİŞ: tek fade-out (0→1) ve kapat ===
-        if (fadePanel)
-        {
-            fadePanel.SetActive(true);
-            SetFadeAlpha(0f);
-            yield return FadeTo(1f, fadeOutDuration);
-            if (fadeHold > 0f) yield return new WaitForSecondsRealtime(fadeHold);
-            fadePanel.SetActive(false);
-        }
-
         // Manager'a "oynadı" işaretini gönder
         GetComponent<CutsceneClip>()?.Finish();
 
         if (disableSelfOnEnd) gameObject.SetActive(false);
+        fadePanel.SetActive(false);
     }
 
     // ---------- Fade helpers ----------
