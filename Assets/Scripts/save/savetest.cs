@@ -14,8 +14,9 @@ public class savetest : MonoBehaviour
     [SerializeField] private string resourcesCarsFolder  = "cars";
     [SerializeField] private string resourcesToolsFolder = "tools";
 
-    // SeedData'lar: Assets/Resources/data/seeds/<AssetName>.asset
-    private const string SEEDDATA_RES_PATH = "data/seeds";
+    // SeedData'lar artık: Assets/Resources/data/items/<AssetName>.asset
+    private const string SEEDDATA_RES_PATH      = "data/items";
+    private const string OLD_SEEDDATA_RES_PATH  = "data/seeds"; // fallback
 
     [Header("Eski kayıtlar için fallback yakınlık toleransı (metre)")]
     [SerializeField] private float positionTolerance = 0.5f;
@@ -57,7 +58,7 @@ public class savetest : MonoBehaviour
         public string id;
         public string name;
         public Vector3 pos;
-        public string seedDataName; // Resources/data/seeds/<seedDataName>.asset
+        public string seedDataName; // Resources/.../<seedDataName>.asset
         public SeedPointData data;
     }
     [Serializable] private class SeedsSave { public List<SeedRec> seeds = new(); }
@@ -408,17 +409,26 @@ public class savetest : MonoBehaviour
 
     private void ApplySeedRecordToSeedPoint(SeedPoint sp, in SeedRec rec)
     {
+        // 1) seedDataName verilmişse -> önce yeni klasörde ara
+        SeedData loaded = null;
         if (!string.IsNullOrEmpty(rec.seedDataName))
         {
-            var loaded = Resources.Load<SeedData>($"{SEEDDATA_RES_PATH}/{rec.seedDataName}");
-            if (!loaded && rec.data.seedType != SeedType.None)
-                loaded = Resources.Load<SeedData>($"{SEEDDATA_RES_PATH}/{rec.data.seedType} Seed");
-
-            if (loaded)
-                sp.seedData = loaded;
-            else
-                Debug.LogWarning($"[Load Seeds] SeedData bulunamadı: {SEEDDATA_RES_PATH}/{rec.seedDataName}");
+            loaded = Resources.Load<SeedData>($"{SEEDDATA_RES_PATH}/{rec.seedDataName}");
+            if (!loaded)
+                loaded = Resources.Load<SeedData>($"{OLD_SEEDDATA_RES_PATH}/{rec.seedDataName}");
         }
+
+        // 2) hâlâ yoksa SeedType adıyla dene (Carrot Seed vb.)
+        if (!loaded && rec.data.seedType != SeedType.None)
+        {
+            loaded = Resources.Load<SeedData>($"{SEEDDATA_RES_PATH}/{rec.data.seedType} Seed");
+            if (!loaded)
+                loaded = Resources.Load<SeedData>($"{OLD_SEEDDATA_RES_PATH}/{rec.data.seedType} Seed");
+        }
+
+        if (loaded) sp.seedData = loaded;
+        else if (!string.IsNullOrEmpty(rec.seedDataName) || rec.data.seedType != SeedType.None)
+            Debug.LogWarning($"[Load Seeds] SeedData bulunamadı: {SEEDDATA_RES_PATH}/{rec.seedDataName} (fallback: {OLD_SEEDDATA_RES_PATH})");
 
         sp.SetState(rec.data);
     }
@@ -548,7 +558,7 @@ public class savetest : MonoBehaviour
     }
 
     // =============== HELPERS ===============
-    private static void ApplyTRS(Transform t, Vector3 pos, Quaternion rot, Vector3 scale)
+    private static ApplyTRSResult ApplyTRS(Transform t, Vector3 pos, Quaternion rot, Vector3 scale)
     {
         var rb = t.GetComponent<Rigidbody>();
         if (rb)
@@ -559,14 +569,18 @@ public class savetest : MonoBehaviour
             rb.rotation = rot;
             t.localScale = scale;
             Physics.SyncTransforms();
+            return ApplyTRSResult.WithRigidbody;
         }
         else
         {
             t.SetPositionAndRotation(pos, rot);
             t.localScale = scale;
             Physics.SyncTransforms();
+            return ApplyTRSResult.NoRigidbody;
         }
     }
+
+    private enum ApplyTRSResult { WithRigidbody, NoRigidbody }
 
     private static GameObject LoadFromResources(string folder, string name)
     {

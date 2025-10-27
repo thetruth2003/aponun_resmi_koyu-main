@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5580160961834461496}
   - component: {fileID: 8440398170250832842}
   - component: {fileID: 2000917249311683018}
+  - component: {fileID: 279988987340925133}
   m_Layer: 0
   m_Name: Scythe_01
   m_TagString: Untagged
@@ -61,6 +62,11 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -82,6 +88,7 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
@@ -110,12 +117,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36c967cbd60ec78469b61869c071b382, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: ba15aaca22e309443b55ab3b23dbf88c, type: 2}
-  seedData: {fileID: 0}
   duration: 100
   itemName: "t\u0131rpan"
   price: 100
-  amount: 0
+  amount: 1
+  persistentId: 
 --- !u!65 &2000917249311683018
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -137,3 +143,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2920408, y: 1.9724013, z: 0.85728353}
   m_Center: {x: 0.053956676, y: 0.98620063, z: -0.2813535}
+--- !u!114 &279988987340925133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 78328501545269257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da0b18645ffddb44ead407a3f459a00d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Item
+  data: {fileID: 11400000, guid: c2df7788933c44343babd4dfb4969d9d, type: 2}
+  seedData: {fileID: 0}
