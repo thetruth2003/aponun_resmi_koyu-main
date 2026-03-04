@@ -19,3 +19,9 @@ MonoBehaviour:
     - text: "g\u0131t tekelden s\u0131gara al"
       voiceClip: {fileID: 0}
     viewKey: 
+  - lines:
+    - text: 12312312
+      voiceClip: {fileID: 0}
+    - text: 3123123123123
+      voiceClip: {fileID: 0}
+    viewKey: 

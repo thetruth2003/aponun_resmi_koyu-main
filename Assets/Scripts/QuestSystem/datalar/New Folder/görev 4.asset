@@ -16,18 +16,43 @@ MonoBehaviour:
   - questName: alperen
     questTypeName: 
     jsonData: 
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
   - questName: "Sell 5\xD7 am"
     questTypeName: SellItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     jsonData: '{"itemID":"am","requiredAmount":5}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
   - questName: "Buy 3\xD7 yarak"
     questTypeName: BuyItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     jsonData: '{"itemID":"yarak","requiredAmount":3}'
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
   - questName: "Sell 2\xD7 s\u0131k"
     questTypeName: SellItemStep, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     jsonData: "{\"itemID\":\"s\u0131k\",\"requiredAmount\":2}"
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
   - questName: ayse
     questTypeName: 
     jsonData: 
+    optionalSideQuestID: 
+    optionalSideQuestDescription: 
+    optionalSideQuestNPCID: 
+    optionalTrustReward: 0
+    optionalSideQuestCompleted: 0
