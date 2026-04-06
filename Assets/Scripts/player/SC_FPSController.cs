@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
-using RengeGames.HealthBars;
+//using RsengeGames.HealthBars;
 
 [RequireComponent(typeof(CharacterController))]
 public class SC_FPSController : MonoBehaviour
@@ -17,7 +17,7 @@ public class SC_FPSController : MonoBehaviour
     public float lookXLimit = 45.0f;
 
     // === Stamina Settings ===
-    public UltimateCircularHealthBar staminaBar;
+    //public UltimateCircularHealthBar staminaBar;
     public float maxStamina = 100f;
     public float staminaDrainRate = 10f;
     public float staminaRecoveryRate = 5f;
@@ -122,8 +122,8 @@ public class SC_FPSController : MonoBehaviour
 
         currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
 
-        float removedSegments = (1 - currentStamina / maxStamina) * staminaBar.SegmentCount;
-        staminaBar.SetRemovedSegments(removedSegments);
+        //float removedSegments = (1 - currentStamina / maxStamina) * staminaBar.SegmentCount;
+        //.SetRemovedSegments(removedSegments);
     }
 
     // === Freeze / Unfreeze (Mouse ve Kamera) ===
