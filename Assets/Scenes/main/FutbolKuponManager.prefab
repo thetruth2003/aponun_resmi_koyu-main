@@ -1,0 +1,143 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3382353231177798962
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1272296916723893078}
+  - component: {fileID: 2323717175895050117}
+  m_Layer: 0
+  m_Name: FutbolKuponManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1272296916723893078
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3382353231177798962}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2323717175895050117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3382353231177798962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f4baeb7f8b54479b6f0d62b4c2f8101, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FutbolKuponManager
+  teams:
+  - teamName: Koyspor
+    power: 74
+    illegalInfluenceChance: 0.04
+    illegalInfluenceBoost: 4
+  - teamName: Ankara Birlik
+    power: 82
+    illegalInfluenceChance: 0.11
+    illegalInfluenceBoost: 12
+  - teamName: Recep FK
+    power: 79
+    illegalInfluenceChance: 0.24
+    illegalInfluenceBoost: 18
+  - teamName: Caykur Derman
+    power: 68
+    illegalInfluenceChance: 0.08
+    illegalInfluenceBoost: 7
+  - teamName: Tekelgucu
+    power: 65
+    illegalInfluenceChance: 0.05
+    illegalInfluenceBoost: 5
+  - teamName: Muhtarlik SK
+    power: 71
+    illegalInfluenceChance: 0.18
+    illegalInfluenceBoost: 14
+  - teamName: Ogretmenler Birligi
+    power: 76
+    illegalInfluenceChance: 0.03
+    illegalInfluenceBoost: 3
+  - teamName: Tamirhane 61
+    power: 69
+    illegalInfluenceChance: 0.06
+    illegalInfluenceBoost: 6
+  currentDay: 1
+  houseEdge: 0.92
+  matchesPerDay: 2
+  demoStartingMoney: 5000
+  todayMatches:
+  - day: 1
+    homeTeam: Tekelgucu
+    awayTeam: Koyspor
+    homeOdds: 4.3867908
+    drawOdds: 4.17802
+    awayOdds: 1.6138102
+    homeWinChance: 0.20972052
+    drawChance: 0.2202
+    awayWinChance: 0.57007945
+    illegalInfluenceUsed: 0
+    illegalFavoredTeam: 
+    illegalSwing: 0
+    resolved: 0
+    result: 0
+  - day: 1
+    homeTeam: Muhtarlik SK
+    awayTeam: Ankara Birlik
+    homeOdds: 5.1557574
+    drawOdds: 4.263207
+    awayOdds: 1.5187565
+    homeWinChance: 0.17844129
+    drawChance: 0.21579999
+    awayWinChance: 0.6057587
+    illegalInfluenceUsed: 0
+    illegalFavoredTeam: 
+    illegalSwing: 0
+    resolved: 0
+    result: 0
+  tomorrowMatches:
+  - day: 2
+    homeTeam: Ankara Birlik
+    awayTeam: Recep FK
+    homeOdds: 2.0600166
+    drawOdds: 3.9417312
+    awayOdds: 2.8749847
+    homeWinChance: 0.44659832
+    drawChance: 0.23339999
+    awayWinChance: 0.3200017
+    illegalInfluenceUsed: 0
+    illegalFavoredTeam: 
+    illegalSwing: 0
+    resolved: 0
+    result: 0
+  - day: 2
+    homeTeam: Koyspor
+    awayTeam: Ogretmenler Birligi
+    homeOdds: 2.706621
+    drawOdds: 3.9049237
+    awayOdds: 2.1672926
+    homeWinChance: 0.33990723
+    drawChance: 0.2356
+    awayWinChance: 0.42449278
+    illegalInfluenceUsed: 0
+    illegalFavoredTeam: 
+    illegalSwing: 0
+    resolved: 0
+    result: 0
+  openTickets: []
+  latestResultsSummary: 

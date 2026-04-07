@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a676a362b2624b459cbb226cf4afe1d, type: 3}
+  m_Name: elif
+  m_EditorClassIdentifier: 
+  sections:
+  - lines:
+    - text: "ben\u0131 yanl\u0131z b\u0131rak"
+      voiceClip: {fileID: 0}
+    - text: "g\u0131t tekelden s\u0131gara al"
+      voiceClip: {fileID: 0}
+    viewKey: 
+  - lines:
+    - text: 12312312
+      voiceClip: {fileID: 0}
+    - text: 3123123123123
+      voiceClip: {fileID: 0}
+    viewKey: 
