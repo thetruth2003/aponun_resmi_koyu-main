@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Yeni arac kontrolcusu icin fizik, vites ve suspansiyon ayarlarini tek yerde tutar.
+/// </summary>
 [CreateAssetMenu(menuName = "Vehicle/Config")]
 public class VehicleConfig : ScriptableObject
 {
@@ -25,6 +28,9 @@ public class VehicleConfig : ScriptableObject
     public DrivetrainType drivetrain = DrivetrainType.RWD;
 }
 
+/// <summary>
+/// Her vites icin yukselme ve dusme hiz esiklerini tanimlar.
+/// </summary>
 [System.Serializable]
 public struct GearSpeedRange
 {
@@ -32,4 +38,7 @@ public struct GearSpeedRange
     public float shiftDownSpeed;
 }
 
+/// <summary>
+/// Torkun hangi teker grubuna dagitilacagini belirler.
+/// </summary>
 public enum DrivetrainType { FWD, RWD, AWD }

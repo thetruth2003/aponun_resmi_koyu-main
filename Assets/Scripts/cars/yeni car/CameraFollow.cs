@@ -1,11 +1,17 @@
 using UnityEngine;
 
+/// <summary>
+/// Basit arac takip kamerasini hedefin arkasinda yumusak sekilde konumlandirir.
+/// </summary>
 public class CameraFollow : MonoBehaviour
 {
-    public Transform target;         // Araç
+    public Transform target;
     public Vector3 offset = new Vector3(0, 5, -10);
     public float followSpeed = 5f;
 
+    /// <summary>
+    /// Kamerayi hedefin arkasindaki ofsete dogru kaydirir ve arac merkezine bakacak sekilde cevirir.
+    /// </summary>
     void LateUpdate()
     {
         if (!target) return;

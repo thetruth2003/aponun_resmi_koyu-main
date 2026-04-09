@@ -1,15 +1,19 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
+using UnityEngine;
+using UnityEngine.Serialization;
+
+/// <summary>
+/// Satis slotlarindaki itemleri toplayip toplam kazanci Muhasebeci uzerinden oyuncuya ekler.
+/// </summary>
 public class Sales_UI : MonoBehaviour
 {
-    public Inventory_UI inventory_uı; // Envanter UI referansı
+    [FormerlySerializedAs("inventory_u\u0131")]
+    public Inventory_UI inventoryUI;
     public GameObject panel;
     public List<Slot_UI> saleSlots;
     public TextMeshProUGUI totalMoneyText;
-    public Muhasebeci money; // Para UI referansı    
+    public Muhasebeci money;
 
     private int totalEarnings;
 
@@ -22,16 +26,18 @@ public class Sales_UI : MonoBehaviour
     {
         panel.SetActive(false);
     }
+
     public void ConfirmSale()
     {
-        Debug.Log("ConfirmSale çalıştı!");
+        Debug.Log("ConfirmSale calisti!");
         if (saleSlots.Count == 0)
         {
-            Debug.LogWarning("Satış yapılacak slot bulunamadı!");
+            Debug.LogWarning("Satis yapilacak slot bulunamadi!");
             return;
         }
-        int currentMoney = money.playerMoney; // Mevcut para miktarını al
-        foreach (var slot in saleSlots)
+
+        int currentMoney = money.playerMoney;
+        foreach (Slot_UI slot in saleSlots)
         {
             if (!slot.IsEmpty())
             {
@@ -40,14 +46,12 @@ public class Sales_UI : MonoBehaviour
                 int slotTotal = count * pricePerItem;
 
                 currentMoney += slotTotal;
+                Debug.Log($"Satildi: {count} x {slot.inventorySlot.item.itemName} -> {slotTotal} TL");
 
-                Debug.Log($"✔ Satıldı: {count} × {slot.inventorySlot.item.itemName} → {slotTotal}₺");
-
-                slot.inventorySlot.Clear(); // Gerçek envanteri temizle
-                slot.Clear(); // UI'den de temizle
-                money.AddMoney(slotTotal); // Yeni para sistemi ile para ekle
+                slot.inventorySlot.Clear();
+                slot.Clear();
+                money.AddMoney(slotTotal);
             }
         }
     }
 }
-

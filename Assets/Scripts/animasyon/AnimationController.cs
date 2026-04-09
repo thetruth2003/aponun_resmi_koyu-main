@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// AnimationController sinifi, ilgili nesnenin kontrol ve davranis akislarini yonetir.
+/// </summary>
 public class AnimationController : MonoBehaviour
 {
     private Animator animator;
@@ -29,7 +32,7 @@ void Update()
 
             if (idleTimer <= 0f)
             {
-                int random = Random.Range(1, 3); // 1: Stretch, 2: WipeSweat
+                int random = Random.Range(1, 3);
                 animator.SetInteger("IdleVariant", random);
                 isPlayingIdleVariant = true;
                 ResetIdleTimer();
@@ -48,7 +51,6 @@ void Update()
     }
 }
 
-
     private void ResetIdleTimer()
     {
         idleTimer = Random.Range(idleMinTime, idleMaxTime);
@@ -59,11 +61,10 @@ void Update()
     /// </summary>
     public void PlayInteractAnimation()
     {
-        //animator.SetTrigger("Interact");
     }
 
     /// <summary>
-    /// İstediğin animasyon tetikleyicisini elle oynatmak için
+    /// ???�stedi???�in animasyon tetikleyicisini elle oynatmak için
     /// </summary>
     public void PlayTrigger(string triggerName)
     {
@@ -71,7 +72,7 @@ void Update()
     }
 
     /// <summary>
-    /// Bool animasyon parametresi kullanıyorsan
+    /// Bool animasyon parametresi kullan???�yorsan
     /// </summary>
     public void SetBool(string name, bool state)
     {
@@ -79,7 +80,7 @@ void Update()
     }
 
     /// <summary>
-    /// Örnek: koşma, zıplama gibi hız parametreleri
+    /// Örnek: koşma, z???�plama gibi h???�z parametreleri
     /// </summary>
     public void SetFloat(string name, float value)
     {

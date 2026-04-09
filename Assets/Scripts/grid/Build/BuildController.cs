@@ -1,16 +1,19 @@
-﻿using UnityEngine;
+using UnityEngine;
 
+/// <summary>
+/// BuildController sinifi, ilgili nesnenin kontrol ve davranis akislarini yonetir.
+/// </summary>
 public class BuildController : MonoBehaviour
 {
-    public GameObject foundation;          // Seçilen yapı prefab'ı
-    public GameObject foundationPreview;   // Önizleme prefab'ı
-    private Transform socket;              // Seçili "Socket"
+    public GameObject foundation;
+    public GameObject foundationPreview;
+    private Transform socket;
     public Camera playerCamera;
     private bool canBuild = true;
 
     [Header("Rotation (Mouse Wheel)")]
-    [SerializeField] private float rotationPerNotch = 15f; // teker bir 'tik' için derece
-    [SerializeField] private bool invertScroll = false;    // yön ters gelirse işaretle
+    [SerializeField] private float rotationPerNotch = 15f;
+    [SerializeField] private bool invertScroll = false;
     private float currentYaw = 0f;
     private Quaternion basePreviewRotation = Quaternion.identity;
 
@@ -20,13 +23,11 @@ public class BuildController : MonoBehaviour
 
         if (foundationPreview != null)
         {
-            // --- ORTA TEKER: ROTASYON ---
-            float scroll = Input.mouseScrollDelta.y; // genelde +1 / -1
+            float scroll = Input.mouseScrollDelta.y;
             if (Mathf.Abs(scroll) > 0.0001f)
             {
                 if (invertScroll) scroll = -scroll;
                 currentYaw += scroll * rotationPerNotch;
-                // 0..360 aralığında tut
                 if (currentYaw >= 360f) currentYaw -= 360f;
                 else if (currentYaw < 0f) currentYaw += 360f;
 
@@ -45,7 +46,6 @@ public class BuildController : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, 10f))
             {
-                // basit engel kuralı
                 canBuild = !hit.transform.CompareTag("Platform");
 
                 if (hit.transform.CompareTag("socket"))
@@ -56,7 +56,6 @@ public class BuildController : MonoBehaviour
 
                     if (Input.GetMouseButtonDown(0) && canBuild)
                     {
-                        // preview rotasyonunu kullan
                         Quaternion rot = foundationPreview.transform.rotation;
                         Instantiate(foundation, socket.position, rot);
                         Destroy(socket.gameObject);
@@ -76,7 +75,6 @@ public class BuildController : MonoBehaviour
             }
         }
 
-        // Sağ tık: sıfırla
         if (Input.GetMouseButtonDown(1))
         {
             ResetPrefabs();
@@ -89,11 +87,11 @@ public class BuildController : MonoBehaviour
         if (loadedFoundation != null)
         {
             foundation = loadedFoundation;
-            Debug.Log("Foundation prefab yüklendi: " + foundationName);
+            Debug.Log("Foundation prefab y�klendi: " + foundationName);
         }
         else
         {
-            Debug.LogError("Foundation prefab bulunamadı: " + foundationName);
+            Debug.LogError("Foundation prefab bulunamad�: " + foundationName);
         }
     }
 
@@ -107,14 +105,14 @@ public class BuildController : MonoBehaviour
             foundationPreview = Instantiate(loadedPreview);
             foundationPreview.SetActive(false);
 
-            basePreviewRotation = foundationPreview.transform.rotation; // referans
-            currentYaw = 0f; // teker açısını sıfırla
+            basePreviewRotation = foundationPreview.transform.rotation;
+            currentYaw = 0f;
 
-            Debug.Log("Preview prefab yüklendi ve sahnede yaratıldı: " + previewName);
+            Debug.Log("Preview prefab y�klendi ve sahnede yarat�ld�: " + previewName);
         }
         else
         {
-            Debug.LogError("Preview prefab bulunamadı: " + previewName);
+            Debug.LogError("Preview prefab bulunamad�: " + previewName);
         }
     }
 
@@ -129,6 +127,6 @@ public class BuildController : MonoBehaviour
         currentYaw = 0f;
         basePreviewRotation = Quaternion.identity;
 
-        Debug.Log("Prefabs sıfırlandı.");
+        Debug.Log("Prefabs s�f�rland�.");
     }
 }

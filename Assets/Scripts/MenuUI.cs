@@ -5,35 +5,33 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.Rendering; // Volume için
 using TMPro;
 
+/// <summary>
+/// MenuUI, ana menu ekranini, secenekleri ve kayit ozeti akisini yonetir.
+/// </summary>
 public class MenuUI : MonoBehaviour
 {
-    // ===================== PANELS =====================
     [Header("Panels")]
     [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject optionsPanel;
 
-    // ===================== LOAD SUMMARY (Optional) =====================
     [Header("Load Summary (Optional)")]
-    [SerializeField] private bool useLoadSummaryPanel = true;   // true → Continue panel açar; false → direkt yükler
-    [SerializeField] private GameObject loadPanel;              // özet paneli
-    [SerializeField] private Button loadConfirmButton;          // panel içi "Load/Continue"
-    [SerializeField] private Button loadCancelButton;           // panel içi "Close/Back"
+    [SerializeField] private bool useLoadSummaryPanel = true;
+    [SerializeField] private GameObject loadPanel;
+    [SerializeField] private Button loadConfirmButton;
+    [SerializeField] private Button loadCancelButton;
     [SerializeField] private TMP_Text dayText;
     [SerializeField] private TMP_Text moneyText;
     [SerializeField] private TMP_Text questText;
     [SerializeField] private TMP_Text timeText;
 
-    // ===================== MAIN BUTTONS =====================
     [Header("Main Buttons")]
     [SerializeField] private Button newGameButton;
     [SerializeField] private Button continueButton;
     [SerializeField] private Button optionsButton;
     [SerializeField] private Button quitButton;
 
-    // ===================== OPTIONS TABS & BUTTONS =====================
     [Header("Options Tabs")]
     [SerializeField] private GameObject voicePanel;
     [SerializeField] private GameObject videoPanel;
@@ -48,18 +46,16 @@ public class MenuUI : MonoBehaviour
     [Header("Options - Back")]
     [SerializeField] private Button backButton;
 
-    // ===================== OPTIONS WIDGETS =====================
     [Header("Options - Audio")]
-    [SerializeField] private AudioMixer masterMixer;      // Exposed param: "MasterVolume"
-    [SerializeField] private Slider masterVolumeSlider;   // 0..1
+    [SerializeField] private AudioMixer masterMixer;
+    [SerializeField] private Slider masterVolumeSlider;
 
     [Header("Options - Video")]
-    [SerializeField] private Dropdown qualityDropdown;    // QualitySettings.names
+    [SerializeField] private Dropdown qualityDropdown;
     [SerializeField] private Toggle fullscreenToggle;
     [SerializeField] private Toggle vSyncToggle;
-    [SerializeField] private Dropdown resolutionDropdown; // optional
+    [SerializeField] private Dropdown resolutionDropdown;
 
-    // ===================== PLAYER PREFS KEYS =====================
     private const string KEY_SAVE_EXISTS = "SaveExists";
     private const string KEY_LAST_SCENE  = "LastScene";
     private const string KEY_VOL         = "opt_masterVol";
@@ -69,10 +65,12 @@ public class MenuUI : MonoBehaviour
     private const string KEY_RESOLUTION  = "opt_res";
 
     private Resolution[] _resolutions;
-    public GameObject[] killOnStart; // Menu Camera, Global Volume, vs.
+    public GameObject[] killOnStart;
 
-    // ===================== META (summary) =====================
     private string MetaPath => Path.Combine(Application.persistentDataPath, "meta_save.json");
+    /// <summary>
+    /// MetaSave sinifi, kayit ve yukleme akislarinda kullanilan veri veya yonetim davranisini saglar.
+    /// </summary>
     [Serializable]
     private class MetaSave {
         public int day;
@@ -83,27 +81,22 @@ public class MenuUI : MonoBehaviour
 
     private void Start()
     {
-        // Paneller
         if (mainPanel) mainPanel.SetActive(true);
         if (optionsPanel) optionsPanel.SetActive(false);
         if (loadPanel) loadPanel.SetActive(false);
 
-        // Continue aktifliği
         bool hasSave = PlayerPrefs.GetInt(KEY_SAVE_EXISTS, 0) == 1;
         if (continueButton) continueButton.interactable = hasSave;
 
-        // Main buttons
         if (newGameButton) newGameButton.onClick.AddListener(OnClick_NewGame);
         if (continueButton) continueButton.onClick.AddListener(OnClick_Continue);
         if (optionsButton) optionsButton.onClick.AddListener(OnClick_Options);
         if (quitButton) quitButton.onClick.AddListener(OnClick_Quit);
         if (backButton) backButton.onClick.AddListener(OnClick_Back);
 
-        // Load panel buttons
         if (loadConfirmButton) loadConfirmButton.onClick.AddListener(OnClick_LoadFromPanel);
         if (loadCancelButton)  loadCancelButton.onClick.AddListener(OnClick_CloseLoadPanel);
 
-        // Options init + listeners
         InitQualityDropdown();
         InitResolutionDropdown();
         LoadAndApplyOptions();
@@ -115,14 +108,13 @@ public class MenuUI : MonoBehaviour
         if (resolutionDropdown) resolutionDropdown.onValueChanged.AddListener(OnResolutionChanged);
     }
 
-    // ===================== MAIN =====================
     private void OnClick_NewGame()
     {
+        PlayerPrefs.DeleteKey("DayCount");
         Time.timeScale = 1f;
         SceneManager.LoadScene("aponun orjinal koyu", LoadSceneMode.Single);
     }
 
-    // Continue → panel veya direkt
     private void OnClick_Continue()
     {
         if (PlayerPrefs.GetInt(KEY_SAVE_EXISTS, 0) != 1) return;
@@ -157,7 +149,6 @@ public class MenuUI : MonoBehaviour
     #endif
     }
 
-    // ===================== LOAD SUMMARY & QUICK LOAD =====================
     private void OnClick_OpenLoadPanel()
     {
         if (loadPanel) loadPanel.SetActive(true);
@@ -184,7 +175,6 @@ public class MenuUI : MonoBehaviour
         OnClick_QuickLoad();
     }
 
-    // Direkt yükleme (panel yok)
     public void OnClick_QuickLoad()
     {
         if (PlayerPrefs.GetInt(KEY_SAVE_EXISTS, 0) != 1) return;
@@ -198,7 +188,6 @@ public class MenuUI : MonoBehaviour
         if (loadPanel) loadPanel.SetActive(false);
     }
 
-    // ===================== OPTIONS: TAB LOGIC =====================
     private void ShowOnly(GameObject target)
     {
         if (!optionsPanel) return;
@@ -216,7 +205,6 @@ public class MenuUI : MonoBehaviour
     private void OnClick_ControlsTab() => ShowOnly(controlsPanel);
     private void OnClick_GameTab()     => ShowOnly(gamePanel);
 
-    // ===================== OPTIONS: INIT & APPLY =====================
     private void InitQualityDropdown()
     {
         if (!qualityDropdown) return;
@@ -288,7 +276,6 @@ public class MenuUI : MonoBehaviour
         }
     }
 
-    // ===================== OPTIONS: LISTENERS =====================
     private void OnVolumeChanged(float v)
     {
         PlayerPrefs.SetFloat(KEY_VOL, v);
@@ -319,11 +306,10 @@ public class MenuUI : MonoBehaviour
         SetResolutionByIndex(idx);
     }
 
-    // ===================== HELPERS =====================
     private void ApplyVolume(float v)
     {
         if (!masterMixer) return;
-        float dB = Mathf.Lerp(-80f, 0f, Mathf.Clamp01(v)); // 0..1 → -80..0 dB
+        float dB = Mathf.Lerp(-80f, 0f, Mathf.Clamp01(v));
         masterMixer.SetFloat("MasterVolume", dB);
     }
 

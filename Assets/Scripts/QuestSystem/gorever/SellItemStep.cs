@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Sell sinifi, gorev sistemi icindeki ilgili davranis veya veriyi yonetir.
+/// </summary>
 [System.Serializable]
 public class SellItemStep : IQuestStep
 {
@@ -11,14 +14,13 @@ public class SellItemStep : IQuestStep
     public string GetName()
     {
         string name = string.IsNullOrEmpty(itemID) ? "???" : itemID;
-        return $"Sell {requiredAmount}× {name}";
+        return $"Sell {requiredAmount}Ãƒâ€” {name}";
     }
 
     public void OnStart() { }
 
     public void OnUpdate()
     {
-        // İsteğe bağlı tetikleyici
     }
 
     public bool IsComplete()

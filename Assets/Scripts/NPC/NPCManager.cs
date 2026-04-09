@@ -1,5 +1,8 @@
-ï»¿using UnityEngine;
+using UnityEngine;
 
+/// <summary>
+/// NPCManager sinifi, ilgili sistemin akisini ve durum yonetimini ustlenir.
+/// </summary>
 public class NPCManager : MonoBehaviour
 {
     public static NPCManager Instance;
@@ -11,13 +14,12 @@ public class NPCManager : MonoBehaviour
     }
 
     /// <summary>
-    /// NPC ile konuÅŸuldu mu kontrol et.
-    /// Kendine gÃ¶re logic ekle: Ã¶rneÄŸin bir flag sistemi veya trigger ile iÅŸaretleme.
-    /// Åimdilik false dÃ¶ndÃ¼rÃ¼r.
+    /// NPC ile konuşuldu mu kontrol et.
+    /// Kendine göre logic ekle: örneğin bir flag sistemi veya trigger ile işaretleme.
+    /// ???imdilik false döndürür.
     /// </summary>
     public bool HasTalkedTo(GameObject npc)
     {
-        // TODO: Buraya kendi konuÅŸma tespit mantÄ±ÄŸÄ±nÄ± yaz
         return false;
     }
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;   
+/// <summary>
+/// Bir nesneye evrensel bir ID ve gerekirse market acma-kapama davranisi baglar.
+/// </summary>
 public class UniversalIdentifier : MonoBehaviour
 {
     public GameObject inventoryUI;
@@ -10,7 +11,13 @@ public class UniversalIdentifier : MonoBehaviour
     [SerializeField] private string id;
     public string ID => id;
 
+    /// <summary>
+    /// Bu nesneye editor veya runtime uzerinden yeni bir tanimlayici degeri atar.
+    /// </summary>
     public void SetID(string newID) => id = newID;
+    /// <summary>
+    /// Bagli market arayuzunu ve gerekli UI objelerini acip oyuncu kontrolunu dondurur.
+    /// </summary>
     public void openmarket()
     {
         market.SetActive(true);
@@ -21,6 +28,9 @@ public class UniversalIdentifier : MonoBehaviour
         SC_FPSController.freeze();
     }
 
+    /// <summary>
+    /// Market arayuzunu kapatip oyuncunun normal kontrol akisini geri acar.
+    /// </summary>
     public void closemarket()
     {
         market.SetActive(false);

@@ -1,11 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
+/// <summary>
+/// Sirt cantasi ve toolbar gibi envanterleri olusturup isimlerine gore yonetir.
+/// </summary>
 public class InventoryManager : MonoBehaviour
 {
-
     public static InventoryManager Instance;
     public Dictionary<string, Inventory> inventoryByName = new Dictionary<string, Inventory>();
 
@@ -19,11 +19,14 @@ public class InventoryManager : MonoBehaviour
 
     private void Awake()
     {
-
         if (Instance == null)
+        {
             Instance = this;
+        }
         else
+        {
             Destroy(gameObject);
+        }
 
         backpack = new Inventory(backpackSlotsCount);
         toolbar = new Inventory(toolbarSlotsCount);
@@ -44,12 +47,9 @@ public class InventoryManager : MonoBehaviour
 
     public void Add(string inventoryName, Item item)
     {
-        if (inventoryByName != null)
+        if (inventoryByName != null && inventoryByName.ContainsKey(inventoryName))
         {
-            if (inventoryByName.ContainsKey(inventoryName))
-            {
-                inventoryByName[inventoryName].Add(item);
-            }
+            inventoryByName[inventoryName].Add(item);
         }
     }
 }

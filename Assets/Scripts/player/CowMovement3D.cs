@@ -1,71 +1,66 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
-using System.Collections.Generic;
-
 using Random = UnityEngine.Random;
 
+/// <summary>
+/// Inegin rastgele dolasmasini, olmesini ve sagilmasini yonetir.
+/// </summary>
 public class CowMovement3D : MonoBehaviour
 {
     private float timer;
     public float timerDuration = 10f;
-    public GameObject prefab;  // Ölüm sonrası oluşturulacak prefab
-    public GameObject prefab2; // Süt oluşturulacak prefab
-    private Vector3 targetPosition; // Hedef pozisyon
+    public GameObject prefab;
+    public GameObject prefab2;
+    private Vector3 targetPosition;
     public Animator animator;
-    public float moveSpeed = 2f;   // İneğin hareket hızı
-    public float waitTime = 2f;    // İneğin bekleme süresi
+    public float moveSpeed = 2f;
+    public float waitTime = 2f;
 
-    private bool isWalking = false; // İneğin şu anda hareket edip etmediğini kontrol eden değişken
+    private bool isWalking = false;
+    private Collider myCollider;
 
-    private Collider myCollider; // İneğin collider'ı
-
-    void Start()
+    private void Start()
     {
         myCollider = GetComponent<Collider>();
-        SetRandomTarget(); // İlk rastgele hedef konumu belirle
-        timer = timerDuration; // Zamanlayıcıyı başlat
+        SetRandomTarget();
+        timer = timerDuration;
     }
 
-    void Update()
+    private void Update()
     {
-        MoveToTarget(); // Hedefe doğru hareket et
+        MoveToTarget();
 
-        // Timer'ı güncelle
         if (timer > 0)
         {
-            timer -= Time.deltaTime; // Zamanlayıcıyı güncelle
+            timer -= Time.deltaTime;
         }
         else
         {
-            myCollider.enabled = true; // Zaman dolduğunda collider'ı etkinleştir
+            myCollider.enabled = true;
         }
     }
 
-    void MoveToTarget()
+    private void MoveToTarget()
     {
         if (isWalking)
         {
-            // İneği hedefe doğru hareket ettir
             Vector3 currentPosition = transform.position;
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
 
-            // Hareket yönünü hesapla
             Vector3 direction = (targetPosition - currentPosition).normalized;
-
             if (direction.magnitude > 0.1f)
             {
                 Quaternion lookRotation = Quaternion.LookRotation(direction);
                 transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * moveSpeed);
             }
 
-            AnimateMovement(direction); // Hareket yönüne göre animasyonu güncelle
+            AnimateMovement(direction);
 
-            // Hedefe ulaşıldıysa
             if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
             {
                 isWalking = false;
-                AnimateMovement(Vector3.zero); // Hedefe ulaştığında animasyonu durdur
-                StartCoroutine(WaitAndMove()); // Bir süre bekleyip yeni bir hedefe hareket et
+                AnimateMovement(Vector3.zero);
+                StartCoroutine(WaitAndMove());
             }
         }
         else
@@ -74,22 +69,21 @@ public class CowMovement3D : MonoBehaviour
         }
     }
 
-    void SetRandomTarget()
+    private void SetRandomTarget()
     {
-        // Rastgele bir hedef konumu belirle
         float randomX = Random.Range(-5f, 5f);
         float randomZ = Random.Range(-5f, 5f);
-        targetPosition = new Vector3(randomX, 0f, randomZ); // Yükseklik sabi
+        targetPosition = new Vector3(randomX, 0f, randomZ);
         isWalking = true;
     }
 
-    IEnumerator WaitAndMove()
+    private IEnumerator WaitAndMove()
     {
         yield return new WaitForSeconds(waitTime);
-        SetRandomTarget(); // Yeni bir rastgele hedef belirle
+        SetRandomTarget();
     }
 
-    void AnimateMovement(Vector3 direction)
+    private void AnimateMovement(Vector3 direction)
     {
         if (animator != null)
         {
@@ -116,26 +110,22 @@ public class CowMovement3D : MonoBehaviour
         if (collision.CompareTag("sagmak"))
         {
             Sagmak();
-            timer = timerDuration; // Zamanlayıcıyı sıfırla
-            myCollider.enabled = false; // Collider'ı kapat
+            timer = timerDuration;
+            myCollider.enabled = false;
         }
     }
 
-    void Death()
+    private void Death()
     {
         Debug.Log("Cow died");
-
-        // Mevcut ineği yok et
         Destroy(gameObject);
 
-        // Belirli bir noktada yeni prefab oluştur
         Vector3 spawnPoint = transform.position;
         Instantiate(prefab, spawnPoint, Quaternion.identity);
     }
 
-    void Sagmak()
+    private void Sagmak()
     {
-        // Süt oluştur
         Vector3 spawnPoint = transform.position;
         Instantiate(prefab2, spawnPoint, Quaternion.identity);
     }

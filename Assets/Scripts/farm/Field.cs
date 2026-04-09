@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Tarladaki tüm SeedPoint socket’lerini yönetir ve aynı zamanda
-/// ISaveable implementasyonu ile kaydet/yükle işlevlerini sağlar.
+/// Tarladaki tüm SeedPoint socket�????lerini yönetir ve ayn???� zamanda
+/// ISaveable implementasyonu ile kaydet/yükle işlevlerini sa???�lar.
 /// </summary>
 [DisallowMultipleComponent]
 public class Field : MonoBehaviour, ISaveable
@@ -11,7 +11,6 @@ public class Field : MonoBehaviour, ISaveable
     [Tooltip("Tarladaki tüm seed socket GameObject'leri")]
     [SerializeField] private GameObject[] seedPoints = null;
 
-    // PlayerPrefs anahtarı için benzersiz ID
     private string _prefsKey => $"Field_{gameObject.GetInstanceID()}";
 
     #region Unity Lifecycle
@@ -30,7 +29,7 @@ public class Field : MonoBehaviour, ISaveable
 
     #region Field Operations
 
-    /// <summary> Tüm socket’leri toplu olarak sular. </summary>
+    /// <summary> Tüm socket�????leri toplu olarak sular. </summary>
     public void WaterAll()
     {
         foreach (var go in seedPoints)
@@ -41,7 +40,7 @@ public class Field : MonoBehaviour, ISaveable
         }
     }
 
-    /// <summary> Tüm socket’lere aynı tohum türünü eker. </summary>
+    /// <summary> Tüm socket�????lere ayn???� tohum türünü eker. </summary>
     public void PlantAll(SeedType seedType)
     {
         foreach (var go in seedPoints)
@@ -59,7 +58,7 @@ public class Field : MonoBehaviour, ISaveable
     public string UniqueID => _prefsKey;
 
     /// <summary>
-    /// SeedPointData’ları JSON’a çevirip PlayerPrefs’e kaydeder.
+    /// SeedPointData�????lar???� JSON�????a çevirip PlayerPrefs�????e kaydeder.
     /// </summary>
     public void SaveData()
     {
@@ -79,7 +78,7 @@ public class Field : MonoBehaviour, ISaveable
     }
 
     /// <summary>
-    /// PlayerPrefs’ten okur, JSON’ı seriden geçirip her SeedPoint’e uygular.
+    /// PlayerPrefs�????ten okur, JSON�???????� seriden geçirip her SeedPoint�????e uygular.
     /// </summary>
     public void LoadData()
     {
@@ -98,6 +97,9 @@ public class Field : MonoBehaviour, ISaveable
         }
     }
 
+    /// <summary>
+    /// Wrapper sinifi, ilgili davranis veya veriyi yonetmek icin kullanilir.
+    /// </summary>
     [System.Serializable]
     private class Wrapper
     {

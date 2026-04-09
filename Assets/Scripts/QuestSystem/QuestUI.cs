@@ -1,21 +1,25 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using System.Collections.Generic;
+using TrackedQuest = ActiveQuestSystem.TrackedQuest;
 
+/// <summary>
+/// QuestUI, takip edilen aktif gorevin mevcut adimini ekranda gosterir.
+/// </summary>
 public class QuestUI : MonoBehaviour
 {
     public TMP_Text mainQuestText;
     public TMP_Text questTypeText;
     public TMP_Text requirementText;
 
-    public void Update()
+    private void Update()
     {
         UpdateQuestUI();
     }
 
     public void UpdateQuestUI()
     {
-        var trackedList = ActiveQuestSystem.Instance.GetAllTracked();
+        List<TrackedQuest> trackedList = ActiveQuestSystem.Instance.GetAllTracked();
         if (trackedList == null || trackedList.Count == 0)
         {
             mainQuestText.text = "No Quest Tracked";
@@ -24,20 +28,23 @@ public class QuestUI : MonoBehaviour
             return;
         }
 
-        foreach (var tracked in trackedList)
+        foreach (TrackedQuest tracked in trackedList)
         {
-            var index = tracked.currentIndex;
+            int index = tracked.currentIndex;
 
             if (tracked.asset == null || tracked.asset.quests == null || index >= tracked.asset.quests.Count)
+            {
                 continue;
+            }
 
-            var container = tracked.asset.quests[index];
-            var step = container.GetStepInstance();
+            QuestContainer container = tracked.asset.quests[index];
+            IQuestStep step = container.GetStepInstance();
 
             if (step == null || step.IsComplete())
+            {
                 continue;
+            }
 
-            // ✅ aktif adımın container adını göster
             mainQuestText.text = container.questName;
 
             if (step is TalkToNPCStep talk)
@@ -74,10 +81,10 @@ public class QuestUI : MonoBehaviour
                 requirementText.text = "";
             }
 
-            return; // ilk aktif görevi yaz ve çık
+            return;
         }
 
-        mainQuestText.text = "✔️ All quests complete!";
+        mainQuestText.text = "All quests complete!";
         questTypeText.text = "";
         requirementText.text = "";
     }

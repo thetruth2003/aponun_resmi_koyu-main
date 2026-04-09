@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// SeederMachine sinifi, ilgili davranis veya veriyi yonetmek icin kullanilir.
+/// </summary>
 public class SeederMachine : MonoBehaviour
 {
     public SeedType seedType = SeedType.Wheat;

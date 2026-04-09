@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// TriggerZone sinifi, cutscene akislarinda kullanilan ilgili davranisi yonetir.
+/// </summary>
 [RequireComponent(typeof(Collider))]
 public class TriggerZone : MonoBehaviour
 {

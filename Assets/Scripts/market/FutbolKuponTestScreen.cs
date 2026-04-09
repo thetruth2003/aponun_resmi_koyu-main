@@ -1,19 +1,28 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-[ExecuteAlways]
+/// <summary>
+/// Futbol kuponu panelindeki sayfalari, oran secimlerini ve kupon yatirma arayuzunu yonetir.
+/// </summary>
 public class FutbolKuponTestScreen : MonoBehaviour
 {
+    /// <summary>
+    /// KuponPage sinifi, pazar ve ekonomi akislarinda kullanilan ilgili davranisi yonetir.
+    /// </summary>
     private enum KuponPage
     {
-        Overview,
-        Today,
-        Tomorrow,
-        Results
+        TicketSummary,
+        TodayMatches,
+        TomorrowMatches,
+        YesterdayResults
     }
 
-    [System.Serializable]
+    [Serializable]
+    /// <summary>
+    /// Tek bir mac satirinda kullanilan yazi ve buton referanslarini bir arada tutar.
+    /// </summary>
     private class MatchRowUi
     {
         public RectTransform root;
@@ -26,35 +35,33 @@ public class FutbolKuponTestScreen : MonoBehaviour
     }
 
     [SerializeField] private FutbolKuponManager manager;
-    [SerializeField] private RectTransform panelRoot;
+    [SerializeField] private Muhasebeci muhasebeci;
     [SerializeField] private TextMeshProUGUI headerText;
     [SerializeField] private TextMeshProUGUI moneyText;
     [SerializeField] private TextMeshProUGUI stakeText;
     [SerializeField] private TextMeshProUGUI statusText;
     [SerializeField] private TextMeshProUGUI resultText;
+    [SerializeField] private Button placeCouponButton;
     [SerializeField] private Button minusStakeButton;
     [SerializeField] private Button plusStakeButton;
-    [SerializeField] private Button advanceDayButton;
-    [SerializeField] private Button overviewTabButton;
-    [SerializeField] private Button todayTabButton;
-    [SerializeField] private Button tomorrowTabButton;
-    [SerializeField] private Button resultsTabButton;
-    [SerializeField] private RectTransform overviewPageRoot;
+    [SerializeField] private Button previousPageButton;
+    [SerializeField] private Button nextPageButton;
+    [SerializeField] private TextMeshProUGUI pageIndicatorText;
+    [SerializeField] private RectTransform ticketSummaryPageRoot;
     [SerializeField] private RectTransform todayPageRoot;
     [SerializeField] private RectTransform tomorrowPageRoot;
     [SerializeField] private RectTransform resultsPageRoot;
+    [SerializeField] private TextMeshProUGUI ticketSummaryText;
     [SerializeField] private MatchRowUi[] todayRows = new MatchRowUi[2];
     [SerializeField] private MatchRowUi[] tomorrowRows = new MatchRowUi[2];
 
     private int currentStake = 100;
-    private TMP_FontAsset cachedFont;
     private bool listenersBound;
-    private KuponPage currentPage = KuponPage.Overview;
+    private KuponPage currentPage = KuponPage.TicketSummary;
 
     private void OnEnable()
     {
         EnsureManagerAndMoney();
-        BuildUiIfNeeded();
         Refresh();
 
         if (Application.isPlaying && manager != null)
@@ -68,9 +75,7 @@ public class FutbolKuponTestScreen : MonoBehaviour
     private void OnDisable()
     {
         if (manager != null)
-        {
             manager.OnStateChanged -= Refresh;
-        }
 
         UnbindListeners();
     }
@@ -79,149 +84,44 @@ public class FutbolKuponTestScreen : MonoBehaviour
     {
         currentStake = Mathf.Max(50, currentStake);
         EnsureManagerAndMoney();
-        BuildUiIfNeeded();
         Refresh();
     }
 
     private void EnsureManagerAndMoney()
     {
         if (manager == null)
-        {
             manager = FindFirstObjectByType<FutbolKuponManager>();
-        }
 
-        if (manager == null)
-        {
-            GameObject managerObject = GameObject.Find("FutbolKuponManager");
-            if (managerObject == null)
-            {
-                managerObject = new GameObject("FutbolKuponManager");
-            }
+        if (muhasebeci == null && GameManager.instance != null)
+            muhasebeci = GameManager.instance.GetComponent<Muhasebeci>();
 
-            manager = managerObject.GetComponent<FutbolKuponManager>();
-            if (manager == null)
-            {
-                manager = managerObject.AddComponent<FutbolKuponManager>();
-            }
-        }
-
-        Muhasebeci muhasebeci = FindFirstObjectByType<Muhasebeci>();
         if (muhasebeci == null)
-        {
-            GameObject moneyObject = GameObject.Find("Muhasebeci_Test");
-            if (moneyObject == null)
-            {
-                moneyObject = new GameObject("Muhasebeci_Test");
-            }
+            muhasebeci = FindFirstObjectByType<Muhasebeci>();
 
-            muhasebeci = moneyObject.GetComponent<Muhasebeci>();
-            if (muhasebeci == null)
-            {
-                muhasebeci = moneyObject.AddComponent<Muhasebeci>();
-                muhasebeci.playerMoney = 5000;
-            }
-        }
-
-        manager.ForceRefresh();
-    }
-
-    private void BuildUiIfNeeded()
-    {
-        RectTransform host = transform as RectTransform;
-        if (host == null)
-        {
-            return;
-        }
-
-        host.anchorMin = new Vector2(1f, 1f);
-        host.anchorMax = new Vector2(1f, 1f);
-        host.pivot = new Vector2(1f, 1f);
-        host.anchoredPosition = new Vector2(-18f, -18f);
-        host.sizeDelta = new Vector2(380f, 560f);
-
-        panelRoot = host;
-        EnsurePanelStyle(panelRoot);
-
-        headerText = EnsureText("Header", panelRoot, 22, FontStyles.Bold);
-        headerText.text = "Kahve Kuponu";
-
-        moneyText = EnsureText("Money", panelRoot, 18, FontStyles.Bold);
-        moneyText.color = new Color(0.94f, 0.88f, 0.56f);
-
-        RectTransform stakeRow = EnsureRow("StakeRow", panelRoot);
-        minusStakeButton = EnsureButton("MinusStake", stakeRow, "-50");
-        stakeText = EnsureText("StakeValue", stakeRow, 18, FontStyles.Bold);
-        plusStakeButton = EnsureButton("PlusStake", stakeRow, "+50");
-
-        RectTransform tabRow = EnsureRow("TabRow", panelRoot);
-        overviewTabButton = EnsureButton("OverviewTab", tabRow, "Genel");
-        todayTabButton = EnsureButton("TodayTab", tabRow, "Bugun");
-        tomorrowTabButton = EnsureButton("TomorrowTab", tabRow, "Yarin");
-        resultsTabButton = EnsureButton("ResultsTab", tabRow, "Sonuclar");
-
-        statusText = EnsureText("Status", panelRoot, 14, FontStyles.Normal);
-        statusText.enableWordWrapping = true;
-
-        overviewPageRoot = EnsureBox("OverviewPage", panelRoot);
-        todayPageRoot = EnsureBox("TodayPage", panelRoot);
-        tomorrowPageRoot = EnsureBox("TomorrowPage", panelRoot);
-        resultsPageRoot = EnsureBox("ResultsPage", panelRoot);
-
-        EnsureSectionLabel("OverviewHeader", overviewPageRoot, "Kupon Ozeti");
-        TextMeshProUGUI overviewInfo = EnsureText("OverviewInfo", overviewPageRoot, 14, FontStyles.Normal);
-        overviewInfo.enableWordWrapping = true;
-        overviewInfo.text =
-            "Her gun 2 mac uretilir.\n" +
-            "Oranlar takim gucu ve illegal etki ihtimaline gore hesaplanir.\n" +
-            "Once bahsi kur, sonra gunu bitir.";
-
-        TextMeshProUGUI illegalInfo = EnsureText("IllegalInfo", overviewPageRoot, 14, FontStyles.Italic);
-        illegalInfo.enableWordWrapping = true;
-        illegalInfo.text = "Illegal etki bazen gucsuz takimi sisirir, bazen favoriyi daha da iter.";
-
-        EnsureSectionLabel("TodayHeader", todayPageRoot, "Bugunun Maclari");
-        for (int i = 0; i < todayRows.Length; i++)
-        {
-            todayRows[i] = EnsureMatchRow("TodayRow_" + i, todayPageRoot, true);
-        }
-
-        EnsureSectionLabel("TomorrowHeader", tomorrowPageRoot, "Yarinin Maclari");
-        for (int i = 0; i < tomorrowRows.Length; i++)
-        {
-            tomorrowRows[i] = EnsureMatchRow("TomorrowRow_" + i, tomorrowPageRoot, false);
-        }
-
-        EnsureSectionLabel("ResultsHeader", resultsPageRoot, "Bugun Bitenler");
-        resultText = EnsureText("Results", resultsPageRoot, 13, FontStyles.Normal);
-        resultText.enableWordWrapping = true;
-        resultText.alignment = TextAlignmentOptions.TopLeft;
-
-        advanceDayButton = EnsureButton("AdvanceDay", panelRoot, "Gunu Bitir / Sonuclari Isle");
-        ApplyPageVisibility();
-        LayoutRebuilder.ForceRebuildLayoutImmediate(panelRoot);
+        if (Application.isPlaying && manager != null)
+            manager.ForceRefresh();
     }
 
     private void BindListeners()
     {
         if (listenersBound)
-        {
             UnbindListeners();
-        }
 
         if (minusStakeButton != null) minusStakeButton.onClick.AddListener(OnMinusStake);
         if (plusStakeButton != null) plusStakeButton.onClick.AddListener(OnPlusStake);
-        if (advanceDayButton != null) advanceDayButton.onClick.AddListener(OnAdvanceDay);
-        if (overviewTabButton != null) overviewTabButton.onClick.AddListener(ShowOverviewPage);
-        if (todayTabButton != null) todayTabButton.onClick.AddListener(ShowTodayPage);
-        if (tomorrowTabButton != null) tomorrowTabButton.onClick.AddListener(ShowTomorrowPage);
-        if (resultsTabButton != null) resultsTabButton.onClick.AddListener(ShowResultsPage);
+        if (placeCouponButton != null) placeCouponButton.onClick.AddListener(OnPlaceCoupon);
+        if (previousPageButton != null) previousPageButton.onClick.AddListener(ShowPreviousPage);
+        if (nextPageButton != null) nextPageButton.onClick.AddListener(ShowNextPage);
 
         for (int i = 0; i < todayRows.Length; i++)
         {
+            MatchRowUi row = todayRows[i];
+            if (row == null) continue;
+
             int index = i;
-            if (todayRows[i].homeButton != null) todayRows[i].homeButton.onClick.AddListener(() => OnPlaceBet(index, FutbolKuponManager.MatchResult.HomeWin));
-            if (todayRows[i].drawButton != null) todayRows[i].drawButton.onClick.AddListener(() => OnPlaceBet(index, FutbolKuponManager.MatchResult.Draw));
-            if (todayRows[i].awayButton != null) todayRows[i].awayButton.onClick.AddListener(() => OnPlaceBet(index, FutbolKuponManager.MatchResult.AwayWin));
+            if (row.homeButton != null) row.homeButton.onClick.AddListener(() => OnPlaceBet(index, FutbolKuponManager.MatchResult.HomeWin));
+            if (row.drawButton != null) row.drawButton.onClick.AddListener(() => OnPlaceBet(index, FutbolKuponManager.MatchResult.Draw));
+            if (row.awayButton != null) row.awayButton.onClick.AddListener(() => OnPlaceBet(index, FutbolKuponManager.MatchResult.AwayWin));
         }
 
         listenersBound = true;
@@ -231,22 +131,17 @@ public class FutbolKuponTestScreen : MonoBehaviour
     {
         if (minusStakeButton != null) minusStakeButton.onClick.RemoveAllListeners();
         if (plusStakeButton != null) plusStakeButton.onClick.RemoveAllListeners();
-        if (advanceDayButton != null) advanceDayButton.onClick.RemoveAllListeners();
-        if (overviewTabButton != null) overviewTabButton.onClick.RemoveAllListeners();
-        if (todayTabButton != null) todayTabButton.onClick.RemoveAllListeners();
-        if (tomorrowTabButton != null) tomorrowTabButton.onClick.RemoveAllListeners();
-        if (resultsTabButton != null) resultsTabButton.onClick.RemoveAllListeners();
+        if (placeCouponButton != null) placeCouponButton.onClick.RemoveAllListeners();
+        if (previousPageButton != null) previousPageButton.onClick.RemoveAllListeners();
+        if (nextPageButton != null) nextPageButton.onClick.RemoveAllListeners();
 
         for (int i = 0; i < todayRows.Length; i++)
         {
-            if (todayRows[i] == null)
-            {
-                continue;
-            }
-
-            if (todayRows[i].homeButton != null) todayRows[i].homeButton.onClick.RemoveAllListeners();
-            if (todayRows[i].drawButton != null) todayRows[i].drawButton.onClick.RemoveAllListeners();
-            if (todayRows[i].awayButton != null) todayRows[i].awayButton.onClick.RemoveAllListeners();
+            MatchRowUi row = todayRows[i];
+            if (row == null) continue;
+            if (row.homeButton != null) row.homeButton.onClick.RemoveAllListeners();
+            if (row.drawButton != null) row.drawButton.onClick.RemoveAllListeners();
+            if (row.awayButton != null) row.awayButton.onClick.RemoveAllListeners();
         }
 
         listenersBound = false;
@@ -255,9 +150,7 @@ public class FutbolKuponTestScreen : MonoBehaviour
     private void Refresh()
     {
         if (headerText == null)
-        {
             return;
-        }
 
         if (manager == null)
         {
@@ -269,20 +162,20 @@ public class FutbolKuponTestScreen : MonoBehaviour
         if (!Application.isPlaying)
         {
             headerText.text = "Kahve Kuponu";
-            moneyText.text = "Play Mode'da guncel veriler dolar.";
-            stakeText.text = currentStake + " TL";
-            statusText.text = "Bugun 2 mac, yarin 2 mac. Bahisler guce ve illegal etkiye gore simule edilir.";
-            resultText.text = "Play Mode'da sonuclar burada gorunur.";
+            if (moneyText != null) moneyText.text = muhasebeci != null ? $"Para: {muhasebeci.GetMoney()} TL" : "Para: Muhasebeci bagla";
+            if (stakeText != null) stakeText.text = currentStake + " TL";
+            if (statusText != null) statusText.text = "Play Mode'da guncel veriler dolar.";
+            if (resultText != null) resultText.text = "Sonuclar burada gorunur.";
+            if (ticketSummaryText != null) ticketSummaryText.text = "Hazir kupon bilgileri burada gorunur.";
+            ApplyPageVisibility();
             return;
         }
 
         headerText.text = "Kahve Kuponu | Gun " + manager.CurrentDay;
-        moneyText.text = "Para: " + manager.GetCurrentMoney() + " TL";
-        stakeText.text = currentStake + " TL";
-        if (string.IsNullOrWhiteSpace(statusText.text))
-        {
-            statusText.text = "Bir mac secip bahis yap.";
-        }
+        if (moneyText != null) moneyText.text = "Para: " + (muhasebeci != null ? muhasebeci.GetMoney() : manager.GetCurrentMoney()) + " TL";
+        if (stakeText != null) stakeText.text = currentStake + " TL";
+        if (statusText != null && string.IsNullOrWhiteSpace(statusText.text))
+            statusText.text = "Maclari sec, sonra kuponu yatir.";
 
         var todays = manager.TodayMatches;
         var tomorrows = manager.TomorrowMatches;
@@ -299,9 +192,16 @@ public class FutbolKuponTestScreen : MonoBehaviour
             SetRowData(tomorrowRows[i], hasData ? tomorrows[i] : null, hasData, false, i);
         }
 
-        resultText.text = string.IsNullOrWhiteSpace(manager.LatestResultsSummary)
-            ? "Henuz gun sonu yok."
-            : manager.LatestResultsSummary;
+        if (resultText != null)
+            resultText.text = string.IsNullOrWhiteSpace(manager.LatestResultsSummary) ? "Henuz gun sonu yok." : manager.LatestResultsSummary;
+
+        if (ticketSummaryText != null)
+        {
+            ticketSummaryText.text =
+                "Bugunun Kupon Durumu\n" +
+                manager.GetOpenTicketSummary() +
+                "\n\nNot:\n- 2 mac uretilir\n- Oranlar takim gucu ve illegal etkiye gore hesaplanir\n- Gece 00:00 olunca kuponlar otomatik sonuclanir";
+        }
 
         ApplyPageVisibility();
     }
@@ -309,29 +209,17 @@ public class FutbolKuponTestScreen : MonoBehaviour
     private void SetRowData(MatchRowUi row, FutbolKuponManager.MatchCard match, bool visible, bool interactive, int rowIndex)
     {
         if (row == null || row.root == null)
-        {
             return;
-        }
 
         row.root.gameObject.SetActive(visible);
         if (!visible || match == null)
-        {
             return;
-        }
 
         row.titleText.text = match.homeTeam + "  vs  " + match.awayTeam;
         row.oddsText.text = manager.FormatOdds(match);
-
-        if (interactive)
-        {
-            row.infoText.text = manager.GetTicketSummaryForTodayMatch(rowIndex);
-        }
-        else
-        {
-            row.infoText.text = match.illegalInfluenceUsed
-                ? "Illegal suphe: " + match.illegalFavoredTeam
-                : "Illegal etki yok";
-        }
+        row.infoText.text = interactive
+            ? manager.GetTicketSummaryForTodayMatch(rowIndex)
+            : (match.illegalInfluenceUsed ? "Illegal suphe: " + match.illegalFavoredTeam : "Illegal etki yok");
 
         if (row.homeButton != null) row.homeButton.gameObject.SetActive(interactive);
         if (row.drawButton != null) row.drawButton.gameObject.SetActive(interactive);
@@ -350,264 +238,75 @@ public class FutbolKuponTestScreen : MonoBehaviour
         Refresh();
     }
 
-    private void OnAdvanceDay()
-    {
-        manager.AdvanceDay();
-        statusText.text = "Gun kapandi, sonuclar islenip yeni kart olustu.";
-        currentPage = KuponPage.Results;
-        Refresh();
-    }
-
     private void OnPlaceBet(int index, FutbolKuponManager.MatchResult selection)
     {
+        if (manager == null) return;
+        manager.SetPendingSelection(index, selection);
+        if (statusText != null) statusText.text = $"Mac {index + 1} icin secim yapildi: {GetSelectionLabel(selection)}";
+        Refresh();
+    }
+
+    private void OnPlaceCoupon()
+    {
+        if (manager == null) return;
+
         string message;
-        if (manager.PlaceBet(index, selection, currentStake, out message))
+        if (manager.PlaceCurrentCoupon(currentStake, out message))
         {
-            statusText.text = message;
+            if (statusText != null) statusText.text = message;
         }
-        else
+        else if (statusText != null)
         {
-            statusText.text = "Bahis atilamadi: " + message;
+            statusText.text = "Kupon yatirilamadi: " + message;
         }
 
         Refresh();
     }
 
-    private void ShowOverviewPage()
+    private void ShowPreviousPage()
     {
-        currentPage = KuponPage.Overview;
+        int pageCount = Enum.GetValues(typeof(KuponPage)).Length;
+        currentPage = (KuponPage)(((int)currentPage - 1 + pageCount) % pageCount);
         ApplyPageVisibility();
     }
 
-    private void ShowTodayPage()
+    private void ShowNextPage()
     {
-        currentPage = KuponPage.Today;
-        ApplyPageVisibility();
-    }
-
-    private void ShowTomorrowPage()
-    {
-        currentPage = KuponPage.Tomorrow;
-        ApplyPageVisibility();
-    }
-
-    private void ShowResultsPage()
-    {
-        currentPage = KuponPage.Results;
+        int pageCount = Enum.GetValues(typeof(KuponPage)).Length;
+        currentPage = (KuponPage)(((int)currentPage + 1) % pageCount);
         ApplyPageVisibility();
     }
 
     private void ApplyPageVisibility()
     {
-        if (overviewPageRoot != null)
-        {
-            overviewPageRoot.gameObject.SetActive(currentPage == KuponPage.Overview);
-        }
-
-        if (todayPageRoot != null)
-        {
-            todayPageRoot.gameObject.SetActive(currentPage == KuponPage.Today);
-        }
-
-        if (tomorrowPageRoot != null)
-        {
-            tomorrowPageRoot.gameObject.SetActive(currentPage == KuponPage.Tomorrow);
-        }
-
-        if (resultsPageRoot != null)
-        {
-            resultsPageRoot.gameObject.SetActive(currentPage == KuponPage.Results);
-        }
-
-        SetButtonColor(overviewTabButton, currentPage == KuponPage.Overview);
-        SetButtonColor(todayTabButton, currentPage == KuponPage.Today);
-        SetButtonColor(tomorrowTabButton, currentPage == KuponPage.Tomorrow);
-        SetButtonColor(resultsTabButton, currentPage == KuponPage.Results);
+        if (ticketSummaryPageRoot != null) ticketSummaryPageRoot.gameObject.SetActive(currentPage == KuponPage.TicketSummary);
+        if (todayPageRoot != null) todayPageRoot.gameObject.SetActive(currentPage == KuponPage.TodayMatches);
+        if (tomorrowPageRoot != null) tomorrowPageRoot.gameObject.SetActive(currentPage == KuponPage.TomorrowMatches);
+        if (resultsPageRoot != null) resultsPageRoot.gameObject.SetActive(currentPage == KuponPage.YesterdayResults);
+        if (pageIndicatorText != null) pageIndicatorText.text = GetPageLabel(currentPage);
     }
 
-    private void SetButtonColor(Button button, bool active)
+    private string GetPageLabel(KuponPage page)
     {
-        if (button == null)
+        return page switch
         {
-            return;
-        }
+            KuponPage.TicketSummary => "1/4 | Kupon Ozeti",
+            KuponPage.TodayMatches => "2/4 | Bugunun Maclari",
+            KuponPage.TomorrowMatches => "3/4 | Yarinin Maclari",
+            KuponPage.YesterdayResults => "4/4 | Dunku Sonuclar",
+            _ => "Sayfa"
+        };
+    }
 
-        Image image = button.GetComponent<Image>();
-        if (image != null)
+    private string GetSelectionLabel(FutbolKuponManager.MatchResult selection)
+    {
+        return selection switch
         {
-            image.color = active
-                ? new Color(0.62f, 0.39f, 0.12f, 1f)
-                : new Color(0.23f, 0.49f, 0.32f, 1f);
-        }
+            FutbolKuponManager.MatchResult.HomeWin => "1",
+            FutbolKuponManager.MatchResult.Draw => "X",
+            FutbolKuponManager.MatchResult.AwayWin => "2",
+            _ => "?"
+        };
     }
 
-    private void EnsurePanelStyle(RectTransform rectTransform)
-    {
-        Image background = GetOrAddComponent<Image>(rectTransform.gameObject);
-        background.color = new Color(0.08f, 0.09f, 0.11f, 0.92f);
-
-        VerticalLayoutGroup layout = GetOrAddComponent<VerticalLayoutGroup>(rectTransform.gameObject);
-        layout.spacing = 8f;
-        layout.padding = new RectOffset(16, 16, 16, 16);
-        layout.childAlignment = TextAnchor.UpperLeft;
-        layout.childControlHeight = false;
-        layout.childControlWidth = true;
-        layout.childForceExpandHeight = false;
-        layout.childForceExpandWidth = true;
-
-        ContentSizeFitter fitter = GetOrAddComponent<ContentSizeFitter>(rectTransform.gameObject);
-        fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-        fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-    }
-
-    private MatchRowUi EnsureMatchRow(string rowName, Transform parent, bool interactive)
-    {
-        MatchRowUi row = new MatchRowUi();
-        row.root = EnsureBox(rowName, parent);
-        row.titleText = EnsureText("Title", row.root, 16, FontStyles.Bold);
-        row.oddsText = EnsureText("Odds", row.root, 14, FontStyles.Normal);
-        row.infoText = EnsureText("Info", row.root, 12, FontStyles.Italic);
-
-        if (interactive)
-        {
-            RectTransform buttonRow = EnsureRow("Buttons", row.root);
-            row.homeButton = EnsureButton("Home", buttonRow, "1");
-            row.drawButton = EnsureButton("Draw", buttonRow, "X");
-            row.awayButton = EnsureButton("Away", buttonRow, "2");
-        }
-
-        return row;
-    }
-
-    private void EnsureSectionLabel(string name, Transform parent, string value)
-    {
-        TextMeshProUGUI label = EnsureText(name, parent, 22, FontStyles.Bold);
-        label.text = value;
-    }
-
-    private RectTransform EnsureBox(string name, Transform parent)
-    {
-        RectTransform rect = EnsureUiObject(name, parent);
-        Image image = GetOrAddComponent<Image>(rect.gameObject);
-        image.color = new Color(0.14f, 0.16f, 0.2f, 0.95f);
-
-        VerticalLayoutGroup layout = GetOrAddComponent<VerticalLayoutGroup>(rect.gameObject);
-        layout.spacing = 4f;
-        layout.padding = new RectOffset(10, 10, 10, 10);
-        layout.childAlignment = TextAnchor.UpperLeft;
-        layout.childControlHeight = false;
-        layout.childControlWidth = true;
-        layout.childForceExpandHeight = false;
-        layout.childForceExpandWidth = true;
-
-        ContentSizeFitter fitter = GetOrAddComponent<ContentSizeFitter>(rect.gameObject);
-        fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-        fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-        return rect;
-    }
-
-    private RectTransform EnsureRow(string name, Transform parent)
-    {
-        RectTransform rect = EnsureUiObject(name, parent);
-
-        HorizontalLayoutGroup layout = GetOrAddComponent<HorizontalLayoutGroup>(rect.gameObject);
-        layout.spacing = 8f;
-        layout.childAlignment = TextAnchor.MiddleLeft;
-        layout.childControlHeight = false;
-        layout.childControlWidth = false;
-        layout.childForceExpandHeight = false;
-        layout.childForceExpandWidth = false;
-
-        ContentSizeFitter fitter = GetOrAddComponent<ContentSizeFitter>(rect.gameObject);
-        fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-        fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-        return rect;
-    }
-
-    private TextMeshProUGUI EnsureText(string name, Transform parent, float fontSize, FontStyles style)
-    {
-        RectTransform rect = EnsureUiObject(name, parent);
-        TextMeshProUGUI text = GetOrAddComponent<TextMeshProUGUI>(rect.gameObject);
-        text.font = GetFont();
-        text.fontSize = fontSize;
-        text.fontStyle = style;
-        text.color = Color.white;
-        text.text = name;
-        text.margin = Vector4.zero;
-        text.enableWordWrapping = false;
-        return text;
-    }
-
-    private Button EnsureButton(string name, Transform parent, string label)
-    {
-        RectTransform rect = EnsureUiObject(name, parent);
-        rect.sizeDelta = new Vector2(80f, 28f);
-
-        Image image = GetOrAddComponent<Image>(rect.gameObject);
-        image.color = new Color(0.23f, 0.49f, 0.32f, 1f);
-
-        Button button = GetOrAddComponent<Button>(rect.gameObject);
-        ColorBlock colors = button.colors;
-        colors.normalColor = image.color;
-        colors.highlightedColor = new Color(0.3f, 0.58f, 0.37f, 1f);
-        colors.pressedColor = new Color(0.16f, 0.38f, 0.23f, 1f);
-        button.colors = colors;
-
-        RectTransform labelRect = EnsureUiObject("Label", rect);
-        labelRect.anchorMin = Vector2.zero;
-        labelRect.anchorMax = Vector2.one;
-        labelRect.offsetMin = Vector2.zero;
-        labelRect.offsetMax = Vector2.zero;
-
-        TextMeshProUGUI buttonText = GetOrAddComponent<TextMeshProUGUI>(labelRect.gameObject);
-        buttonText.font = GetFont();
-        buttonText.fontSize = 14f;
-        buttonText.alignment = TextAlignmentOptions.Center;
-        buttonText.fontStyle = FontStyles.Bold;
-        buttonText.color = Color.white;
-        buttonText.text = label;
-
-        return button;
-    }
-
-    private RectTransform EnsureUiObject(string name, Transform parent)
-    {
-        Transform child = parent.Find(name);
-        if (child == null)
-        {
-            GameObject go = new GameObject(name, typeof(RectTransform));
-            go.layer = 5;
-            child = go.transform;
-            child.SetParent(parent, false);
-        }
-
-        return child as RectTransform;
-    }
-
-    private TMP_FontAsset GetFont()
-    {
-        if (cachedFont != null)
-        {
-            return cachedFont;
-        }
-
-        cachedFont = TMP_Settings.defaultFontAsset;
-        if (cachedFont == null)
-        {
-            cachedFont = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
-        }
-
-        return cachedFont;
-    }
-
-    private T GetOrAddComponent<T>(GameObject go) where T : Component
-    {
-        T component = go.GetComponent<T>();
-        if (component == null)
-        {
-            component = go.AddComponent<T>();
-        }
-
-        return component;
-    }
 }

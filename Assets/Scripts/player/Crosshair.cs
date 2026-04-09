@@ -1,486 +1,700 @@
-﻿    using UnityEditor.UIElements;
-    using UnityEngine;
-    using System.Collections; // IEnumerator kullanabilmek için gerekli namespace
-    using TMPro;
-    using System.Text.RegularExpressions; // En üste
-    public class Crosshair : MonoBehaviour
-{
+using System.Collections;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Serialization;
 
-    public Camera playerCamera; // Oyuncunun kamerası
-    public float maxDistance = 100f; // Maksimum atış mesafesi
-    public LayerMask interactableLayer; // Etkileşimde bulunulacak katman
-    public GameObject player; // Oyuncu karakteri
+/// <summary>
+/// Nisangah uzerinden bakilan nesne bilgisini gosterir ve tiklama bazli etkilesimleri yonetir.
+/// </summary>
+public class Crosshair : MonoBehaviour
+{
+    public Camera playerCamera;
+    public float maxDistance = 100f;
+    public LayerMask interactableLayer;
+    public GameObject player;
     public DynamicGridManager gridManager;
-    public GameObject replacementPrefab; // Yerine geçecek prefab
+    public GameObject replacementPrefab;
     public UI_Manager manager;
     public static bool dragSingle;
     public TreeFall TreeFall;
     public Toolbar_UI toolbar;
-    public TextMeshProUGUI itemNameText; // UI - Eşya adı
-    public TextMeshProUGUI itemPriceText; // UI - Eşya fiyatı
-    public TextMeshProUGUI Npcname; // UI - Eşya adı
-    public TextMeshProUGUI Npcetkileşim; // UI - Eşya fiyatı
-    public Tools currentItem; // Şu an baktığın eşya
-    public Inventory_UI inventory_uı; // Envanter sistemi
-    public GameObject itemInfoPanel; // UI Panel
-    public GameObject NpcInfoPanel; // UI Panel
-    public Muhasebeci muhasebeci; // Muhasebeci script referansı
+    public TextMeshProUGUI itemNameText;
+    public TextMeshProUGUI itemPriceText;
+    public TextMeshProUGUI Npcname;
+    [FormerlySerializedAs("Npcetkile\u015Fim")]
+    public TextMeshProUGUI NpcEtkilesim;
+    public Tools currentItem;
+    [FormerlySerializedAs("inventory_u\u0131")]
+    public Inventory_UI inventoryUI;
+    public GameObject itemInfoPanel;
+    public GameObject NpcInfoPanel;
+    public Muhasebeci muhasebeci;
     public Inventory inventory;
 
-
-    public void Update()
+    private Ray CreateMouseRay()
     {
-        if (PauseMenuUI.IsInputLocked)
-        return; // 👈 Menü açıkken hiçbir tuş çalışmaz (ESC dışında)
-        UpdateItemInfo();
-        Updateinfo();
+        return playerCamera.ScreenPointToRay(Input.mousePosition);
+    }
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            ShootRay();
-            HitTree();
-            AddSeed();
-            Watering();
-        }
-        if (Input.GetMouseButtonDown(1))
-        {
-            ChangeCell();
-        }
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            
-        }
-        if (Input.GetKeyDown(KeyCode.E)) // E tuşuna basılınca
-        {
-            Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+    private Ray CreateForwardRay()
+    {
+        return new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+    }
 
-            if (Input.GetKeyDown(KeyCode.E)) // E tuşuna basılınca
+    private bool TryRaycast(out RaycastHit hit)
+    {
+        return Physics.Raycast(CreateMouseRay(), out hit, maxDistance, interactableLayer);
+    }
+
+    private bool TryForwardRaycast(out RaycastHit hit)
+    {
+        return Physics.Raycast(CreateForwardRay(), out hit, maxDistance);
+    }
+
+    private UniversalIdentifier GetUniversalIdentifier(Collider collider, bool includeParent = false)
+    {
+        UniversalIdentifier identifier = collider.GetComponent<UniversalIdentifier>();
+        if (identifier == null && includeParent)
+        {
+            identifier = collider.GetComponentInParent<UniversalIdentifier>();
+        }
+
+        return identifier;
+    }
+
+    private Tools GetTools(Collider collider, bool includeParent = false)
+    {
+        Tools tools = collider.GetComponent<Tools>();
+        if (tools == null && includeParent)
+        {
+            tools = collider.GetComponentInParent<Tools>();
+        }
+
+        return tools;
+    }
+
+    private Collectable GetCollectable(Collider collider)
+    {
+        return collider.GetComponent<Collectable>();
+    }
+
+    private SeedPoint GetSeedPoint(Collider collider)
+    {
+        return collider.GetComponent<SeedPoint>();
+    }
+
+    private string GetSelectedPrefab()
+    {
+        return toolbar != null ? toolbar.GetSelectedPrefab() : null;
+    }
+
+    private string GetSelectedPrefabTag()
+    {
+        return toolbar != null ? toolbar.GetSelectedPrefabTag() : null;
+    }
+
+    private string GetSelectedUsedPrefab()
+    {
+        return toolbar != null ? toolbar.GetSelectedUsedPrefab() : null;
+    }
+
+    private SeedData GetSelectedSeedData()
+    {
+        return toolbar != null ? toolbar.GetSelectedPrefabSeedData() : null;
+    }
+
+    private Inventory.Slot GetSelectedToolbarSlot()
+    {
+        return toolbar != null ? toolbar.GetSelectedInventorySlot() : null;
+    }
+
+    private bool IsSelectedPrefab(string prefabName)
+    {
+        return GetSelectedPrefab() == prefabName;
+    }
+
+    private bool IsSelectedPrefabTag(string prefabTag)
+    {
+        return GetSelectedPrefabTag() == prefabTag;
+    }
+
+    private bool IsOnLayer(GameObject target, string layerName)
+    {
+        return target.layer == LayerMask.NameToLayer(layerName);
+    }
+
+    private int GetCurrentMoney()
+    {
+        return muhasebeci != null ? muhasebeci.GetMoney() : 0;
+    }
+
+    private bool HasEnoughMoney(int amount)
+    {
+        return GetCurrentMoney() >= amount;
+    }
+
+    private void SpendMoney(int amount)
+    {
+        if (muhasebeci == null)
+        {
+            return;
+        }
+
+        muhasebeci.SetMoney(GetCurrentMoney() - amount);
+    }
+
+    private void RefreshMoneyText()
+    {
+        if (muhasebeci != null && muhasebeci.moneyText != null)
+        {
+            muhasebeci.moneyText.text = muhasebeci.GetMoney().ToString();
+        }
+    }
+
+    private void ShowNpcInfo(string npcId)
+    {
+        if (NpcInfoPanel != null)
+        {
+            NpcInfoPanel.SetActive(true);
+        }
+
+        if (Npcname != null)
+        {
+            Npcname.text = npcId;
+        }
+    }
+
+    private void HideNpcInfo()
+    {
+        if (NpcInfoPanel != null)
+        {
+            NpcInfoPanel.SetActive(false);
+        }
+    }
+
+    private void ShowItemInfo(Tools item)
+    {
+        if (itemInfoPanel != null)
+        {
+            itemInfoPanel.SetActive(true);
+        }
+
+        if (itemNameText != null)
+        {
+            itemNameText.text = item.itemName;
+        }
+
+        if (itemPriceText != null)
+        {
+            itemPriceText.text = item.price.ToString();
+        }
+
+        if (GetCurrentMoney() >= item.price)
+        {
+            if (itemNameText != null)
             {
-                if (Physics.Raycast(ray, out hit, maxDistance, interactableLayer))
-                {
-                    UniversalIdentifier id = hit.collider.GetComponent<UniversalIdentifier>();
-                    if (id != null && id.ID.ToLower() == "halci")
-                    {
-                        // Market paneli aktifse kapat, değilse aç
-                        if (id.market.activeSelf)
-                        {
-                            id.closemarket();
-                            Debug.Log("🛒 Halcı ile etkileşim → Market kapatıldı.");
-                        }
-                        else
-                        {
-                            id.openmarket();
-                            Debug.Log("🛒 Halcı ile etkileşim → Market açıldı.");
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Bu NPC'nin universal ID'si 'halci' değil veya UniversalIdentifier bileşeni yok.");
-                    }
-                }
+                itemNameText.color = Color.green;
             }
-            if (Physics.Raycast(ray, out hit, maxDistance, interactableLayer))
-                {
-                    IInteractable interactable = hit.collider.GetComponent<IInteractable>();
 
-                    if (interactable != null)
-                    {
-                        interactable.Interact(); // Nesneye özel etkileşimi tetikle
-                        Debug.Log("Etkileşim gerçekleşti: " + hit.collider.gameObject.name);
-                    }
-
-                    Tools item = hit.collider.GetComponent<Tools>();
-                    if (item == null)
-                        item = hit.collider.GetComponentInParent<Tools>();
-
-                    if (item != null)
-                    {
-                        Debug.Log("SATIN ALMA: Tools bulundu → " + item.itemName);
-                        currentItem = item;
-                        BuyItem();
-                    }
-                    else
-                    {
-                        Debug.LogWarning("SATIN ALMA: Tools component yok → BuyItem çalışmadı.");
-                    }
-
-                }
-            if (Physics.Raycast(ray, out hit, 3f))
+            if (itemPriceText != null)
             {
-                if (hit.collider.CompareTag("NPC"))
-                {
-                    NPCInteraction npc = hit.collider.GetComponent<NPCInteraction>();
-                    if (npc != null)
-                    {
-                        npc.StartDialog();
-                        Debug.Log("NPC ile etkileşim başladı: " + npc.gameObject.name);
-                    }
-                }
+                itemPriceText.color = Color.green;
+            }
+        }
+        else
+        {
+            if (itemNameText != null)
+            {
+                itemNameText.color = Color.red;
+            }
+
+            if (itemPriceText != null)
+            {
+                itemPriceText.color = Color.red;
             }
         }
     }
-    void Updateinfo()
-    {
-        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, maxDistance))
+    private void HideItemInfo()
+    {
+        if (itemInfoPanel != null)
         {
-            UniversalIdentifier npc = hit.collider.GetComponent<UniversalIdentifier>();
-
-            if (npc != null)
-            {
-                // UI'yı güncelle
-                NpcInfoPanel.SetActive(true);
-                Npcname.text = npc.ID;
-                return;
-            }
+            itemInfoPanel.SetActive(false);
         }
-        // Eğer hiçbir uygun iteme çarpmadıysa paneli gizle
-        NpcInfoPanel.SetActive(false);
     }
-// ...existing code...
 
-void UpdateItemInfo()
-{
-    Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-    RaycastHit hit;
-
-    if (Physics.Raycast(ray, out hit, maxDistance))
+    private bool IsSeedBoxTarget(GameObject clickedCell)
     {
-        Tools item = hit.collider.GetComponent<Tools>();
+        return clickedCell.layer == LayerMask.NameToLayer("SeedBox");
+    }
+
+    private bool IsWaterSelected()
+    {
+        return IsSelectedPrefabTag("water") || IsSelectedPrefab("WateringCan_full");
+    }
+
+    private Inventory GetTargetInventory()
+    {
+        return inventory ?? InventoryManager.Instance?.toolbar;
+    }
+
+    private void ConsumeSelectedSeedSlot()
+    {
+        Inventory.Slot selectedInvSlot = GetSelectedToolbarSlot();
+        Inventory targetInventory = GetTargetInventory();
+
+        if (targetInventory != null && selectedInvSlot != null)
+        {
+            targetInventory.selectedSlot = selectedInvSlot;
+            targetInventory.TryConsumeSelectedSlot(1);
+            Debug.Log("[AddSeed] Aktif slot azaltildi.");
+        }
+        else
+        {
+            Debug.LogWarning("[AddSeed] Slot veya envanter bulunamadi, azaltma yapilamadi.");
+        }
+    }
+
+    private void CreateWaterIndicator(SeedPoint seedPoint)
+    {
+        if (seedPoint.wateringEffectPrefab == null)
+        {
+            Debug.LogWarning($"[Watering] {seedPoint.name} icin wateringEffectPrefab atanamadi.");
+            return;
+        }
+
+        Transform marker = seedPoint.transform.Find("WaterIndicator");
+        if (marker == null)
+        {
+            GameObject fx = Instantiate(
+                seedPoint.wateringEffectPrefab,
+                seedPoint.transform.position + Vector3.up * 0.1f,
+                Quaternion.identity,
+                seedPoint.transform
+            );
+            fx.name = "WaterIndicator";
+        }
+    }
+
+    private bool TryGetClickedCell(out RaycastHit hit, out GameObject clickedCell)
+    {
+        if (TryRaycast(out hit))
+        {
+            clickedCell = hit.collider.gameObject;
+            return true;
+        }
+
+        clickedCell = null;
+        return false;
+    }
+
+    private TreeFall GetTreeFall(GameObject clickedCell)
+    {
+        return clickedCell.GetComponent<TreeFall>();
+    }
+
+    private void ReplaceClickedCell(GameObject clickedCell)
+    {
+        Vector3 cellPosition = clickedCell.transform.position;
+        Quaternion cellRotation = clickedCell.transform.rotation;
+        Vector3 cellScale = clickedCell.transform.localScale;
+
+        GameObject newCell = Instantiate(replacementPrefab, cellPosition, cellRotation);
+        newCell.transform.localScale = cellScale;
+        Destroy(clickedCell);
+    }
+
+    private void PlantSeedOnPoint(SeedPoint seedPoint, SeedData selectedSeedData)
+    {
+        seedPoint.seedData = selectedSeedData;
+        seedPoint.PlantSeed(selectedSeedData.seedType);
+    }
+
+    private bool TryInteractRaycast(Ray ray, out RaycastHit hit)
+    {
+        return Physics.Raycast(ray, out hit, maxDistance, interactableLayer);
+    }
+
+    private bool TryNpcRaycast(Ray ray, out RaycastHit hit)
+    {
+        return Physics.Raycast(ray, out hit, 3f);
+    }
+
+    private bool IsHalci(UniversalIdentifier identifier)
+    {
+        return identifier != null && identifier.ID.ToLower() == "halci";
+    }
+
+    private void ToggleHalciMarket(UniversalIdentifier identifier)
+    {
+        if (identifier.market.activeSelf)
+        {
+            identifier.closemarket();
+            Debug.Log("Halci ile etkilesim: Market kapatildi.");
+        }
+        else
+        {
+            identifier.openmarket();
+            Debug.Log("Halci ile etkilesim: Market acildi.");
+        }
+    }
+
+    private void HandleInteractableComponent(Collider collider)
+    {
+        IInteractable interactable = collider.GetComponent<IInteractable>();
+        if (interactable != null)
+        {
+            interactable.Interact();
+            Debug.Log("Etkilesim gerceklesti: " + collider.gameObject.name);
+        }
+    }
+
+    private void HandleToolsPurchase(Collider collider)
+    {
+        Tools item = GetTools(collider, true);
 
         if (item != null)
         {
-            // UI'yı güncelle
-            itemInfoPanel.SetActive(true);
-            itemNameText.text = item.itemName;
-            itemPriceText.text = item.price.ToString();
-
-            // Muhasebeci'den güncel parayı al
-            int currentMoney = muhasebeci.playerMoney;
-
-            // Renk değişimi
-            if (currentMoney >= item.price)
-            {
-                itemNameText.color = Color.green;
-                itemPriceText.color = Color.green;
-            }
-            else
-            {
-                itemNameText.color = Color.red;
-                itemPriceText.color = Color.red;
-            }
-
-            return;
+            Debug.Log("SATIN ALMA: Tools bulundu -> " + item.itemName);
+            currentItem = item;
+            BuyItem();
+        }
+        else
+        {
+            Debug.LogWarning("SATIN ALMA: Tools component yok -> BuyItem calismadi.");
         }
     }
 
-    // Eğer hiçbir uygun iteme çarpmadıysa paneli gizle
-    itemInfoPanel.SetActive(false);
-}
-
-public void BuyItem()
-{
-    Debug.Log("BuyItem tetiklendi!");
-
-    // Muhasebeci'den güncel parayı al
-    int currentMoney = muhasebeci.playerMoney;
-
-    if (currentMoney >= currentItem.price)
+    private void TryBuyTargetAtCursor()
     {
-        // Parayı Muhasebeci üzerinden güncelle
-        muhasebeci.playerMoney -= currentItem.price;
-        if (muhasebeci.moneyText != null)
-            muhasebeci.moneyText.text = muhasebeci.playerMoney.ToString();
-
-        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, maxDistance, interactableLayer))
+        if (TryRaycast(out RaycastHit hit))
         {
-            Debug.Log("Etkileşim: " + hit.collider.name);
+            Debug.Log("Etkilesim: " + hit.collider.name);
 
-            Collectable collectable = hit.collider.GetComponent<Collectable>();
-            Tools tools = hit.collider.GetComponent<Tools>();
+            Collectable collectable = GetCollectable(hit.collider);
+            Tools tools = GetTools(hit.collider);
             if (collectable != null && tools != null)
             {
                 collectable.Buy(tools.amount);
             }
         }
     }
-    else
-    {
-        Debug.Log("Yetersiz altın!");
-    }
-}
-    public void ShootRay()
-    {
-        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, maxDistance, interactableLayer))
+    private void TryCollectTargetAtCursor()
+    {
+        if (TryRaycast(out RaycastHit hit))
         {
-            // Etkileşimli nesneye ulaşıldıysa
-            Debug.Log("Etkileşim: " + hit.collider.name);
+            Debug.Log("Etkilesim: " + hit.collider.name);
 
-            // Collectable bileşeni olup olmadığını kontrol et
-            Collectable collectable = hit.collider.GetComponent<Collectable>();
-            Tools tools = hit.collider.GetComponent<Tools>();
-
+            Collectable collectable = GetCollectable(hit.collider);
+            Tools tools = GetTools(hit.collider);
             if (collectable != null && tools == null)
             {
-                // Nesnenin Collect metodunu çağırarak tetikle
                 collectable.Collect();
             }
         }
     }
 
+    /// <summary>
+    /// Her karede bilgi panellerini gunceller ve ana input akislarini ilgili helper metodlara dagitir.
+    /// </summary>
+    public void Update()
+    {
+        if (PauseMenuUI.IsInputLocked)
+        {
+            return;
+        }
+
+        UpdateItemInfo();
+        UpdateNpcInfo();
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            HandlePrimaryClick();
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            ChangeCell();
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            HandleInteractKey();
+        }
+    }
+
+    /// <summary>
+    /// Sol tik akisini tek raycast uzerinden sirayla toplama, agac, ekim ve sulama kararlarina dagitir.
+    /// </summary>
+    private void HandlePrimaryClick()
+    {
+        if (!TryGetClickedCell(out RaycastHit hit, out GameObject clickedCell))
+        {
+            return;
+        }
+
+        TryHandleCollectAction(hit.collider);
+        TryHandleTreeAction(clickedCell);
+        TryHandleSeedAction(hit, clickedCell);
+        TryHandleWaterAction(hit, clickedCell);
+    }
+
+    /// <summary>
+    /// Etkilesim tusunda market, satin alma ve NPC diyalog akisini ayni bakis yonu uzerinden isletir.
+    /// </summary>
+    private void HandleInteractKey()
+    {
+        Ray ray = CreateMouseRay();
+
+        if (TryInteractRaycast(ray, out RaycastHit interactHit))
+        {
+            HandleHalciInteraction(interactHit.collider);
+            HandleGenericInteraction(interactHit.collider);
+        }
+
+        HandleNpcDialog(ray);
+    }
+
+    private bool TryHandleCollectAction(Collider collider)
+    {
+        Collectable collectable = GetCollectable(collider);
+        Tools tools = GetTools(collider);
+        if (collectable != null && tools == null)
+        {
+            collectable.Collect();
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool TryHandleTreeAction(GameObject clickedCell)
+    {
+        if (!IsOnLayer(clickedCell, "Tree") || !IsSelectedPrefab("axe"))
+        {
+            return false;
+        }
+
+        TreeFall tree = GetTreeFall(clickedCell);
+        if (tree != null && !tree.isFalling)
+        {
+            StartCoroutine(tree.ShakeAndFall());
+            return true;
+        }
+
+        Debug.Log("Bu agac zaten devrilmis.");
+        return true;
+    }
+
+    private bool TryHandleSeedAction(RaycastHit hit, GameObject clickedCell)
+    {
+        if (!IsSeedBoxTarget(clickedCell) || !IsSelectedPrefabTag("seed"))
+        {
+            return false;
+        }
+
+        string selectedItemUsedPrefab = GetSelectedUsedPrefab();
+        SeedData selectedSeedData = GetSelectedSeedData();
+
+        if (string.IsNullOrEmpty(selectedItemUsedPrefab))
+        {
+            Debug.LogWarning("Secili prefab adi bos!");
+            return true;
+        }
+
+        SeedPoint seedPoint = GetSeedPoint(hit.collider);
+        if (seedPoint == null)
+        {
+            Debug.LogWarning("[AddSeed] SeedPoint bulunamadi.");
+            return true;
+        }
+
+        if (selectedSeedData == null)
+        {
+            Debug.LogWarning("[AddSeed] Secili SeedData bulunamadi.");
+            return true;
+        }
+
+        GameObject newItem = Resources.Load<GameObject>($"Prefabs/foods/{selectedItemUsedPrefab}");
+        if (newItem == null)
+        {
+            Debug.LogWarning($"Prefab bulunamadi: {selectedItemUsedPrefab}");
+            return true;
+        }
+
+        PlantSeedOnPoint(seedPoint, selectedSeedData);
+        ConsumeSelectedSeedSlot();
+        Debug.Log($"SeedPoint'e ekim yapildi: {selectedSeedData.seedType}");
+        return true;
+    }
+
+    private bool TryHandleWaterAction(RaycastHit hit, GameObject clickedCell)
+    {
+        if (!IsSeedBoxTarget(clickedCell) || !IsWaterSelected())
+        {
+            return false;
+        }
+
+        SeedPoint seedPoint = GetSeedPoint(hit.collider);
+        if (seedPoint == null)
+        {
+            Debug.LogWarning($"[Watering] SeedPoint yok: {clickedCell.name}");
+            return true;
+        }
+
+        if (!seedPoint.hasSeed)
+        {
+            Debug.Log($"[Watering] Hucrede tohum yok: {clickedCell.name}");
+        }
+
+        seedPoint.isWatered = true;
+        CreateWaterIndicator(seedPoint);
+        Debug.Log($"Hucre sulandi: {clickedCell.name}");
+        return true;
+    }
+
+    private void HandleHalciInteraction(Collider collider)
+    {
+        UniversalIdentifier id = GetUniversalIdentifier(collider);
+        if (IsHalci(id))
+        {
+            ToggleHalciMarket(id);
+        }
+    }
+
+    private void HandleGenericInteraction(Collider collider)
+    {
+        HandleInteractableComponent(collider);
+        HandleToolsPurchase(collider);
+    }
+
+    private void HandleNpcDialog(Ray ray)
+    {
+        if (TryNpcRaycast(ray, out RaycastHit hit) && hit.collider.CompareTag("NPC"))
+        {
+            NPCInteraction npc = hit.collider.GetComponent<NPCInteraction>();
+            if (npc != null)
+            {
+                npc.StartDialog();
+                Debug.Log("NPC ile etkilesim basladi: " + npc.gameObject.name);
+            }
+        }
+    }
+
+    private void UpdateNpcInfo()
+    {
+        if (TryForwardRaycast(out RaycastHit hit))
+        {
+            UniversalIdentifier npc = GetUniversalIdentifier(hit.collider);
+            if (npc != null)
+            {
+                ShowNpcInfo(npc.ID);
+                return;
+            }
+        }
+
+        HideNpcInfo();
+    }
+
+    private void UpdateItemInfo()
+    {
+        if (TryForwardRaycast(out RaycastHit hit))
+        {
+            Tools item = GetTools(hit.collider);
+            if (item != null)
+            {
+                ShowItemInfo(item);
+                return;
+            }
+        }
+
+        HideItemInfo();
+    }
+
+    /// <summary>
+    /// Market uzerinden secili urunun odemesini dusup ilgili satin alma akisini tetikler.
+    /// </summary>
+    public void BuyItem()
+    {
+        Debug.Log("BuyItem tetiklendi!");
+
+        if (currentItem == null)
+        {
+            Debug.LogWarning("BuyItem icin currentItem atanamadi.");
+            return;
+        }
+
+        if (HasEnoughMoney(currentItem.price))
+        {
+            SpendMoney(currentItem.price);
+            RefreshMoneyText();
+            TryBuyTargetAtCursor();
+        }
+        else
+        {
+            Debug.Log("Yetersiz altin!");
+        }
+    }
+
+    public void ShootRay()
+    {
+        TryCollectTargetAtCursor();
+    }
+
     public void HitTree()
     {
-        // Nişangah pozisyonuna göre ray oluştur
-        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-
-        // Raycast ile tıklanan hücreyi bul
-        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer))
+        if (TryGetClickedCell(out _, out GameObject clickedCell))
         {
-            GameObject clickedCell = hit.collider.gameObject; // Tıklanan hücreyi al
-
-            // Katman kontrolü ve seçili öğe adı kontrolü
-            if (clickedCell.layer == LayerMask.NameToLayer("Tree") && toolbar.GetSelectedPrefab() == "axe")
-            {
-                // TreeFall bileşenini tıklanan objeden al
-                TreeFall tree = clickedCell.GetComponent<TreeFall>();
-
-                if (tree != null && !tree.isFalling)
-                {
-                    // Ağacı devirmek için ShakeAndFall coroutine'ini başlat
-                    StartCoroutine(tree.ShakeAndFall());
-                }
-                else
-                {
-                    Debug.Log("Bu ağaç zaten devrilmiş.");
-                }
-            }
-            else
-            {
-                // Şartlar sağlanmadığında kullanıcıyı bilgilendir
-                Debug.Log("Ağaç değil veya elinde balta yok");
-            }
+            TryHandleTreeAction(clickedCell);
         }
     }
 
-
-    // Fare ile tıklanarak hücre değiştirilir
+    /// <summary>
+    /// Sag tikla toprak hucresini islenmis hucre prefab'ina cevirir.
+    /// </summary>
     public void ChangeCell()
     {
-        // Nişangah pozisyonuna göre ray oluştur
-        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-
-        // Raycast ile tıklanan hücreyi bul
-        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer))
+        if (TryGetClickedCell(out _, out GameObject clickedCell) && IsOnLayer(clickedCell, "ground") && IsSelectedPrefab("Hoe"))
         {
-            GameObject clickedCell = hit.collider.gameObject; // Tıklanan hücreyi al
-
-            // Katman kontrolü ve seçili öğe adı kontrolü
-            if (clickedCell.layer == LayerMask.NameToLayer("ground") && toolbar.GetSelectedPrefab() == "Hoe")
-            {
-                // Hücreyi sil ve yerine yeni hücre oluştur
-                Vector3 cellPosition = clickedCell.transform.position;
-                Quaternion cellRotation = clickedCell.transform.rotation;
-                Vector3 cellScale = clickedCell.transform.localScale;
-
-                // Yeni hücreyi oluştur
-                GameObject newCell = Instantiate(replacementPrefab, cellPosition, cellRotation);
-                newCell.transform.localScale = cellScale;
-
-                // Eski hücreyi yok et
-                Destroy(clickedCell);
-
-                Debug.Log("Hücre başarıyla değiştirildi.");
-            }
-            else
-            {
-                // Şartlar sağlanmadığında kullanıcıyı bilgilendir
-                Debug.Log("katman ground değil veya elinde hoe yok");
-            }
+            ReplaceClickedCell(clickedCell);
+            Debug.Log("Hucre basariyla degistirildi.");
         }
     }
-
-    // Fare tıklama ile seçilen hücrenin rengini değiştirir ve aktif hale getirir
 
     public void ActivateCellAtMousePosition()
     {
-        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition); // Nişangahın ekran üzerindeki pozisyonundan ray oluştur
-        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer)) // Raycast ile vurulan nesneyi bul
+        if (TryGetClickedCell(out _, out GameObject clickedCell) && IsOnLayer(clickedCell, "groundcell") && IsSelectedPrefab("Hammer"))
         {
-            GameObject clickedCell = hit.collider.gameObject; // Vurulan hücreyi al
-
-            // Eğer hücre zemin katmanına aitse
-            if (clickedCell.layer == LayerMask.NameToLayer("groundcell") && toolbar.GetSelectedPrefab() == "Hammer")
-            {
-                clickedCell.transform.GetChild(0).gameObject.SetActive(true); // Child objeyi aktif yap
-            }
+            Debug.Log($"Raycast basarili, carpilan obje: {clickedCell.name}, Layer: {clickedCell.layer}");
+            clickedCell.transform.GetChild(0).gameObject.SetActive(true);
         }
     }
+
+    /// <summary>
+    /// Secili tohum aracini kullanarak ekim kutusu uzerine tohum diker ve aktif slottan tuketir.
+    /// </summary>
     public void AddSeed()
-{
-    // Nişangah pozisyonuna göre ray oluştur
-    Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-
-    // Raycast ile tıklanan hücreyi bul
-    if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer))
     {
-        GameObject clickedCell = hit.collider.gameObject; // Tıklanan hücreyi al
-        Debug.Log($"Raycast başarılı, çarpılan obje: {clickedCell.name}, Layer: {clickedCell.layer}");
-
-        // Tıklanan hücre SeedBox katmanında mı ve seçili öğe "seed" mi kontrol et
-        int seedBoxLayer = LayerMask.NameToLayer("SeedBox");
-        Debug.Log($"SeedBox Layer Index: {seedBoxLayer}");
-        Debug.Log($"Seçili prefab tagı: {toolbar.GetSelectedPrefabTag()}");
-
-        if (clickedCell.layer == seedBoxLayer && toolbar.GetSelectedPrefabTag() == "seed")
+        if (TryGetClickedCell(out RaycastHit hit, out GameObject clickedCell))
         {
-            string selectedItemUsedPrefab = toolbar.GetSelectedUsedPrefab();
-            SeedData selectedSeedData = toolbar.GetSelectedPrefabSeedData();
-            Debug.Log($"Prefab adı: {selectedItemUsedPrefab}");
-
-            if (!string.IsNullOrEmpty(selectedItemUsedPrefab))
-            {
-                // Resources klasöründen prefab'ı yükle
-                GameObject newItem = Resources.Load<GameObject>($"Prefabs/foods/{selectedItemUsedPrefab}");
-                Debug.Log($"Prefab yükleniyor: {newItem}");
-                SeedPoint seedPoint = hit.collider.GetComponent<SeedPoint>();
-                if (newItem != null)
-                {
-                    seedPoint.seedData = selectedSeedData;
-                    seedPoint.PlantSeed(selectedSeedData.seedType); // 🌱 ekim yap
-
-                    // === 🌾 Envanterden 1 tohum azalt ===
-                    var selectedInvSlot = toolbar.GetSelectedInventorySlot(); // aktif toolbar slotunu al
-                    var inv = inventory ?? InventoryManager.Instance?.toolbar;
-
-                    if (inv != null && selectedInvSlot != null)
-                    {
-                        inv.selectedSlot = selectedInvSlot;
-                        inv.TryConsumeSelectedSlot(1);
-                        Debug.Log("[AddSeed] Aktif slot azaltıldı.");
-                    }
-                    else
-                    {
-                        Debug.LogWarning("[AddSeed] Slot veya envanter bulunamadı, azaltılamadı.");
-                    }
-
-                    // UI yenile
-                    //inventory_uı?.Refresh();
-                    //toolbar?.RefreshUI();
-
-                    Debug.Log($"SeedPoint'e ekim yapıldı: {selectedSeedData.seedType}");
-                }
-                else
-                {
-                    Debug.LogWarning($"Prefab bulunamadı: {selectedItemUsedPrefab}");
-                }
-            }
-            else
-            {
-                Debug.LogWarning("Seçili prefab adı boş!");
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"Layer veya tag uyuşmuyor! clickedCell.layer: {clickedCell.layer}, seedBoxLayer: {seedBoxLayer}, tag: {toolbar.GetSelectedPrefabTag()}");
+            TryHandleSeedAction(hit, clickedCell);
         }
     }
-    else
+
+    /// <summary>
+    /// Secili sulama araci ile ekim kutusunu sulayip gorsel isaretleyiciyi olusturur.
+    /// </summary>
+    public void Watering()
     {
-        Debug.LogWarning("Raycast bir objeye çarpmadı.");
-    }
-}
-
-public void Watering()
-{
-    // Nişangah pozisyonuna göre ray oluştur
-    Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-
-    // Raycast ile tıklanan hücreyi bul
-    if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer))
-    {
-        GameObject clickedCell = hit.collider.gameObject; // Tıklanan hücre
-
-        // SeedBox + su aracı kontrolü (ikisini de destekleyelim)
-        int seedBoxLayer = LayerMask.NameToLayer("SeedBox");
-        bool isWaterSelected =
-            (toolbar.GetSelectedPrefabTag() == "water") ||
-            (toolbar.GetSelectedPrefab() == "WateringCan_full");
-
-        if (clickedCell.layer == seedBoxLayer && isWaterSelected)
+        if (TryGetClickedCell(out RaycastHit hit, out GameObject clickedCell))
         {
-            // Hücrede SeedPoint var mı?
-            SeedPoint sp = clickedCell.GetComponent<SeedPoint>();
-            if (sp == null)
-            {
-                Debug.LogWarning($"[Watering] SeedPoint yok: {clickedCell.name}");
-                return;
-            }
-
-            // Tohum yoksa suyu işleme (istersen kaldır)
-            if (!sp.hasSeed)
-            {
-                Debug.Log($"[Watering] Hücrede tohum yok: {clickedCell.name}");
-                // return; // tohum yokken su vermeyi iptal etmek istersen aç
-            }
-
-            // Sulandı flag'i
-            sp.isWatered = true;
-
-            // --- SADECE BURADA SPAWN / TEK KOPYA ---
-            if (sp.wateringEffectPrefab != null)
-            {
-                // Aynı objeyi çoğaltmamak için önce var mı bak
-                Transform marker = sp.transform.Find("WaterIndicator");
-                if (marker == null)
-                {
-                    GameObject fx = Instantiate(
-                        sp.wateringEffectPrefab,
-                        sp.transform.position + Vector3.up * 0.1f,
-                        Quaternion.identity,
-                        sp.transform
-                    );
-                    fx.name = "WaterIndicator";
-                }
-            }
-            else
-            {
-                Debug.LogWarning($"[Watering] {sp.name} için wateringEffectPrefab atanmadı.");
-            }
-
-            Debug.Log($"Hücre sulandı: {clickedCell.name}");
-        }
-        else
-        {
-            // Şartlar sağlanmadı
-            // Debug.Log($"[Watering] Layer/tag şartları tutmuyor.");
+            TryHandleWaterAction(hit, clickedCell);
         }
     }
-    else
-    {
-        Debug.Log("Raycast bir objeye çarpmadı.");
-    }
-}
-
 
     public IEnumerator waterfall()
     {
-        //WateringCan_full.transform.GetChild(0).gameObject.SetActive(true);
         yield return new WaitForSeconds(1);
-        //WateringCan_full.transform.GetChild(0).gameObject.SetActive(true);
     }
 }
-
-
-
-
-
-
-

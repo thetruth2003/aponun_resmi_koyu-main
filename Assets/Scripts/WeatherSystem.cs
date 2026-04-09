@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// WeatherSystem sinifi, ilgili davranis veya veriyi yonetmek icin kullanilir.
+/// </summary>
 public class WeatherSystem : MonoBehaviour
 {
     public static WeatherSystem Instance;
@@ -11,7 +14,6 @@ public class WeatherSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        // Her yeni günde yağmur devam ediyorsa tekrar sula
         game_start.OnDayChanged += OnDayChanged;
     }
 
@@ -29,14 +31,12 @@ public class WeatherSystem : MonoBehaviour
     public void StartRain()
     {
         IsRaining = true;
-        WaterAllSeedPoints(); // yağmur başlar başlamaz hepsini sula
+        WaterAllSeedPoints();
     }
 
     public void StopRain()
     {
         IsRaining = false;
-        // İstersen hemen kapatma; SeedPoint zaten gün sonunda SetWatered(false) yapacak.
-        // Hemen kaldırmak istersen: foreach (var sp in FindObjectsOfType<SeedPoint>(true)) sp.SetWatered(false);
     }
 
     private void WaterAllSeedPoints()
@@ -45,7 +45,7 @@ public class WeatherSystem : MonoBehaviour
         foreach (var sp in all)
         {
             if (sp.hasSeed)
-                sp.SetWatered(true);   // Spawn/destroy işini SeedPoint kendi yapıyor
+                sp.SetWatered(true);
         }
     }
 }

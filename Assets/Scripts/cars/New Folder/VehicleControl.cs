@@ -1,28 +1,29 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using System.Drawing;
-using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
-using UnityEngine.Profiling;
 
+/// <summary>
+/// ControlMode sinifi, arac sistemindeki ilgili davranisi yonetir.
+/// </summary>
 public enum ControlMode { simple = 1, touch = 2, ai = 3 }
 
-
+/// <summary>
+/// VehicleControl sinifi, arac sistemindeki ilgili davranisi yonetir.
+/// </summary>
 public class VehicleControl : MonoBehaviour
 {
-
 
     public ControlMode controlMode = ControlMode.simple;
     public float SpeedMainCar = 1f;
     public float BrakePowerMainCar = 2f;
     public bool activeControl = false;
 
-    // Wheels Setting /////////////////////////////////
-
     public CarWheels carWheels;
 
+    /// <summary>
+    /// CarWheels sinifi, arac sistemindeki ilgili davranisi yonetir.
+    /// </summary>
     [System.Serializable]
     public class CarWheels
     {
@@ -30,7 +31,9 @@ public class VehicleControl : MonoBehaviour
         public WheelSetting setting;
     }
 
-
+    /// <summary>
+    /// ConnectWheel sinifi, arac sistemindeki ilgili davranisi yonetir.
+    /// </summary>
     [System.Serializable]
     public class ConnectWheel
     {
@@ -43,6 +46,9 @@ public class VehicleControl : MonoBehaviour
         public Transform backLeft;
     }
 
+    /// <summary>
+    /// WheelSetting sinifi, arac sistemindeki ilgili davranisi yonetir.
+    /// </summary>
     [System.Serializable]
     public class WheelSetting
     {
@@ -54,12 +60,11 @@ public class VehicleControl : MonoBehaviour
     public WheelSetting frontWheelSetting;
     public WheelSetting rearWheelSetting;
 
-
-
-    // Lights Setting ////////////////////////////////
-
     public CarLights carLights;
 
+    /// <summary>
+    /// CarLights sinifi, arac sistemindeki ilgili davranisi yonetir.
+    /// </summary>
     [System.Serializable]
     public class CarLights
     {
@@ -67,10 +72,9 @@ public class VehicleControl : MonoBehaviour
         public Light[] reverseLights;
     }
 
-    // Car sounds /////////////////////////////////
-
-    //public CarSounds carSounds;
-
+    /// <summary>
+    /// CarSounds sinifi, arac sistemindeki ilgili davranisi yonetir.
+    /// </summary>
     [System.Serializable]
     public class CarSounds
     {
@@ -80,10 +84,11 @@ public class VehicleControl : MonoBehaviour
         public AudioSource switchGear;
     }
 
-    // Car Particle /////////////////////////////////
-
     public CarParticles carParticles;
 
+    /// <summary>
+    /// CarParticles sinifi, arac sistemindeki ilgili davranisi yonetir.
+    /// </summary>
     [System.Serializable]
     public class CarParticles
     {
@@ -92,10 +97,11 @@ public class VehicleControl : MonoBehaviour
         private GameObject[] wheelParticle = new GameObject[4];
     }
 
-    // Car Engine Setting /////////////////////////////////
-
     public CarSetting carSetting;
 
+    /// <summary>
+    /// CarSetting sinifi, arac sistemindeki ilgili davranisi yonetir.
+    /// </summary>
     [System.Serializable]
     public class CarSetting
     {
@@ -127,12 +133,14 @@ public class VehicleControl : MonoBehaviour
 
         public float[] gears = { -10f, 9f, 6f, 4.5f, 3f, 2.5f };
 
-
         public float LimitBackwardSpeed = 60.0f;
         public float LimitForwardSpeed = 220.0f;
 
     }
 
+    /// <summary>
+    /// HitGround sinifi, arac sistemindeki ilgili davranisi yonetir.
+    /// </summary>
     [System.Serializable]
     public class HitGround
     {
@@ -143,8 +151,6 @@ public class VehicleControl : MonoBehaviour
         public AudioClip groundSound;
         public UnityEngine.Color brakeColor;
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private float steer = 0;
     private float accel = 0.0f;
@@ -166,16 +172,11 @@ public class VehicleControl : MonoBehaviour
 
     private float lastSpeed = -10.0f;
 
-
     private bool shifting = false;
-
 
     float[] efficiencyTable = { 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 1.0f, 1.0f, 0.95f, 0.80f, 0.70f, 0.60f, 0.5f, 0.45f, 0.40f, 0.36f, 0.33f, 0.30f, 0.20f, 0.10f, 0.05f };
 
-
     float efficiencyTableStep = 250.0f;
-
-
 
     private float Pitch;
     private float PitchDelay;
@@ -183,7 +184,6 @@ public class VehicleControl : MonoBehaviour
     private float shiftTime = 0.0f;
 
     private float shiftDelay = 0.0f;
-
 
     [HideInInspector]
     public int currentGear = 0;
@@ -196,9 +196,6 @@ public class VehicleControl : MonoBehaviour
     [HideInInspector]
     public bool Backward = false;
 
-    ////////////////////////////////////////////// TouchMode (Control) ////////////////////////////////////////////////////////////////////
-
-
     [HideInInspector]
     public float accelFwd = 0.0f;
     [HideInInspector]
@@ -206,15 +203,9 @@ public class VehicleControl : MonoBehaviour
     [HideInInspector]
     public float steerAmount = 0.0f;
 
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
     private float wantedRPM = 0.0f;
     private float w_rotate;
     private float slip, slip2 = 0.0f;
-
 
     private GameObject[] Particle = new GameObject[4];
 
@@ -225,7 +216,6 @@ public class VehicleControl : MonoBehaviour
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
     private WheelComponent[] wheels;
 
     public bool Maincar;
@@ -234,6 +224,9 @@ public class VehicleControl : MonoBehaviour
     public float MaxSpeed { get; private set; }
 
     public bool AiFinish;
+    /// <summary>
+    /// WheelComponent sinifi, arac sistemindeki ilgili davranisi yonetir.
+    /// </summary>
     private class WheelComponent
     {
 
@@ -249,7 +242,6 @@ public class VehicleControl : MonoBehaviour
 
     private WheelComponent SetWheelComponent(Transform wheel, float maxSteer, bool drive, float pos_y)
     {
-
 
         WheelComponent result = new WheelComponent();
         GameObject wheelCol = new GameObject(wheel.name + "WheelCollider");
@@ -272,12 +264,11 @@ public class VehicleControl : MonoBehaviour
 
     }
 
-
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
+    /// <summary>
+    /// Aracin fiziksel teker bilesenlerini, agirlik merkezini ve ilk efekt nesnelerini hazirlar.
+    /// </summary>
     void Awake()
     {
 
@@ -287,23 +278,23 @@ public class VehicleControl : MonoBehaviour
 
         wheels = new WheelComponent[4];
 
-        // Ön tekerlekler
         wheels[0] = SetWheelComponent(carWheels.wheels.frontRight, carSetting.maxSteerAngle, carWheels.wheels.frontWheelDrive, carWheels.wheels.frontRight.position.y);
         SetupWheelPhysics(wheels[0], frontWheelSetting);
         wheels[1] = SetWheelComponent(carWheels.wheels.frontLeft, carSetting.maxSteerAngle, carWheels.wheels.frontWheelDrive, carWheels.wheels.frontLeft.position.y);
         SetupWheelPhysics(wheels[1], frontWheelSetting);
 
-        // Arka tekerlekler
         wheels[2] = SetWheelComponent(carWheels.wheels.backRight, 0, carWheels.wheels.backWheelDrive, carWheels.wheels.backRight.position.y);
         SetupWheelPhysics(wheels[2], rearWheelSetting);
         wheels[3] = SetWheelComponent(carWheels.wheels.backLeft, 0, carWheels.wheels.backWheelDrive, carWheels.wheels.backLeft.position.y);
         SetupWheelPhysics(wheels[3], rearWheelSetting);
 
-
         if (carSetting.carSteer)
             steerCurAngle = carSetting.carSteer.localEulerAngles;
 
-        void SetupWheelPhysics(WheelComponent w, WheelSetting setting)
+    /// <summary>
+    /// Tek bir tekerin collider ayarlarini, yumusaklik degerlerini ve bagli efekt noktasini kurar.
+    /// </summary>
+    void SetupWheelPhysics(WheelComponent w, WheelSetting setting)
         {
             WheelCollider col = w.collider;
             col.suspensionDistance = setting.Distance;
@@ -331,6 +322,9 @@ public class VehicleControl : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Vites yukselterek gecis gecikmesini ve motor ses/efekt akislarini senkronlar.
+    /// </summary>
     public void ShiftUp()
     {
         float now = Time.timeSinceLevelLoad;
@@ -339,10 +333,6 @@ public class VehicleControl : MonoBehaviour
 
         if (currentGear < carSetting.gears.Length - 1)
         {
-
-            // if (!carSounds.switchGear.isPlaying)
-            //carSounds.switchGear.GetComponent<AudioSource>().Play();
-
 
             if (!carSetting.automaticGear)
             {
@@ -362,15 +352,14 @@ public class VehicleControl : MonoBehaviour
                 currentGear++;
             }
 
-
             shiftDelay = now + 1.0f;
             shiftTime = 1.5f;
         }
     }
 
-
-
-
+    /// <summary>
+    /// Vitesi bir alt seviyeye indirip motor devri ile tork dengesini tekrar ayarlar.
+    /// </summary>
     public void ShiftDown()
     {
         float now = Time.timeSinceLevelLoad;
@@ -379,9 +368,6 @@ public class VehicleControl : MonoBehaviour
 
         if (currentGear > 0 || NeutralGear)
         {
-
-            //wheel if (!carSounds.switchGear.isPlaying)
-            //carSounds.switchGear.GetComponent<AudioSource>().Play();
 
             if (!carSetting.automaticGear)
             {
@@ -397,14 +383,14 @@ public class VehicleControl : MonoBehaviour
                 currentGear--;
             }
 
-
             shiftDelay = now + 0.1f;
             shiftTime = 2.0f;
         }
     }
 
-
-
+    /// <summary>
+    /// Arac duvara ya da zemine carptiginda zemin tipine gore ses ve fren rengini gunceller.
+    /// </summary>
     void OnCollisionEnter(Collision collision)
     {
 
@@ -416,14 +402,13 @@ public class VehicleControl : MonoBehaviour
             MyRigidbody.angularVelocity = new Vector3(-MyRigidbody.angularVelocity.x * 0.5f, MyRigidbody.angularVelocity.y * 0.5f, -MyRigidbody.angularVelocity.z * 0.5f);
             MyRigidbody.linearVelocity = new Vector3(MyRigidbody.linearVelocity.x, MyRigidbody.linearVelocity.y * 0.5f, MyRigidbody.linearVelocity.z);
 
-
         }
 
     }
 
-
-
-
+    /// <summary>
+    /// Arac temas halinde kalirken zemin bilgisini tazeleyip kayma ve fren davranisini dogrular.
+    /// </summary>
     void OnCollisionStay(Collision collision)
     {
 
@@ -432,16 +417,11 @@ public class VehicleControl : MonoBehaviour
 
     }
 
-
-
-
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
+    /// <summary>
+    /// Aracin hiz, tork, direksiyon, ses ve teker fiziklerini her fizik adiminda birlikte gunceller.
+    /// </summary>
     void FixedUpdate()
     {
         speed = MyRigidbody.linearVelocity.magnitude * 2.7f;
@@ -453,25 +433,16 @@ public class VehicleControl : MonoBehaviour
 
         lastSpeed = speed;
 
-
-
-
         if (slip2 != 0.0f)
             slip2 = Mathf.MoveTowards(slip2, 0.0f, 0.1f);
 
-
-
         MyRigidbody.centerOfMass = carSetting.shiftCentre;
-
-
-
 
         if (activeControl)
         {
 
             if (controlMode == ControlMode.simple)
             {
-
 
                 accel = 0;
                 brake = false;
@@ -483,7 +454,6 @@ public class VehicleControl : MonoBehaviour
                     accel = Input.GetAxis("Vertical");
                     brake = Input.GetButton("Jump");
                     shift = Input.GetKey(KeyCode.LeftShift) | Input.GetKey(KeyCode.RightShift);
-
 
                 }
 
@@ -504,23 +474,16 @@ public class VehicleControl : MonoBehaviour
             shift = false;
         }
 
-
-
         if (!carWheels.wheels.frontWheelDrive && !carWheels.wheels.backWheelDrive)
             accel = 0.0f;
 
-
-
         if (carSetting.carSteer)
             carSetting.carSteer.localEulerAngles = new Vector3(steerCurAngle.x, steerCurAngle.y, steerCurAngle.z + (steer * -120.0f));
-
-
 
         if (carSetting.automaticGear && (currentGear == 1) && (accel < 0.0f))
         {
             if (speed < 5.0f)
                 ShiftDown();
-
 
         }
         else if (carSetting.automaticGear && (currentGear == 0) && (accel > 0.0f))
@@ -540,33 +503,17 @@ public class VehicleControl : MonoBehaviour
             ShiftDown();
         }
 
-
-
         if (speed < 1.0f) Backward = true;
-
-
 
         if (currentGear == 0 && Backward == true)
         {
-            //  carSetting.shiftCentre.z = -accel / -5;
             if (speed < carSetting.gears[0] * -10)
                 accel = -accel;
         }
         else
         {
             Backward = false;
-            //   if (currentGear > 0)
-            //   carSetting.shiftCentre.z = -(accel / currentGear) / -5;
         }
-
-
-
-
-        //  carSetting.shiftCentre.x = -Mathf.Clamp(steer * (speed / 100), -0.03f, 0.03f);
-
-
-
-        // Brake Lights
 
         foreach (Light brakeLight in carLights.brakeLights)
         {
@@ -583,9 +530,6 @@ public class VehicleControl : MonoBehaviour
             brakeLight.enabled = brakeLight.intensity == 0 ? false : true;
         }
 
-
-        // Reverse Lights
-
         foreach (Light WLight in carLights.reverseLights)
         {
             if (speed > 2.0f && currentGear == 0)
@@ -599,21 +543,12 @@ public class VehicleControl : MonoBehaviour
             WLight.enabled = WLight.intensity == 0 ? false : true;
         }
 
-
-
-
-
-
         wantedRPM = (5500.0f * accel) * 0.1f + wantedRPM * 0.9f;
 
         float rpm = 0.0f;
         int motorizedWheels = 0;
         bool floorContact = false;
         int currentWheel = 0;
-
-
-
-
 
         foreach (WheelComponent w in wheels)
         {
@@ -625,18 +560,6 @@ public class VehicleControl : MonoBehaviour
                 if (!NeutralGear && brake && currentGear < 2)
                 {
                     rpm += accel * carSetting.idleRPM;
-
-                    /*
-                    if (rpm > 1)
-                    {
-                        carSetting.shiftCentre.z = Mathf.PingPong(Time.time * (accel * 10), 2.0f) - 1.0f;
-                    }
-                    else
-                    {
-                        carSetting.shiftCentre.z = 0.0f;
-                    }
-                    */
-
                 }
                 else
                 {
@@ -650,12 +573,8 @@ public class VehicleControl : MonoBehaviour
                     }
                 }
 
-
                 motorizedWheels++;
             }
-
-
-
 
             if (brake || accel < 0.0f)
             {
@@ -676,7 +595,6 @@ public class VehicleControl : MonoBehaviour
                         slip = Mathf.Lerp(slip, 1.0f, 0.02f);
                     }
 
-
                     wantedRPM = 0.0f;
                     col.brakeTorque = carSetting.brakePower;
                     w.rotation = w_rotate;
@@ -686,24 +604,17 @@ public class VehicleControl : MonoBehaviour
             else
             {
 
-
                 col.brakeTorque = accel == 0 || NeutralGear ? col.brakeTorque = 3000 : col.brakeTorque = 0;
-
 
                 slip = speed > 0.0f ?
     (speed > 100 ? slip = Mathf.Lerp(slip, 1.0f + Mathf.Abs(steer), 0.02f) : slip = Mathf.Lerp(slip, 1.5f, 0.02f))
     : slip = Mathf.Lerp(slip, 0.01f, 0.02f);
 
-
                 w_rotate = w.rotation;
 
             }
 
-
-
             WheelFrictionCurve fc = col.forwardFriction;
-
-
 
             fc.asymptoteValue = 5000.0f;
             fc.extremumSlip = 2.0f;
@@ -713,66 +624,18 @@ public class VehicleControl : MonoBehaviour
             fc = col.sidewaysFriction;
             fc.stiffness = carSetting.stiffness / (slip + slip2);
 
-
             fc.extremumSlip = 0.2f + Mathf.Abs(steer);
 
             col.sidewaysFriction = fc;
-
-
-
-
-            //if (shift && (currentGear > 1 && speed > 50.0f) && shifmotor && Mathf.Abs(steer) < 0.2f)
-            //{
-
-            //    if (powerShift == 0) { shifmotor = false; }
-
-            //    powerShift = Mathf.MoveTowards(powerShift, 0.0f, Time.deltaTime * 10.0f);
-
-            //    carSounds.nitro.volume = Mathf.Lerp(carSounds.nitro.volume, 1.0f, Time.deltaTime * 10.0f);
-
-            //    if (!carSounds.nitro.isPlaying)
-            //    {
-            //        carSounds.nitro.GetComponent<AudioSource>().Play();
-
-            //    }
-
-
-            //    curTorque = powerShift > 0 ? carSetting.shiftPower : carSetting.carPower;
-            //    carParticles.shiftParticle1.emissionRate = Mathf.Lerp(carParticles.shiftParticle1.emissionRate, powerShift > 0 ? 50 : 0, Time.deltaTime * 10.0f);
-            //    carParticles.shiftParticle2.emissionRate = Mathf.Lerp(carParticles.shiftParticle2.emissionRate, powerShift > 0 ? 50 : 0, Time.deltaTime * 10.0f);
-            //}
-            //else
-            //{
-
-            //    if (powerShift > 20)
-            //    {
-            //        shifmotor = true;
-            //    }
-
-            //    carSounds.nitro.volume = Mathf.MoveTowards(carSounds.nitro.volume, 0.0f, Time.deltaTime * 2.0f);
-
-            //    if (carSounds.nitro.volume == 0)
-            //        carSounds.nitro.Stop();
-
-            //    powerShift = Mathf.MoveTowards(powerShift, 100.0f, Time.deltaTime * 5.0f);
-            //    curTorque = carSetting.carPower;
-            //    carParticles.shiftParticle1.emissionRate = Mathf.Lerp(carParticles.shiftParticle1.emissionRate, 0, Time.deltaTime * 10.0f);
-            //    carParticles.shiftParticle2.emissionRate = Mathf.Lerp(carParticles.shiftParticle2.emissionRate, 0, Time.deltaTime * 10.0f);
-            //}
-
 
             w.rotation = Mathf.Repeat(w.rotation + Time.deltaTime * col.rpm * 360.0f / 60.0f, 360.0f);
             w.rotation2 = Mathf.Lerp(w.rotation2, col.steerAngle, 0.1f);
             w.wheel.localRotation = Quaternion.Euler(w.rotation, w.rotation2, 0.0f);
 
-
-
             Vector3 lp = w.wheel.localPosition;
-
 
             if (col.GetGroundHit(out hit))
             {
-
 
                 if (carParticles.brakeParticlePerfab)
                 {
@@ -788,10 +651,8 @@ public class VehicleControl : MonoBehaviour
                         Particle[currentWheel].GetComponent<AudioSource>().rolloffMode = AudioRolloffMode.Custom;
                     }
 
-
                     var pc = Particle[currentWheel].GetComponent<ParticleSystem>();
                     bool WGrounded = false;
-
 
                     for (int i = 0; i < carSetting.hitGround.Length; i++)
                     {
@@ -814,11 +675,6 @@ public class VehicleControl : MonoBehaviour
                             Particle[currentWheel].GetComponent<ParticleSystem>().startColor = carSetting.hitGround[i].brakeColor;
 
                         }
-
-
-
-
-
 
                         if (WGrounded && speed > 5 && !brake)
                         {
@@ -854,7 +710,6 @@ public class VehicleControl : MonoBehaviour
 
                     }
 
-
                     lp.y -= Vector3.Dot(w.wheel.position - hit.point, transform.TransformDirection(0, 1, 0) / transform.lossyScale.x) - (col.radius);
                     lp.y = Mathf.Clamp(lp.y, -10.0f, w.pos_y);
                     floorContact = floorContact || (w.drive);
@@ -870,16 +725,12 @@ public class VehicleControl : MonoBehaviour
                         pc.enableEmission = false;
                     }
 
-
-
                     lp.y = w.startPos.y - carWheels.setting.Distance;
-
 
                 }
 
                 currentWheel++;
                 w.wheel.localPosition = lp;
-
 
             }
 
@@ -888,16 +739,12 @@ public class VehicleControl : MonoBehaviour
                 rpm = rpm / motorizedWheels;
             }
 
-
             motorRPM = 0.95f * motorRPM + 0.05f * Mathf.Abs(rpm * carSetting.gears[currentGear]);
             if (motorRPM > 5500.0f) motorRPM = 5200.0f;
-
 
             int index = (int)(motorRPM / efficiencyTableStep);
             if (index >= efficiencyTable.Length) index = efficiencyTable.Length - 1;
             if (index < 0) index = 0;
-
-
 
             float newTorque = curTorque * carSetting.gears[currentGear] * efficiencyTable[index];
 
@@ -915,7 +762,6 @@ public class VehicleControl : MonoBehaviour
                     }
                     else
                     {
-                        // 
                         float curTorqueCol = collider.motorTorque;
 
                         if (!brake && accel != 0 && NeutralGear == false)
@@ -932,7 +778,6 @@ public class VehicleControl : MonoBehaviour
                                 collider.brakeTorque = 2000;
                             }
 
-
                         }
                         else
                         {
@@ -942,10 +787,6 @@ public class VehicleControl : MonoBehaviour
                     }
 
                 }
-
-
-
-
 
                 if (Maincar)
                 {
@@ -963,7 +804,10 @@ public class VehicleControl : MonoBehaviour
 
                 }
             }
-            void OnDrawGizmos()
+    /// <summary>
+    /// Editor gizmos acikken tekerlerin yere temas noktalarini ve suspansiyon cizgilerini cizer.
+    /// </summary>
+    void OnDrawGizmos()
             {
 
                 if (!carSetting.showNormalGizmos || Application.isPlaying) return;

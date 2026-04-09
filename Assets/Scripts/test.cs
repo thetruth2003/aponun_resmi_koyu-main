@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// test sinifi, ilgili davranis veya veriyi yonetmek icin kullanilir.
+/// </summary>
 public class test : MonoBehaviour
 {
-        public Camera playerCamera; // Oyuncunun kamerası
-            public float maxDistance = 100f; // Maksimum atış mesafesi
+        public Camera playerCamera;
+            public float maxDistance = 100f;
 public void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -17,7 +20,7 @@ public void Update()
 
         }
 
-        if (Input.GetKeyDown(KeyCode.E)) // E tuşuna basılınca
+        if (Input.GetKeyDown(KeyCode.E))
         {
             Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -28,7 +31,7 @@ public void Update()
 
                 if (interactable != null)
                 {
-                    interactable.Interact(); // Nesneye özel etkileşimi tetikle
+                    interactable.Interact();
                     Debug.Log("Etkileşim gerçekleşti: " + hit.collider.gameObject.name);
                 }
 
@@ -42,7 +45,7 @@ public void Update()
                 }
                 else
                 {
-                    Debug.LogWarning("SATIN ALMA: Tools component yok → BuyItem çalışmadı.");
+                    Debug.LogWarning("SATIN ALMA: Tools component yok → BuyItem çal???�şmad???�.");
                 }
 
             }
@@ -54,7 +57,7 @@ public void Update()
                     if (npc != null)
                     {
                         npc.StartDialog();
-                        Debug.Log("NPC ile etkileşim başladı: " + npc.gameObject.name);
+                        Debug.Log("NPC ile etkileşim başlad???�: " + npc.gameObject.name);
                     }
                 }
             }

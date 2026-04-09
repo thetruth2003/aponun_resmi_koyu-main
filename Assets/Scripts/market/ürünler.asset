@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: "\xFCr\xFCnler"
   m_EditorClassIdentifier: Assembly-CSharp::ProductCatalog
-  products: []
+  products:
+  - name: 
+    pricePerKg: 0

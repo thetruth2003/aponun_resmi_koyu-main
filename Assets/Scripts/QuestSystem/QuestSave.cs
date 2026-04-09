@@ -1,12 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QuestSave : MonoBehaviour//, ISaveable
+/// <summary>
+/// QuestSave, GameStateTracker icindeki gorevle ilgili verileri PlayerPrefs uzerinden kaydedip geri yukler.
+/// </summary>
+public class QuestSave : MonoBehaviour
 {
     public GameStateTracker gameStateTracker;
 
     public string GetUniqueID() => "QuestSave";
 
+    /// <summary>
+    /// Kaydedilen state anahtarlarini tek listede tasiyan yardimci veri sinifidir.
+    /// </summary>
     [System.Serializable]
     public class KeyListWrapper
     {
@@ -17,14 +23,14 @@ public class QuestSave : MonoBehaviour//, ISaveable
     {
         if (gameStateTracker == null)
         {
-            Debug.LogWarning("GameStateTracker atanmamış!");
+            Debug.LogWarning("GameStateTracker atanmamis!");
             return;
         }
 
-        var allState = gameStateTracker.GetAll();
+        Dictionary<string, object> allState = gameStateTracker.GetAll();
         List<string> keys = new List<string>();
 
-        foreach (var kv in allState)
+        foreach (KeyValuePair<string, object> kv in allState)
         {
             string key = kv.Key;
             object value = kv.Value;
@@ -55,23 +61,32 @@ public class QuestSave : MonoBehaviour//, ISaveable
     {
         if (gameStateTracker == null)
         {
-            Debug.LogWarning("GameStateTracker atanmamış!");
+            Debug.LogWarning("GameStateTracker atanmamis!");
             return;
         }
 
-        if (!PlayerPrefs.HasKey("state_keys")) return;
+        if (!PlayerPrefs.HasKey("state_keys"))
+        {
+            return;
+        }
 
         gameStateTracker.state.Clear();
 
         string json = PlayerPrefs.GetString("state_keys");
-        var wrapper = JsonUtility.FromJson<KeyListWrapper>(json);
+        KeyListWrapper wrapper = JsonUtility.FromJson<KeyListWrapper>(json);
 
-        foreach (var typedKey in wrapper.keys)
+        foreach (string typedKey in wrapper.keys)
         {
-            if (!typedKey.Contains(":")) continue;
+            if (!typedKey.Contains(":"))
+            {
+                continue;
+            }
 
             string[] parts = typedKey.Split(':');
-            if (parts.Length != 2) continue;
+            if (parts.Length != 2)
+            {
+                continue;
+            }
 
             string type = parts[0];
             string key = parts[1];
@@ -80,34 +95,37 @@ public class QuestSave : MonoBehaviour//, ISaveable
             {
                 case "int":
                     if (PlayerPrefs.HasKey("state_int_" + key))
+                    {
                         gameStateTracker.SetCount(key, PlayerPrefs.GetInt("state_int_" + key));
+                    }
                     break;
 
                 case "bool":
                     if (PlayerPrefs.HasKey("state_bool_" + key))
+                    {
                         gameStateTracker.SetFlag(key, PlayerPrefs.GetInt("state_bool_" + key) == 1);
+                    }
                     break;
 
                 case "string":
                     if (PlayerPrefs.HasKey("state_string_" + key))
+                    {
                         gameStateTracker.SetString(key, PlayerPrefs.GetString("state_string_" + key));
+                    }
                     break;
             }
         }
     }
 
-
     [ContextMenu("Print GameState To Console")]
     public void PrintState()
     {
-        var dict = gameStateTracker.GetAll();
-        foreach (var kv in dict) ;
-            //Debug.Log($"{kv.Key} ({kv.Value.GetType().Name}) = {kv.Value}");
+        Dictionary<string, object> dict = gameStateTracker.GetAll();
+        foreach (KeyValuePair<string, object> kv in dict)
+        {
+        }
     }
 
-    void Update()
-    {
-       PrintState();
-    }
+
 
 }

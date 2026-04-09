@@ -1,33 +1,36 @@
-Ôªøusing System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// savetest sinifi, kayit ve yukleme akislarinda kullanilan veri veya yonetim davranisini saglar.
+/// </summary>
 public class savetest : MonoBehaviour
 {
     [Header("Hotkeys")]
     [SerializeField] private KeyCode saveKey = KeyCode.V;
     [SerializeField] private KeyCode loadKey = KeyCode.L;
 
-    [Header("Resources klas√∂rleri (Assets/Resources/<folder>)")]
+    [Header("Resources klasˆrleri (Assets/Resources/<folder>)")]
     [SerializeField] private string resourcesBuildFolder = "build";
     [SerializeField] private string resourcesCarsFolder  = "cars";
     [SerializeField] private string resourcesToolsFolder = "tools";
 
-    // SeedData'lar artƒ±k: Assets/Resources/data/items/<AssetName>.asset
     private const string SEEDDATA_RES_PATH      = "data/items";
-    private const string OLD_SEEDDATA_RES_PATH  = "data/seeds"; // fallback
+    private const string OLD_SEEDDATA_RES_PATH  = "data/seeds";
 
-    [Header("Eski kayƒ±tlar i√ßin fallback yakƒ±nlƒ±k toleransƒ± (metre)")]
+    [Header("Eski kay˝tlar iÁin fallback yak˝nl˝k tolerans˝ (metre)")]
     [SerializeField] private float positionTolerance = 0.5f;
 
-    // === INVENTORY ===
     [Header("Inventory (envanter)")]
-    [Tooltip("InventoryManager'da g√∂r√ºnen isimler")]
+    [Tooltip("InventoryManager'da gˆr¸nen isimler")]
     [SerializeField] private string backpackInventoryName = "backpack";
     [SerializeField] private string toolbarInventoryName  = "toolbar";
 
-    // ---------- SAVE FORMAT: TOOLS ----------
+    /// <summary>
+    /// ToolRec sinifi, kayit sistemiyle ilgili davranisi yonetir.
+    /// </summary>
     [Serializable]
     private struct ToolRec
     {
@@ -35,7 +38,9 @@ public class savetest : MonoBehaviour
     }
     [Serializable] private class ToolsSave { public List<ToolRec> tools = new(); }
 
-    // ---------- SAVE FORMAT: BUILDINGS ----------
+    /// <summary>
+    /// BuildingRec sinifi, kayit sistemiyle ilgili davranisi yonetir.
+    /// </summary>
     [Serializable]
     private struct BuildingRec
     {
@@ -43,7 +48,9 @@ public class savetest : MonoBehaviour
     }
     [Serializable] private class BuildingsSave { public List<BuildingRec> buildings = new(); }
 
-    // ---------- SAVE FORMAT: CARS ----------
+    /// <summary>
+    /// CarRec sinifi, kayit sistemiyle ilgili davranisi yonetir.
+    /// </summary>
     [Serializable]
     private struct CarRec
     {
@@ -51,24 +58,24 @@ public class savetest : MonoBehaviour
     }
     [Serializable] private class CarsSave { public List<CarRec> cars = new(); }
 
-    // ---------- SAVE FORMAT: SEEDS ----------
+    /// <summary>
+    /// SeedRec sinifi, kayit sistemiyle ilgili davranisi yonetir.
+    /// </summary>
     [Serializable]
     private struct SeedRec
     {
         public string id;
         public string name;
         public Vector3 pos;
-        public string seedDataName; // Resources/.../<seedDataName>.asset
+        public string seedDataName;
         public SeedPointData data;
     }
     [Serializable] private class SeedsSave { public List<SeedRec> seeds = new(); }
 
-    // ---------- MONEY ----------
     [Header("Muhasebe")]
     [SerializeField] private Muhasebeci muhasebeci;
     [Serializable] private class MoneySave { public int money; }
 
-    // === INVENTORY SAVE MODEL ===
     [Serializable]
     private struct InvSlotRec
     {
@@ -82,7 +89,6 @@ public class savetest : MonoBehaviour
         public int selectedIndex;
     }
 
-    // ---------- PATHS ----------
     private string MoneyPath        => Path.Combine(Application.persistentDataPath, "money_save.json");
     private string ToolsPath        => Path.Combine(Application.persistentDataPath, "tools_save.json");
     private string BuildingsPath    => Path.Combine(Application.persistentDataPath, "buildings_save.json");
@@ -107,7 +113,6 @@ public class savetest : MonoBehaviour
         }
     }
 
-    // =============== TOOLS ===============
     private void SaveTools()
     {
         var sf = new ToolsSave();
@@ -127,7 +132,7 @@ public class savetest : MonoBehaviour
             });
         }
         File.WriteAllText(ToolsPath, JsonUtility.ToJson(sf));
-        Debug.Log($"[Save Tools] {sf.tools.Count} kayƒ±t ‚Üí {ToolsPath}");
+        Debug.Log($"[Save Tools] {sf.tools.Count} kay˝t õ {ToolsPath}");
     }
 
     private void LoadTools()
@@ -180,10 +185,9 @@ public class savetest : MonoBehaviour
             spawned++;
         }
 
-        Debug.Log($"[Load Tools] G√ºncellendi: {updated}, Spawn: {spawned}, Prefab Eksik: {missingPrefab}. Toplam {sf.tools.Count}");
+        Debug.Log($"[Load Tools] G¸ncellendi: {updated}, Spawn: {spawned}, Prefab Eksik: {missingPrefab}. Toplam {sf.tools.Count}");
     }
 
-    // =============== BUILDINGS ===============
     private void SaveBuildings()
     {
         var sf = new BuildingsSave();
@@ -200,7 +204,7 @@ public class savetest : MonoBehaviour
             });
         }
         File.WriteAllText(BuildingsPath, JsonUtility.ToJson(sf));
-        Debug.Log($"[Save Buildings] {sf.buildings.Count} kayƒ±t ‚Üí {BuildingsPath}");
+        Debug.Log($"[Save Buildings] {sf.buildings.Count} kay˝t õ {BuildingsPath}");
     }
 
     private void LoadBuildings()
@@ -248,10 +252,9 @@ public class savetest : MonoBehaviour
             spawned++;
         }
 
-        Debug.Log($"[Load Buildings] G√ºncellendi: {updated}, Spawn: {spawned}, Prefab Eksik: {missingPrefab}. Toplam {sf.buildings.Count}");
+        Debug.Log($"[Load Buildings] G¸ncellendi: {updated}, Spawn: {spawned}, Prefab Eksik: {missingPrefab}. Toplam {sf.buildings.Count}");
     }
 
-    // =============== CARS ===============
     private void SaveCars()
     {
         var sf = new CarsSave();
@@ -271,7 +274,7 @@ public class savetest : MonoBehaviour
             });
         }
         File.WriteAllText(CarsPath, JsonUtility.ToJson(sf));
-        Debug.Log($"[Save Cars] {sf.cars.Count} kayƒ±t ‚Üí {CarsPath}");
+        Debug.Log($"[Save Cars] {sf.cars.Count} kay˝t õ {CarsPath}");
     }
 
     private void LoadCars()
@@ -324,10 +327,9 @@ public class savetest : MonoBehaviour
             spawned++;
         }
 
-        Debug.Log($"[Load Cars] G√ºncellendi: {updated}, Spawn: {spawned}, Prefab Eksik: {missingPrefab}. Toplam {sf.cars.Count}");
+        Debug.Log($"[Load Cars] G¸ncellendi: {updated}, Spawn: {spawned}, Prefab Eksik: {missingPrefab}. Toplam {sf.cars.Count}");
     }
 
-    // =============== SEEDS ===============
     private void SaveSeeds()
     {
         var sf = new SeedsSave();
@@ -348,7 +350,7 @@ public class savetest : MonoBehaviour
         }
 
         File.WriteAllText(SeedsPath, JsonUtility.ToJson(sf));
-        Debug.Log($"[Save Seeds] {sf.seeds.Count} kayƒ±t ‚Üí {SeedsPath}");
+        Debug.Log($"[Save Seeds] {sf.seeds.Count} kay˝t õ {SeedsPath}");
     }
 
     private void LoadSeeds()
@@ -409,7 +411,6 @@ public class savetest : MonoBehaviour
 
     private void ApplySeedRecordToSeedPoint(SeedPoint sp, in SeedRec rec)
     {
-        // 1) seedDataName verilmi≈üse -> √∂nce yeni klas√∂rde ara
         SeedData loaded = null;
         if (!string.IsNullOrEmpty(rec.seedDataName))
         {
@@ -418,7 +419,6 @@ public class savetest : MonoBehaviour
                 loaded = Resources.Load<SeedData>($"{OLD_SEEDDATA_RES_PATH}/{rec.seedDataName}");
         }
 
-        // 2) h√¢l√¢ yoksa SeedType adƒ±yla dene (Carrot Seed vb.)
         if (!loaded && rec.data.seedType != SeedType.None)
         {
             loaded = Resources.Load<SeedData>($"{SEEDDATA_RES_PATH}/{rec.data.seedType} Seed");
@@ -428,12 +428,11 @@ public class savetest : MonoBehaviour
 
         if (loaded) sp.seedData = loaded;
         else if (!string.IsNullOrEmpty(rec.seedDataName) || rec.data.seedType != SeedType.None)
-            Debug.LogWarning($"[Load Seeds] SeedData bulunamadƒ±: {SEEDDATA_RES_PATH}/{rec.seedDataName} (fallback: {OLD_SEEDDATA_RES_PATH})");
+            Debug.LogWarning($"[Load Seeds] SeedData bulunamad˝: {SEEDDATA_RES_PATH}/{rec.seedDataName} (fallback: {OLD_SEEDDATA_RES_PATH})");
 
         sp.SetState(rec.data);
     }
 
-    // =============== INVENTORY SAVE/LOAD ===============
     private void SaveInventoryBoth()
     {
         SaveInventoryByName(backpackInventoryName, InvBackpackPath);
@@ -462,12 +461,11 @@ public class savetest : MonoBehaviour
                 data.slots.Add(new InvSlotRec { itemName = s.itemName, count = s.count });
         }
 
-        // se√ßili slotu UI_Manager √ºzerinden al
         var ui = GameManager.instance?.uiManager;
         data.selectedIndex = ui ? ui.GetToolbarSelectedIndex() : -1;
 
         File.WriteAllText(path, JsonUtility.ToJson(data));
-        Debug.Log($"[Save Inventory] {invName} ‚Üí {path}");
+        Debug.Log($"[Save Inventory] {invName} õ {path}");
     }
 
     private void LoadInventoryByName(string invName, string path, bool applySelected)
@@ -477,9 +475,8 @@ public class savetest : MonoBehaviour
         if (!File.Exists(path)) { Debug.LogWarning($"[Load Inventory] Dosya yok: {path}"); return; }
 
         var data = JsonUtility.FromJson<InvSave>(File.ReadAllText(path));
-        if (data == null) { Debug.LogWarning($"[Load Inventory] Json bo≈ü: {path}"); return; }
+        if (data == null) { Debug.LogWarning($"[Load Inventory] Json bo˛: {path}"); return; }
 
-        // temizle
         for (int i = 0; i < inv.slots.Count; i++)
         {
             inv.slots[i].itemName = "";
@@ -490,17 +487,14 @@ public class savetest : MonoBehaviour
             inv.slots[i].itemUsedPrefab = null;
         }
 
-        // geri y√ºkle
         int n = Mathf.Min(inv.slots.Count, data.slots.Count);
         for (int i = 0; i < n; i++)
         {
             var r = data.slots[i];
             if (string.IsNullOrEmpty(r.itemName) || r.count <= 0) continue;
 
-            // 1) Resources -> data/items/<name>
             ItemData itemData = Resources.Load<ItemData>($"data/items/{r.itemName}");
 
-            // 2) yoksa ItemManager √ºzerinden al
             if (itemData == null)
             {
                 var itemObj = GameManager.instance?.itemManager?.GetItemByName(r.itemName);
@@ -509,7 +503,7 @@ public class savetest : MonoBehaviour
 
             if (itemData == null)
             {
-                Debug.LogWarning($"[Load Inventory] ItemData bulunamadƒ±: {r.itemName}");
+                Debug.LogWarning($"[Load Inventory] ItemData bulunamad˝: {r.itemName}");
                 continue;
             }
 
@@ -523,7 +517,6 @@ public class savetest : MonoBehaviour
             s.itemUsedPrefab = itemData.itemUsedPrefab;
         }
 
-        // se√ßili slot uygula (UI_Manager √ºzerinden)
         if (applySelected && data.selectedIndex >= 0)
         {
             var ui = GameManager.instance?.uiManager;
@@ -532,18 +525,17 @@ public class savetest : MonoBehaviour
             else    inv.SelectSlot(idx);
         }
 
-        Debug.Log($"[Load Inventory] {invName} ‚Üê {path}");
+        Debug.Log($"[Load Inventory] {invName} ã {path}");
     }
 
-    // =============== MONEY ===============
     private void SaveMoney()
     {
         if (!muhasebeci) muhasebeci = FindObjectOfType<Muhasebeci>();
-        if (!muhasebeci) { Debug.LogWarning("[Save Money] Muhasebeci bulunamadƒ±."); return; }
+        if (!muhasebeci) { Debug.LogWarning("[Save Money] Muhasebeci bulunamad˝."); return; }
 
         var ms = new MoneySave { money = muhasebeci.GetMoney() };
         File.WriteAllText(MoneyPath, JsonUtility.ToJson(ms));
-        Debug.Log($"[Save Money] {ms.money} ‚Üí {MoneyPath}");
+        Debug.Log($"[Save Money] {ms.money} õ {MoneyPath}");
     }
 
     private void LoadMoney()
@@ -557,7 +549,6 @@ public class savetest : MonoBehaviour
         Debug.Log($"[Load Money] {ms.money}");
     }
 
-    // =============== HELPERS ===============
     private static ApplyTRSResult ApplyTRS(Transform t, Vector3 pos, Quaternion rot, Vector3 scale)
     {
         var rb = t.GetComponent<Rigidbody>();
@@ -580,6 +571,9 @@ public class savetest : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// ApplyTRSResult sinifi, kayit sistemiyle ilgili davranisi yonetir.
+    /// </summary>
     private enum ApplyTRSResult { WithRigidbody, NoRigidbody }
 
     private static GameObject LoadFromResources(string folder, string name)

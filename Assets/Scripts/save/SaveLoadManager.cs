@@ -1,60 +1,76 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// SaveLoadManager, sahnedeki kaydedilebilir nesneleri kaydedip geri yukleyen merkezi yoneticidir.
+/// </summary>
 public class SaveLoadManager : MonoBehaviour
 {
     public static SaveLoadManager Instance { get; private set; }
 
-    // Kayıtlı tüm saveable nesneler
-    private readonly Dictionary<string, ISaveable> _saveables = new Dictionary<string, ISaveable>();
-        private void Update()
+    private readonly Dictionary<string, ISaveable> saveables = new Dictionary<string, ISaveable>();
+
+    private void Update()
     {
-        // L tuşuna basıldığında tüm kayıtlı nesneleri yükle
         if (Input.GetKeyDown(KeyCode.L))
         {
-            SaveLoadManager.Instance.LoadAll();
-            Debug.Log("🔄 Loaded all saveables");
+            Instance.LoadAll();
+            Debug.Log("Loaded all saveables");
         }
 
-        // V tuşuna basıldığında tüm kayıtlı nesneleri kaydet
         if (Input.GetKeyDown(KeyCode.V))
         {
-            SaveLoadManager.Instance.SaveAll();
-            Debug.Log("💾 Saved all saveables");
+            Instance.SaveAll();
+            Debug.Log("Saved all saveables");
         }
     }
+
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         DontDestroyOnLoad(gameObject);
     }
 
     public void Register(ISaveable saveable)
     {
-        if (!_saveables.ContainsKey(saveable.UniqueID))
-            _saveables.Add(saveable.UniqueID, saveable);
+        if (!saveables.ContainsKey(saveable.UniqueID))
+        {
+            saveables.Add(saveable.UniqueID, saveable);
+        }
     }
 
     public void Unregister(ISaveable saveable)
     {
-        _saveables.Remove(saveable.UniqueID);
+        saveables.Remove(saveable.UniqueID);
     }
 
-    /// <summary> Tüm kayıtlı nesneleri kaydeder. </summary>
+    /// <summary>
+    /// Kayitli tum nesnelerin verisini disariya yazar.
+    /// </summary>
     public void SaveAll()
     {
-        foreach (var saveable in _saveables.Values)
+        foreach (ISaveable saveable in saveables.Values)
         {
             saveable.SaveData();
             Debug.Log($"[Save] {saveable.UniqueID}");
         }
     }
 
-    /// <summary> Tüm kayıtlı nesneleri yükler. </summary>
+    /// <summary>
+    /// Kayitli tum nesnelerin verisini geri yukler.
+    /// </summary>
     public void LoadAll()
     {
-        foreach (var saveable in _saveables.Values)
+        foreach (ISaveable saveable in saveables.Values)
         {
             saveable.LoadData();
             Debug.Log($"[Load] {saveable.UniqueID}");
@@ -62,6 +78,9 @@ public class SaveLoadManager : MonoBehaviour
     }
 }
 
+/// <summary>
+/// SaveLoadManager ile calisan kaydedilebilir nesnelerin uygulamasi gereken temel arayuzdur.
+/// </summary>
 public interface ISaveable
 {
     string UniqueID { get; }
@@ -69,9 +88,11 @@ public interface ISaveable
     void LoadData();
 }
 
-    public abstract class SaveableMonoBehaviour : MonoBehaviour, ISaveable
+/// <summary>
+/// Save sistemine kaydolup benzersiz kimlik ureten temel MonoBehaviour sinifidir.
+/// </summary>
+public abstract class SaveableMonoBehaviour : MonoBehaviour, ISaveable
 {
-    // Her saveable için sahnede benzersiz bir ID üretip kaydeder
     [SerializeField] private string uniqueID;
 
     public string UniqueID
@@ -79,13 +100,23 @@ public interface ISaveable
         get
         {
             if (string.IsNullOrEmpty(uniqueID))
+            {
                 uniqueID = System.Guid.NewGuid().ToString();
+            }
+
             return uniqueID;
         }
     }
 
-    private void OnEnable()  => SaveLoadManager.Instance.Register(this);
-    private void OnDisable() => SaveLoadManager.Instance.Unregister(this);
+    private void OnEnable()
+    {
+        SaveLoadManager.Instance.Register(this);
+    }
+
+    private void OnDisable()
+    {
+        SaveLoadManager.Instance.Unregister(this);
+    }
 
     public abstract void SaveData();
     public abstract void LoadData();

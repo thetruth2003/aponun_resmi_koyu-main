@@ -2,6 +2,9 @@ using TMPro;
 using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// NPC sinifi, ilgili davranis veya veriyi yonetmek icin kullanilir.
+/// </summary>
 [RequireComponent(typeof(UniversalIdentifier))]
 public class NPCInteraction : MonoBehaviour
 {
@@ -11,7 +14,7 @@ public class NPCInteraction : MonoBehaviour
     public SC_FPSController fpsController;
     public Camera currentCamera;
     public GameObject[] storedElements;
-    public QuestEditorAsset linkedAsset;          // 🔄 çalışma sırasında otomatik güncellenecek
+    public QuestEditorAsset linkedAsset;
 
     public NPCDialogData dialogData;
     public List<DialogLine> currentLines = new List<DialogLine>();
@@ -37,7 +40,6 @@ public class NPCInteraction : MonoBehaviour
             ActiveQuestSystem.Instance.OnActiveStepChanged -= HandleStepChanged;
     }
 
-    // aktif adım değişince, bu NPC’ye bakan görev varsa linkedAsset’i güncelle
     void HandleStepChanged(QuestEditorAsset asset, int newIndex)
     {
         var aqs = ActiveQuestSystem.Instance;
@@ -51,8 +53,7 @@ public class NPCInteraction : MonoBehaviour
             !string.IsNullOrEmpty(step.npcID) &&
             step.npcID.Equals(npcID, System.StringComparison.OrdinalIgnoreCase))
         {
-            linkedAsset = asset; // ✅ cache güncel
-            // Debug.Log($"[NPC:{npcID}] linkedAsset -> {asset.name} (idx {newIndex})");
+            linkedAsset = asset;
         }
     }
 
@@ -70,7 +71,7 @@ public class NPCInteraction : MonoBehaviour
 
         if (string.IsNullOrEmpty(npcID))
         {
-            Debug.LogWarning($"{gameObject.name} → npcID atanamamış!");
+            Debug.LogWarning($"{gameObject.name} → npcID atanamam???�ş!");
             return;
         }
 
@@ -78,12 +79,11 @@ public class NPCInteraction : MonoBehaviour
         {
             GameObject dialogObj = GameObject.FindGameObjectWithTag("DialogText");
             if (dialogObj != null) dialogText = dialogObj.GetComponent<TextMeshProUGUI>();
-            if (dialogText == null) Debug.LogError("[NPCInteraction] 'DialogText' tagine sahip bir TextMeshProUGUI bulunamadı!");
+            if (dialogText == null) Debug.LogError("[NPCInteraction] 'DialogText' tagine sahip bir TextMeshProUGUI bulunamad???�!");
         }
         if (dialogText != null) Debug.Log("✅ DialogText bulundu: " + dialogText.gameObject.name);
     }
 
-    // 🔎 TÜM tracked görevleri tarar, bu NPC’ye bakan adımı bulur ve linkedAsset’i canlı günceller
     TalkToNPCStep FindMatchingStep()
     {
         var aqs = ActiveQuestSystem.Instance;
@@ -98,13 +98,12 @@ public class NPCInteraction : MonoBehaviour
                     !string.IsNullOrEmpty(step.npcID) &&
                     step.npcID.Equals(npcID, System.StringComparison.OrdinalIgnoreCase))
                 {
-                    linkedAsset = tracked.asset; // ✅ anlık geçiş
+                    linkedAsset = tracked.asset;
                     return step;
                 }
             }
         }
 
-        // fallback: inspector’dan bağlı eski yöntem
         if (linkedAsset != null)
         {
             var tracked = aqs?.GetTracked(linkedAsset);
@@ -123,7 +122,7 @@ public class NPCInteraction : MonoBehaviour
         var step = FindMatchingStep();
         if (step == null)
         {
-            Debug.LogWarning("[NPCInteraction] Bu NPC'ye ait aktif TalkToNPC adımı yok.");
+            Debug.LogWarning("[NPCInteraction] Bu NPC'ye ait aktif TalkToNPC ad???�m???� yok.");
             return;
         }
 
@@ -169,7 +168,6 @@ public class NPCInteraction : MonoBehaviour
         {
             audioSource.clip = line.voiceClip;
             audioSource.Play();
-            // Debug.Log($"🔊 Oynatılıyor: {line.voiceClip.name}");
         }
     }
 
@@ -205,6 +203,5 @@ public class NPCInteraction : MonoBehaviour
 
         string key = $"{npcID.ToLower()}_{currentSectionIndex}";
         GameStateTracker.Instance.SetFlag(key, true);
-        // Debug.Log($"✅ Diyalog tamamlandı, flag ayarlandı: {key}");
     }
 }

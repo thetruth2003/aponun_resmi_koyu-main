@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+using UnityEngine;
 
+/// <summary>
+/// CullingManager sinifi, ilgili sistemin akisini ve durum yonetimini ustlenir.
+/// </summary>
 public class CullingManager : MonoBehaviour
 {
     public Transform player;
-    public GameObject[] gridCells; // Hücrelerin referansları
+    public GameObject[] gridCells;
     public float cullingDistance = 50f;
 
     private CullingGroup cullingGroup;

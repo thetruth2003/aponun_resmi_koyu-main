@@ -1,32 +1,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// CutsceneActivator, gorev veya cutscene olaylarina gore sahnedeki cutscene objelerini acip kapatir.
+/// </summary>
 public class CutsceneActivator : MonoBehaviour
 {
+    /// <summary>
+    /// Tetikleme zamanini belirleyen modlari tutar.
+    /// </summary>
     public enum TriggerType
     {
-        OnQuestStepReached,   // Belirli görev adımına gelince
-        OnQuestCompleted,     // Görev tamamen bitince
-        OnCutsceneFinished    // Başka bir cutscene bitince
+        OnQuestStepReached,
+        OnQuestCompleted,
+        OnCutsceneFinished
     }
 
     [Header("Ne zaman tetiklensin?")]
     public TriggerType triggerType;
 
-    [Header("Görev Koşulu")]
-    public QuestEditorAsset quest;      // Takip ettiğin asset
-    public int stepIndex = 0;           // 0-based, hangi adıma gelince çalışsın?
+    [Header("Gorev Kosulu")]
+    public QuestEditorAsset quest;
+    public int stepIndex = 0;
 
-    [Header("Cutscene Koşulu")]
-    public CutsceneClip waitForCutscene; // Bitmesini dinleyeceğin cutscene (OnCutsceneFinished ile çağıracaksın)
+    [Header("Cutscene Kosulu")]
+    public CutsceneClip waitForCutscene;
 
-    [Header("Ne yapacağız?")]
+    [Header("Ne yapacagiz?")]
     public List<GameObject> cutscenesToActivate = new List<GameObject>();
     public List<GameObject> cutscenesToDeactivate = new List<GameObject>();
 
-    bool triggered = false;
+    private bool triggered = false;
 
-    void OnEnable()
+    private void OnEnable()
     {
         Debug.Log($"[CutsceneActivator:{name}] OnEnable, triggerType = {triggerType}");
 
@@ -40,21 +46,21 @@ public class CutsceneActivator : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"[CutsceneActivator:{name}] ActiveQuestSystem.Instance YOK, event'e abone olamıyorum!");
+                Debug.LogWarning($"[CutsceneActivator:{name}] ActiveQuestSystem.Instance yok, event'e abone olamiyorum!");
             }
         }
-        // OnCutsceneFinished’da event’e script üzerinden bağlanacağız (UnityEvent)
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         if (ActiveQuestSystem.Instance != null)
+        {
             ActiveQuestSystem.Instance.OnActiveStepChanged -= OnQuestStepChanged;
+        }
     }
 
-    void OnQuestStepChanged(QuestEditorAsset changedAsset, int newIndex)
+    private void OnQuestStepChanged(QuestEditorAsset changedAsset, int newIndex)
     {
-        // EN TEPE LOG
         Debug.Log(
             $"[CutsceneActivator:{name}] EVENT GELDI | changedAsset = {(changedAsset ? changedAsset.name : "NULL")}, " +
             $"newIndex = {newIndex}, myQuest = {(quest ? quest.name : "NULL")}, myStep = {stepIndex}, triggerType = {triggerType}"
@@ -62,67 +68,63 @@ public class CutsceneActivator : MonoBehaviour
 
         if (triggered)
         {
-            Debug.Log($"[CutsceneActivator:{name}] Zaten tetiklenmiş, dönüyorum.");
+            Debug.Log($"[CutsceneActivator:{name}] Zaten tetiklenmis, donuyorum.");
             return;
         }
 
         if (changedAsset != quest)
         {
-            Debug.Log($"[CutsceneActivator:{name}] Asset uyuşmuyor, beni ilgilendirmiyor.");
+            Debug.Log($"[CutsceneActivator:{name}] Asset uyusmuyor, beni ilgilendirmiyor.");
             return;
         }
 
         switch (triggerType)
         {
             case TriggerType.OnQuestStepReached:
-                // newIndex, aktif adım index’i. O adıma gelince çalıştır.
                 if (newIndex == stepIndex)
                 {
-                    Debug.Log($"[CutsceneActivator:{name}] STEP EŞLEŞTİ (newIndex={newIndex}), Trigger çağrılmalı.");
-                    //Trigger();
+                    Debug.Log($"[CutsceneActivator:{name}] STEP ESLESTI (newIndex={newIndex}), Trigger cagrilmali.");
                 }
                 break;
 
             case TriggerType.OnQuestCompleted:
-                // Görev son adımı geçince (index out of range) çalıştır.
                 if (newIndex >= quest.quests.Count)
                 {
-                    Debug.Log($"[CutsceneActivator:{name}] GÖREV TAMAMLANDI, Trigger çağrılmalı.");
-                    //Trigger();
+                    Debug.Log($"[CutsceneActivator:{name}] GOREV TAMAMLANDI, Trigger cagrilmali.");
                 }
                 break;
         }
     }
 
     /// <summary>
-    /// Bunu cutscene'in bitiş event'inden çağıracaksın.
+    /// Bunu cutscene bittiginde ilgili eventten cagirirsin.
     /// </summary>
     public void OnCutsceneFinished()
     {
-        Debug.Log($"[CutsceneActivator:{name}] OnCutsceneFinished çağrıldı.");
+        Debug.Log($"[CutsceneActivator:{name}] OnCutsceneFinished cagrildi.");
 
         if (triggerType != TriggerType.OnCutsceneFinished)
         {
-            Debug.Log($"[CutsceneActivator:{name}] TriggerType OnCutsceneFinished değil, dönüyorum.");
+            Debug.Log($"[CutsceneActivator:{name}] TriggerType OnCutsceneFinished degil, donuyorum.");
             return;
         }
 
         if (triggered)
         {
-            Debug.Log($"[CutsceneActivator:{name}] Zaten tetiklenmiş, dönüyorum.");
+            Debug.Log($"[CutsceneActivator:{name}] Zaten tetiklenmis, donuyorum.");
             return;
         }
 
         Trigger();
     }
 
-    void Trigger()
+    private void Trigger()
     {
-        Debug.Log($"[CutsceneActivator:{name}] TRIGGER ÇALIŞTI.");
+        Debug.Log($"[CutsceneActivator:{name}] TRIGGER CALISTI.");
 
         triggered = true;
 
-        foreach (var go in cutscenesToActivate)
+        foreach (GameObject go in cutscenesToActivate)
         {
             if (go != null)
             {
@@ -131,7 +133,7 @@ public class CutsceneActivator : MonoBehaviour
             }
         }
 
-        foreach (var go in cutscenesToDeactivate)
+        foreach (GameObject go in cutscenesToDeactivate)
         {
             if (go != null)
             {
@@ -140,7 +142,6 @@ public class CutsceneActivator : MonoBehaviour
             }
         }
 
-        // Tek seferlik çalışsın istersen:
         enabled = false;
     }
 }

@@ -1,24 +1,24 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Toolbar slot secimini, klavye kisayollarini ve elde tutulan prefab bilgisini yonetir.
+/// </summary>
 public class Toolbar_UI : MonoBehaviour
 {
     public Movement movement;
     public List<Slot_UI> toolbarSlots = new List<Slot_UI>();
     private Slot_UI selectedSlot;
-    
 
     private void Start()
     {
-        // Başlangıçta ilk slotu seç
-        //SelectSlot(0);
     }
 
     private void Update()
     {
         CheckAlphaNumericKeys();
     }
+
     public void SelectSlot(Slot_UI slot)
     {
         SelectSlot(slot.slotID);
@@ -26,35 +26,36 @@ public class Toolbar_UI : MonoBehaviour
 
     public string GetSelectedPrefab()
     {
-        // Seçilen slotta geçerli bir eşya varsa, prefab'ı döndür
         return selectedSlot != null && selectedSlot.inventorySlot != null ? selectedSlot.inventorySlot.itemPrefab.name : null;
     }
+
     public string GetSelectedPrefabTag()
     {
-        // Seçilen slotta geçerli bir eşya varsa, prefab'ı döndür
         return selectedSlot != null && selectedSlot.inventorySlot != null ? selectedSlot.inventorySlot.itemPrefab.tag : null;
     }
+
     public SeedData GetSelectedPrefabSeedData()
     {
-        // Seçilen slotta geçerli bir eşya varsa, prefab'ı döndür
         return selectedSlot != null && selectedSlot.inventorySlot != null ? selectedSlot.inventorySlot.item.seedData : null;
     }
+
     public string GetSelectedUsedPrefab()
     {
         return selectedSlot != null && selectedSlot.inventorySlot != null
-     ? selectedSlot.inventorySlot.itemUsedPrefab != null
-         ? selectedSlot.inventorySlot.itemUsedPrefab.name : null : null;
+            ? selectedSlot.inventorySlot.itemUsedPrefab != null
+                ? selectedSlot.inventorySlot.itemUsedPrefab.name
+                : null
+            : null;
     }
-    // Toolbar_UI.cs içine ekle (mevcut koda dokunmadan)
+
     public int GetSelectedIndex()
     {
-        // selectedSlot hangi indexteyse onu döndür
         return toolbarSlots != null ? toolbarSlots.IndexOf(selectedSlot) : -1;
     }
 
     public Inventory.Slot GetSelectedInventorySlot()
     {
-        return (selectedSlot != null) ? selectedSlot.inventorySlot : null;
+        return selectedSlot != null ? selectedSlot.inventorySlot : null;
     }
 
     public void SelectSlot(int index)
@@ -69,24 +70,21 @@ public class Toolbar_UI : MonoBehaviour
             selectedSlot = toolbarSlots[index];
             selectedSlot.SetHighlight(true);
 
-            // GameManager ve player'ın null olmadığını kontrol et
             if (GameManager.instance.player == null)
             {
-                Debug.LogError("Player nesnesi GameManager içinde atanmadı!");
-                return; // Eğer player null ise, işlemi durdur
+                Debug.LogError("Player nesnesi GameManager i�inde atanmad�!");
+                return;
             }
 
-            // Player'ın UpdateHandObject metodunu çağır
             GameManager.instance.player.UpdateHandObject();
 
-            // Seçili slotta bir eşya varsa, item adı ve prefab'ını kontrol et
             if (selectedSlot.inventorySlot != null && selectedSlot.inventorySlot.itemPrefab != null)
             {
                 Debug.Log("Selected item: " + selectedSlot.inventorySlot.itemPrefab.name);
             }
             else
             {
-                Debug.Log("Seçilen slotta item yok.");
+                Debug.Log("Se�ilen slotta item yok.");
             }
 
             GameManager.instance.player.inventoryManager.toolbar.SelectSlot(index);

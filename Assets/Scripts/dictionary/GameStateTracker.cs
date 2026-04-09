@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// GameStateTracker sinifi, ilgili davranis veya veriyi yonetmek icin kullanilir.
+/// </summary>
 public class GameStateTracker : MonoBehaviour
 {
     public static GameStateTracker Instance;
@@ -18,8 +21,6 @@ public class GameStateTracker : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
-
-    // ------------------ INT ------------------
 
     public int GetCount(string key)
     {
@@ -49,8 +50,6 @@ public class GameStateTracker : MonoBehaviour
         SetCount(key, current + amount);
     }
 
-    // ------------------ BOOL ------------------
-
     public bool GetFlag(string key)
     {
         if (state.ContainsKey(key)) return (bool)state[key];
@@ -66,8 +65,6 @@ public class GameStateTracker : MonoBehaviour
         PlayerPrefs.SetInt(key, value ? 1 : 0);
         PlayerPrefs.Save();
     }
-
-    // ------------------ STRING ------------------
 
     public string GetString(string key)
     {
@@ -85,8 +82,6 @@ public class GameStateTracker : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    // ------------------ DIALOG INDEX ------------------
-
     public int GetDialogIndex(string npcName)
     {
         return GetCount($"DialogIndex_{npcName.ToLower()}");
@@ -101,8 +96,6 @@ public class GameStateTracker : MonoBehaviour
     {
         return state.ContainsKey(key) || PlayerPrefs.HasKey(key);
     }
-
-    // ------------------ DEBUG ------------------
 
     public void PrintState()
     {
@@ -133,7 +126,6 @@ public class GameStateTracker : MonoBehaviour
         state.Clear();
         PlayerPrefs.Save();
 
-        // ✅ ActiveQuestSystem'daki currentIndex değerlerini de sıfırla
         if (ActiveQuestSystem.Instance != null)
         {
             foreach (var q in ActiveQuestSystem.Instance.allQuests)
@@ -142,6 +134,6 @@ public class GameStateTracker : MonoBehaviour
             }
         }
 
-        Debug.Log("[GameStateTracker] Tüm state ve görev ilerlemesi sıfırlandı.");
+        Debug.Log("[GameStateTracker] Tüm state ve görev ilerlemesi s???�f???�rland???�.");
     }
 }

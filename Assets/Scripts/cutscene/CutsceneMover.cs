@@ -4,21 +4,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// CutsceneMover sinifi, cutscene akislarinda kullanilan ilgili davranisi yonetir.
+/// </summary>
 public class CutsceneMover : MonoBehaviour
 {
     [Header("General")]
     public bool playOnAwake = true;
-    public bool loop = false;                 // istersen sahneyi döngüde oynat
-    public Transform forwardReference;        // boşsa kendi forward'ı kullanılır
-    public Animator animator;                 // opsiyonel; yoksa anim adımları atlanır
-    public UnityEvent OnSequenceFinished;     // tüm adımlar bittiğinde
+    public bool loop = false;
+    public Transform forwardReference;
+    public Animator animator;
+    public UnityEvent OnSequenceFinished;
 
     [Header("Driver")]
-    public DriverType driver = DriverType.Transform; // ilk sürümde Transform tavsiye
-    public CharacterController character;            // CharacterController seçersen doldur
-    public Rigidbody rb;                             // Rigidbody seçersen doldur
+    public DriverType driver = DriverType.Transform;
+    public CharacterController character;
+    public Rigidbody rb;
 
-    [Header("Steps (sırayla oynar)")]
+    [Header("Steps (s???�rayla oynar)")]
     public List<Step> steps = new();
 
     Coroutine seqCo;
@@ -79,8 +82,6 @@ public class CutsceneMover : MonoBehaviour
         OnSequenceFinished?.Invoke();
     }
 
-    // ---- Steps ----
-
     IEnumerator RunAnimStep(Step s)
     {
         if (!animator) { if (s.waitSeconds > 0) yield return new WaitForSeconds(s.waitSeconds); yield break; }
@@ -109,15 +110,12 @@ public class CutsceneMover : MonoBehaviour
         Vector3 dir = GetDirectionVector(s.direction, s.customDirection).normalized;
         if (dir.sqrMagnitude < 0.0001f) yield break;
 
-        // referans (örn. kameraya göre ileri/sağ)
         var refTr = forwardReference ? forwardReference : transform;
-        dir = refTr.TransformDirection(dir); // local 8-yönü dünya uzayına çevir
+        dir = refTr.TransformDirection(dir);
 
         if (s.faceDirection)
         {
-            // hedef rotasyonu önceden hesapla
             var targetRot = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.z).normalized, Vector3.up);
-            // başlangıçta hizalı değilse yumuşakçe döndür
             float rotT = 0f;
             while (rotT < 1f && s.turnSpeed > 0f)
             {
@@ -145,7 +143,7 @@ public class CutsceneMover : MonoBehaviour
                 yield return null;
             }
         }
-        else // ByDuration
+        else
         {
             float dur = Mathf.Max(0.0001f, s.duration);
             float t = 0f;
@@ -172,7 +170,6 @@ public class CutsceneMover : MonoBehaviour
         }
         else
         {
-            // world euler
             target = Quaternion.Euler(s.worldEuler);
         }
 
@@ -192,7 +189,6 @@ public class CutsceneMover : MonoBehaviour
         transform.rotation = target;
     }
 
-    // ---- Move helpers ----
     void MoveDriver(Vector3 delta)
     {
         switch (driver)
@@ -241,12 +237,24 @@ public class CutsceneMover : MonoBehaviour
     }
 }
 
+/// <summary>
+/// DriverType sinifi, cutscene akislarinda kullanilan ilgili davranisi yonetir.
+/// </summary>
 public enum DriverType { Transform, CharacterController, Rigidbody }
 
+/// <summary>
+/// StepType sinifi, cutscene akislarinda kullanilan ilgili davranisi yonetir.
+/// </summary>
 public enum StepType { Move, PlayAnimation, Wait, Rotate, InvokeEvent }
 
+/// <summary>
+/// MoveMode sinifi, cutscene akislarinda kullanilan ilgili davranisi yonetir.
+/// </summary>
 public enum MoveMode { ByDistance, ByDuration }
 
+/// <summary>
+/// Direction8 sinifi, cutscene akislarinda kullanilan ilgili davranisi yonetir.
+/// </summary>
 public enum Direction8
 {
     Forward, Back, Left, Right,
@@ -254,48 +262,56 @@ public enum Direction8
     Custom
 }
 
+/// <summary>
+/// Easing sinifi, cutscene akislarinda kullanilan ilgili davranisi yonetir.
+/// </summary>
 public enum Easing { Linear, EaseIn, EaseOut, EaseInOut }
 
+/// <summary>
+/// AnimSetType sinifi, cutscene akislarinda kullanilan ilgili davranisi yonetir.
+/// </summary>
 public enum AnimSetType { Trigger, Bool, Float, Int }
 
+/// <summary>
+/// RotateMode sinifi, cutscene akislarinda kullanilan ilgili davranisi yonetir.
+/// </summary>
 public enum RotateMode { WorldEuler, LookAtTarget }
 
+/// <summary>
+/// Step sinifi, gorev sistemindeki ilgili adimi temsil eder.
+/// </summary>
 [Serializable]
 public class Step
 {
     public StepType type = StepType.Move;
-    
-    // ---- common ----
-    [Tooltip("Adım başında opsiyonel olarak anim paramı ver")]
+
+    [Tooltip("Ad???�m baş???�nda opsiyonel olarak anim param???� ver")]
     public bool playAnimAtStart = false;
     public AnimSetType animSetType = AnimSetType.Trigger;
     public string animParam;
     public bool boolValue;
     public float floatValue;
     public int intValue;
-    [Tooltip("Animasyon adımı veya anim bekleme süresi")]
+    [Tooltip("Animasyon ad???�m???� veya anim bekleme süresi")]
     public float waitSeconds = 0f;
-    
-    // ---- move ----
+
     public MoveMode moveMode = MoveMode.ByDistance;
     public Direction8 direction = Direction8.Forward;
     public Vector3 customDirection = Vector3.forward;
-    [Tooltip("ByDistance modunda kullanılır (metre)")]
+    [Tooltip("ByDistance modunda kullan???�l???�r (metre)")]
     public float distance = 2f;
-    [Tooltip("ByDuration modunda kullanılır (saniye)")]
+    [Tooltip("ByDuration modunda kullan???�l???�r (saniye)")]
     public float duration = 1f;
     [Tooltip("m/s")]
     public float speed = 1.5f;
     public Easing easing = Easing.Linear;
     public bool faceDirection = true;
-    [Tooltip("yönü ne kadar hızlı dönecek (Slerp hızı), 0=anında")]
+    [Tooltip("yönü ne kadar h???�zl???� dönecek (Slerp h???�z???�), 0=an???�nda")]
     public float turnSpeed = 8f;
 
-    // ---- rotate ----
     public RotateMode rotateMode = RotateMode.WorldEuler;
     public Vector3 worldEuler = Vector3.zero;
     public Transform lookTarget;
 
-    // ---- invoke ----
     public UnityEvent onInvoke;
 }

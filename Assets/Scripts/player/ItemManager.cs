@@ -1,11 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Toplanabilir item referanslarini isimlerine gore saklayip ulasmayi kolaylastirir.
+/// </summary>
 public class ItemManager : MonoBehaviour
 {
     public Item[] Save;
-
     public Dictionary<string, Item> collectableItemsDict = new Dictionary<string, Item>();
 
     private void Awake()
@@ -15,7 +16,6 @@ public class ItemManager : MonoBehaviour
             AddItem(collectable);
         }
     }
-
 
     private void AddItem(Item item)
     {

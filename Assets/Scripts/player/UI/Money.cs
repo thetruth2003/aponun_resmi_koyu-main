@@ -1,11 +1,14 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
+/// <summary>
+/// Eski para sisteminde mevcut bakiyeyi tutar ve UI yazisini gunceller.
+/// </summary>
 public class Money : MonoBehaviour
 {
     public static Money Instance;
     public int currentMoney = 0;
-    public TextMeshProUGUI moneyText; // UI'daki para yazısı (isteğe bağlı)
+    public TextMeshProUGUI moneyText;
 
     private void Start()
     {
@@ -15,7 +18,7 @@ public class Money : MonoBehaviour
     public void AddMoney(int amount)
     {
         currentMoney += amount;
-        Debug.Log($"💰 +{amount}₺ eklendi. Yeni bakiye: {currentMoney}₺");
+        Debug.Log($"+{amount} eklendi. Yeni bakiye: {currentMoney}");
         UpdateMoneyUI();
     }
 
@@ -24,20 +27,20 @@ public class Money : MonoBehaviour
         if (currentMoney >= amount)
         {
             currentMoney -= amount;
-            Debug.Log($"💸 -{amount}₺ harcandı. Kalan bakiye: {currentMoney}₺");
+            Debug.Log($"-{amount} harcandi. Kalan bakiye: {currentMoney}");
             UpdateMoneyUI();
             return true;
         }
-        else
-        {
-            Debug.LogWarning("💢 Yetersiz bakiye!");
-            return false;
-        }
+
+        Debug.LogWarning("Yetersiz bakiye!");
+        return false;
     }
 
     public void UpdateMoneyUI()
     {
         if (moneyText != null)
-            moneyText.text = currentMoney.ToString() + "₺";
+        {
+            moneyText.text = currentMoney.ToString() + " TL";
+        }
     }
 }

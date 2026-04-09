@@ -1,8 +1,9 @@
-﻿using UnityEngine;
-using System.Collections;
+using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using System;
+/// <summary>
+/// VehicleCamera sinifi, arac sistemindeki ilgili davranisi yonetir.
+/// </summary>
 public class VehicleCamera : MonoBehaviour
 {
 
@@ -13,13 +14,11 @@ public class VehicleCamera : MonoBehaviour
     public float height = 1.0f;
     public float Angle = 20;
 
-
     public List<Transform> cameraSwitchView;
     public LayerMask lineOfSightMask = 0;
 
     public CarUIClass CarUI;
     private Animator _animator;
-
 
     private float yVelocity = 0.0f;
     private float xVelocity = 0.0f;
@@ -30,7 +29,6 @@ public class VehicleCamera : MonoBehaviour
     private float thisAngle = -150;
     private float restTime = 0.0f;
 
-
     private Rigidbody myRigidbody;
 
     public bool Isturning;
@@ -40,6 +38,9 @@ public class VehicleCamera : MonoBehaviour
 
     private bool _isstart;
 
+    /// <summary>
+    /// CarU sinifi, arac sistemindeki ilgili davranisi yonetir.
+    /// </summary>
     [System.Serializable]
     public class CarUIClass
     {
@@ -51,12 +52,6 @@ public class VehicleCamera : MonoBehaviour
         public Text GearText;
 
     }
-
-
-
-
-    ////////////////////////////////////////////// TouchMode (Control) ////////////////////////////////////////////////////////////////////
-
 
     private int PLValue = 0;
 
@@ -74,7 +69,6 @@ public class VehicleCamera : MonoBehaviour
         Switch++;
         if (Switch > cameraSwitchView.Count) { Switch = 0; }
     }
-
 
     public void CarAccelForward(float amount)
     {
@@ -115,13 +109,9 @@ public class VehicleCamera : MonoBehaviour
         carScript.shift = Shifting;
     }
 
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
+    /// <summary>
+    /// Arac yan yatmis ya da takla atmissa fizik kuvveti uygulayarak guvenli yone cekmeyi dener.
+    /// </summary>
     public void RestCar()
     {
 
@@ -134,12 +124,6 @@ public class VehicleCamera : MonoBehaviour
 
     }
 
-
-
-
-   
-
-
     void Start()
     {
         _animator = GetComponent<Animator>();
@@ -151,14 +135,13 @@ public class VehicleCamera : MonoBehaviour
 
     }
 
-
-
-
+    /// <summary>
+    /// Arac kamera hedefini, kamera modunu ve gorus cizgisini her karede gunceller.
+    /// </summary>
     void Update()
     {
         if (StateManger.Instance != null && StateManger.Instance.state == gamestate.Car)
         {
-            // Eğer hedef yoksa ya da değiştiyse güncelle
             if (target == null || target != StateManger.Instance.car.transform)
             {
                 target = StateManger.Instance.car.transform;
@@ -166,10 +149,7 @@ public class VehicleCamera : MonoBehaviour
         }
         if (!target) return;
 
-
         carScript = (VehicleControl)target.GetComponent<VehicleControl>();
-
-
 
         if (Input.GetKeyDown(KeyCode.G))
         {
@@ -179,10 +159,7 @@ public class VehicleCamera : MonoBehaviour
         if (restTime != 0.0f)
             restTime = Mathf.MoveTowards(restTime, 0.0f, Time.deltaTime);
 
-
         GetComponent<Camera>().fieldOfView = Mathf.Clamp(carScript.speed / 10.0f + 60.0f, 60, 90.0f);
-
-
 
         if (Input.GetKeyDown(KeyCode.C))
         {
@@ -190,11 +167,8 @@ public class VehicleCamera : MonoBehaviour
             if (Switch > cameraSwitchView.Count) { Switch = 0; }
         }
 
-
-
         if (Switch == 0)
         {
-            // Damp angle from current y-angle towards target y-angle
 
             float xAngle = Mathf.SmoothDampAngle(transform.eulerAngles.x,
            target.eulerAngles.x + Angle, ref xVelocity, smooth);
@@ -202,15 +176,12 @@ public class VehicleCamera : MonoBehaviour
             float yAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y,
             target.eulerAngles.y, ref yVelocity, smooth);
 
-            // Look at the target
             transform.eulerAngles = new Vector3(xAngle, yAngle, 0.0f);
 
             var direction = transform.rotation * -Vector3.forward;
             var targetDistance = AdjustLineOfSight(target.position + new Vector3(0, height, 0), direction);
 
-
             transform.position = target.position + new Vector3(0, height, 0) + direction * targetDistance;
-
 
         }
         else
@@ -223,11 +194,11 @@ public class VehicleCamera : MonoBehaviour
 
     }
 
-
-
+    /// <summary>
+    /// Kamera ile arac arasina bir engel girerse kamerayi hedefe yaklastirarak duvar icine girmesini engeller.
+    /// </summary>
     float AdjustLineOfSight(Vector3 target, Vector3 direction)
     {
-
 
         RaycastHit hit;
 
@@ -237,6 +208,5 @@ public class VehicleCamera : MonoBehaviour
             return distance;
 
     }
-
 
 }

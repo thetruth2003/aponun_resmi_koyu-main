@@ -1,9 +1,12 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// Oyuncunun temel hareketini, tarla islemlerini ve arac animasyonlarini yonetir.
+/// </summary>
 public class Movement : MonoBehaviour
 {
-    public Toolbar_UI toolbarUI; // Toolbar referansı
+    public Toolbar_UI toolbarUI;
     public float speed;
     public Animator animator;
 
@@ -13,7 +16,6 @@ public class Movement : MonoBehaviour
 
     private void Start()
     {
-
     }
 
     private void Update()
@@ -26,7 +28,9 @@ public class Movement : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.z * -1));
+            Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(
+                new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.z * -1)
+            );
             Vector3Int gridPosition = new Vector3Int(Mathf.RoundToInt(mouseWorldPosition.x), Mathf.RoundToInt(mouseWorldPosition.y), 0);
 
             characterPosition = new Vector3Int(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y), 0);
@@ -41,9 +45,9 @@ public class Movement : MonoBehaviour
             {
                 Debug.Log("Tile is out of range");
             }
-            Debug.Log($"Character Position: {characterPosition}, Mouse Position: {gridPosition}");
 
-            HandleToolAnimation(); // Sol tıklama ile araç animasyonunu tetikle
+            Debug.Log($"Character Position: {characterPosition}, Mouse Position: {gridPosition}");
+            HandleToolAnimation();
         }
     }
 
@@ -71,11 +75,16 @@ public class Movement : MonoBehaviour
 
     private void HandleToolAnimation()
     {
-        if (toolbarUI == null) return;
+        if (toolbarUI == null)
+        {
+            return;
+        }
 
         string itemName = toolbarUI.GetSelectedPrefab();
-        
-        if (string.IsNullOrEmpty(itemName)) return;
+        if (string.IsNullOrEmpty(itemName))
+        {
+            return;
+        }
 
         animator.ResetTrigger("axe");
         animator.ResetTrigger("hammer");
@@ -84,17 +93,22 @@ public class Movement : MonoBehaviour
 
         if (itemName == "axe" || itemName == "hammer" || itemName == "sword" || itemName == "rod")
         {
-            animator.SetTrigger(itemName); // Sol tıklamayla ilgili animasyonu tetikle
+            animator.SetTrigger(itemName);
         }
     }
 
     private IEnumerator Dig(Vector3Int gridPosition)
     {
-        if (toolbarUI == null || animator == null) yield break;
+        if (toolbarUI == null || animator == null)
+        {
+            yield break;
+        }
 
         string itemName = toolbarUI.GetSelectedPrefab();
-
-        if (string.IsNullOrEmpty(itemName) || itemName != "hoe") yield break;
+        if (string.IsNullOrEmpty(itemName) || itemName != "hoe")
+        {
+            yield break;
+        }
 
         Debug.Log($"Swinging tool: {itemName}");
         animator.SetTrigger("hoe");
@@ -105,11 +119,16 @@ public class Movement : MonoBehaviour
 
     private IEnumerator Seed(Vector3Int gridPosition)
     {
-        if (toolbarUI == null || animator == null) yield break;
+        if (toolbarUI == null || animator == null)
+        {
+            yield break;
+        }
 
         string itemName = toolbarUI.GetSelectedPrefab();
-
-        if (string.IsNullOrEmpty(itemName) || itemName != "seed") yield break;
+        if (string.IsNullOrEmpty(itemName) || itemName != "seed")
+        {
+            yield break;
+        }
 
         Debug.Log($"Swinging tool: {itemName}");
         animator.SetTrigger("seed");

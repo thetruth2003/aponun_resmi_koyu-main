@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+/// <summary>
+/// CutsceneManager sinifi, ilgili sistemin akisini ve durum yonetimini ustlenir.
+/// </summary>
 public class CutsceneManager : MonoBehaviour
 {
     [Header("Tarama")]
-    [Tooltip("Sadece bunun altındaki CutsceneClip'leri toplar; boşsa sahnede hepsini bulur")]
+    [Tooltip("Sadece bunun alt???�ndaki CutsceneClip'leri toplar; boşsa sahnede hepsini bulur")]
     public Transform clipsParent;
 
     [Header("Konfig (opsiyonel) — Listeyle yönetmek için doldur")]
@@ -15,18 +18,19 @@ public class CutsceneManager : MonoBehaviour
     [Header("Persistans")]
     [SerializeField] private string saveFileName = "cutscenes_save.json";
 
-    // === Inspector Entries ===
+    /// <summary>
+    /// CutsceneEntry sinifi, cutscene akislarinda kullanilan ilgili davranisi yonetir.
+    /// </summary>
     [Serializable]
     private class CutsceneEntry
     {
-        public CutsceneClip clip;          // Hangi klip
-        public string triggerKey = "";     // Örn: "Shop.Enter"
+        public CutsceneClip clip;
+        public string triggerKey = "";
         public CutscenePlayType playType = CutscenePlayType.Once;
-        public string groupKey = "";       // Örn: "ShopSequence"
-        public int priority = 0;           // Küçük olan önce
+        public string groupKey = "";
+        public int priority = 0;
     }
 
-    // === Persistans modeli ===
     [Serializable] private class SaveModel
     {
         public List<string> playedIds = new();
@@ -38,20 +42,19 @@ public class CutsceneManager : MonoBehaviour
         public int nextIndex;
     }
 
-    // === Çalışma zamanı tablolar ===
     private readonly Dictionary<string, CutsceneClip> allById = new();
     private readonly List<CutsceneClip> allClips = new();
 
     private HashSet<string> playedIds = new();
-    private readonly Dictionary<string, int> groupNextIndex = new(); // groupKeyNorm -> nextIndex
+    private readonly Dictionary<string, int> groupNextIndex = new();
 
     private string SavePath => Path.Combine(Application.persistentDataPath, saveFileName);
 
     private void Awake()
     {
-        RefreshClipList();     // Entries → kliplere enjekte
-        BuildGroupOrders();    // Sequence index ataması
-        LoadState();           // Kalıcı kayıt
+        RefreshClipList();
+        BuildGroupOrders();
+        LoadState();
         ApplyPlayedStateOnBoot();
     }
 
@@ -70,7 +73,6 @@ public class CutsceneManager : MonoBehaviour
                 if (string.IsNullOrWhiteSpace(c.id))
                     c.id = Guid.NewGuid().ToString("N");
 
-                // Entries değerlerini klibe ENJEKTE ET
                 c.triggerKey = (e.triggerKey ?? "").Trim();
                 c.groupKey   = string.IsNullOrWhiteSpace(e.groupKey) ? "" : e.groupKey.Trim();
                 c.playType   = e.playType;
@@ -85,7 +87,6 @@ public class CutsceneManager : MonoBehaviour
             return;
         }
 
-        // Otomatik tarama (child/sahne)
         var found = clipsParent
             ? clipsParent.GetComponentsInChildren<CutsceneClip>(includeInactive: true)
             : FindObjectsOfType<CutsceneClip>(includeInactive: true);
@@ -131,7 +132,7 @@ public class CutsceneManager : MonoBehaviour
 
             if (playedIds.Contains(c.id))
             {
-                c.Skip(); // zaten oynandı → skip akışı
+                c.Skip();
             }
             else
             {
@@ -140,7 +141,6 @@ public class CutsceneManager : MonoBehaviour
         }
     }
 
-    // === Persistans ===
     private void LoadState()
     {
         if (!File.Exists(SavePath)) return;
@@ -183,8 +183,7 @@ public class CutsceneManager : MonoBehaviour
         }
     }
 
-    // === Public API ===
-    /// <summary>Uygun klibi bulur ve oynatır. Bulamazsa false döner.</summary>
+    /// <summary>Uygun klibi bulur ve oynat???�r. Bulamazsa false döner.</summary>
     public bool TryStart(string triggerKey)
     {
         CutsceneClip candidate = FindNextSequence(triggerKey);
@@ -196,7 +195,7 @@ public class CutsceneManager : MonoBehaviour
         return true;
     }
 
-    /// <summary>Oynanmış (Once/Sequence) kliplerin Skip akışını çalıştırır.</summary>
+    /// <summary>Oynanm???�ş (Once/Sequence) kliplerin Skip ak???�ş???�n???� çal???�şt???�r???�r.</summary>
     public bool RunSkipForTrigger(string triggerKey)
     {
         bool any = false;
@@ -209,14 +208,14 @@ public class CutsceneManager : MonoBehaviour
             if ((c.playType == CutscenePlayType.Once || c.playType == CutscenePlayType.SequenceStep)
                 && playedIds.Contains(c.id))
             {
-                c.Skip(); // Inspector'daki On Skip() çalışır
+                c.Skip();
                 any = true;
             }
         }
         return any;
     }
 
-    /// <summary>Önce oynatmayı dener; olmazsa Skip akışını çalıştırır.</summary>
+    /// <summary>Önce oynatmay???� dener; olmazsa Skip ak???�ş???�n???� çal???�şt???�r???�r.</summary>
     public void TryStartOrSkip(string triggerKey)
     {
         if (!TryStart(triggerKey))
@@ -250,7 +249,6 @@ public class CutsceneManager : MonoBehaviour
         SaveState();
     }
 
-    // === Seçim yardımcıları ===
     private CutsceneClip FindNextSequence(string triggerKey)
     {
         CutsceneClip best = null;

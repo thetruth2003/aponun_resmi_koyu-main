@@ -1,59 +1,54 @@
-﻿using UnityEngine;
-using System.Collections; // IEnumerator kullanabilmek için gerekli namespace
+using UnityEngine;
+using System.Collections;
 
+/// <summary>
+/// TreeFall sinifi, ilgili davranis veya veriyi yonetmek icin kullanilir.
+/// </summary>
 public class TreeFall : MonoBehaviour
 {
-    private Vector3 originalPosition;  // İlk pozisyonu saklar
-    public float shakeAmount = 0.015f;  // Sallanma miktarı
+    private Vector3 originalPosition;
+    public float shakeAmount = 0.015f;
     public bool isFalling = false;
-    public float fallForce = 1.5f;  // Ağaç için eklenen kuvvet
-    private int hitCount = 0;  // Vuruş sayacı
-    private bool hasFallen = false;  // Ağacın devrilip devrilmediğini kontrol etmek için
+    public float fallForce = 1.5f;
+    private int hitCount = 0;
+    private bool hasFallen = false;
     public GameObject odunsacma;
 
     private void Start()
     {
 
     }
-    // Bu metodu child collider yere temas ettiğinde çağıracağız
 
-    // Sallanma ve devrilme işlemi
     public IEnumerator ShakeAndFall()
     {
-        hitCount++;  // Vuruş sayacını bir arttır
+        hitCount++;
 
-        // Her vuruşta sallanma yapılır
-        originalPosition = transform.position;  // Ağaç pozisyonunu kaydet
-        float shakeDuration = 0.2f;  // Sallanma süresi
+        originalPosition = transform.position;
+        float shakeDuration = 0.2f;
         float shakeTimer = 0.0f;
 
-        // Ağaç hafifçe sallanacak
         while (shakeTimer < shakeDuration)
         {
             shakeTimer += Time.deltaTime;
-            transform.position = originalPosition + Random.insideUnitSphere * shakeAmount;  // Sallanma
+            transform.position = originalPosition + Random.insideUnitSphere * shakeAmount;
             yield return null;
         }
 
-        // Sallandıktan sonra pozisyonu sıfırla
         transform.position = originalPosition;
 
-        // 5 vuruştan sonra devrilme işlemi başlat
         if (hitCount >= 5 && !isFalling)
         {
             isFalling = true;
 
-            // Ağaç devrilmesi için bir kuvvet uygula
             Rigidbody rb = GetComponent<Rigidbody>();
             if (rb != null)
             {
-                rb.isKinematic = false;  // Fizikleri etkinleştir
-                rb.useGravity = true;  // Yerçekimi etkisini aç
-                Vector3 fallDirection = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)).normalized;  // Rastgele bir devrilme yönü
-                rb.AddForce(fallDirection * fallForce, ForceMode.Impulse);  // Kuvvet uygula
+                rb.isKinematic = false;
+                rb.useGravity = true;
+                Vector3 fallDirection = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)).normalized;
+                rb.AddForce(fallDirection * fallForce, ForceMode.Impulse);
             }
 
-            // Ağaç yere düşene kadar bekle
             Rigidbody rbFall = GetComponent<Rigidbody>();
             while (rbFall.linearVelocity.magnitude > 0.1f)
             {
@@ -63,7 +58,7 @@ public class TreeFall : MonoBehaviour
             isFalling = false;
 
             StartCoroutine(odunsacma2());
-           
+
         }
     }
     public IEnumerator odunsacma2()
@@ -74,6 +69,4 @@ public class TreeFall : MonoBehaviour
         Destroy(gameObject);
     }
 }
-
-
 

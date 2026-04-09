@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Buy sinifi, gorev sistemi icindeki ilgili davranis veya veriyi yonetir.
+/// </summary>
 [System.Serializable]
 public class BuyItemStep : IQuestStep
 {
@@ -8,13 +11,12 @@ public class BuyItemStep : IQuestStep
 
     private bool isCompleted = false;
 
-    public string GetName() => $"Buy {requiredAmount}× {itemID}";
+    public string GetName() => $"Buy {requiredAmount}Ãƒâ€” {itemID}";
 
     public void OnStart() { }
 
     public void OnUpdate()
     {
-        //IsComplete();
     }
 
     public bool IsComplete()

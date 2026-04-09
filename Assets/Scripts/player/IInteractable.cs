@@ -1,8 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Etkilesime girilebilen nesnelerin ortak davranisini tanimlayan temel arayuzdur.
+/// </summary>
 public interface IInteractable
 {
-    void Interact();  // Her objede çalýþacak ortak fonksiyon
+    void Interact();
 }

@@ -1,112 +1,118 @@
-﻿using UnityEditor.UIElements;
 using UnityEngine;
 
+/// <summary>
+/// Oyuncunun etrafinda tarim hucrelerini olusturup gorunurlugunu yonetir.
+/// </summary>
 public class DynamicGridManager : MonoBehaviour
 {
-    [SerializeField] private GameObject gridCellPrefab; // Hücre prefab'ı (önceden oluşturulmuş şablon)
-    [SerializeField] private int gridWidth = 50; // Grid genişliği
-    [SerializeField] private int gridHeight = 50; // Grid yüksekliği
-    [SerializeField] private float cellSize = 2.5f; // Hücre boyutu
-    [SerializeField] private int renderDistance = 10; // Görünürlük mesafesi
-    [SerializeField] private Transform player; // Oyuncu objesi
-    [SerializeField] private GameObject[,] gridCells; // Hücrelerin dizisi
-    [SerializeField] private float updateInterval = 0.1f; // Güncelleme aralığı
-    private float timeSinceLastUpdate = 0f; // Son güncelleme zamanı
-    public Crosshair crosshair; // Crosshair (nişangah) nesnesi
-    public GameObject selectedCell; // Bu değişken, seçilen hücreyi tutacak
+    [SerializeField] private GameObject gridCellPrefab;
+    [SerializeField] private int gridWidth = 50;
+    [SerializeField] private int gridHeight = 50;
+    [SerializeField] private float cellSize = 2.5f;
+    [SerializeField] private int renderDistance = 6;
+    [SerializeField] private Transform player;
+    [SerializeField] private GameObject[,] gridCells;
+    [SerializeField] private float updateInterval = 0.1f;
+    private float timeSinceLastUpdate = 0f;
+    public Crosshair crosshair;
+    public GameObject selectedCell;
     public Toolbar_UI toolbar;
 
     void Start()
     {
-        // Eğer gridCellPrefab atanmadıysa hata verir
         if (!gridCellPrefab)
         {
-            Debug.LogError("Grid hücre prefab'ı atanmadı!");
+            Debug.LogError("Grid hucre prefab'i atanmadi!");
             return;
         }
 
-        // Eğer oyuncu objesi atanmadıysa, tag kullanarak bulmaya çalışır
         if (!player)
         {
             player = GameObject.FindWithTag("Player")?.transform;
             if (!player)
             {
-                Debug.LogError("Oyuncu objesi bulunamadı!");
+                Debug.LogError("Oyuncu objesi bulunamadi!");
                 return;
             }
         }
 
-        CreateGrid(); // Grid'i oluştur
+        CreateGrid();
     }
 
-    // Her frame'de grid'i güncellemek için
     void Update()
     {
-        timeSinceLastUpdate += Time.deltaTime; // Son güncellemeden geçen süreyi artır
-        if (timeSinceLastUpdate >= updateInterval) // Güncelleme aralığına ulaşıldıysa
+        timeSinceLastUpdate += Time.deltaTime;
+        if (timeSinceLastUpdate >= updateInterval)
         {
-            UpdateGridVisibility(); // Grid'in görünürlüğünü güncelle
-            timeSinceLastUpdate = 0f; // Zamanı sıfırla
+            UpdateGridVisibility();
+            timeSinceLastUpdate = 0f;
         }
 
-        // Sağ tıklama ile hücreyi etkinleştir
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1) && crosshair != null)
         {
-            crosshair.ActivateCellAtMousePosition(); // Fare pozisyonundaki hücreyi etkinleştir
+            crosshair.ActivateCellAtMousePosition();
         }
     }
 
-    // Grid'i oluşturur
     private void CreateGrid()
     {
-        gridCells = new GameObject[gridWidth, gridHeight]; // Grid hücrelerini başlat
-        Vector3 gridOrigin = player.position - new Vector3((gridWidth / 2) * cellSize, 0, (gridHeight / 2) * cellSize); // Grid'in başlangıç noktasını hesapla
+        gridCells = new GameObject[gridWidth, gridHeight];
+        Vector3 gridOrigin = player.position - new Vector3((gridWidth / 2) * cellSize, 0f, (gridHeight / 2) * cellSize);
+
         for (int x = 0; x < gridWidth; x++)
         {
             for (int z = 0; z < gridHeight; z++)
             {
-                Vector3 cellPosition = new Vector3(gridOrigin.x + x * cellSize,2, gridOrigin.z + z * cellSize); // Hücrenin pozisyonunu hesapla
-                if (Physics.Raycast(cellPosition + Vector3.up * 10, Vector3.down, out RaycastHit hit, 20f)) // Raycast ile zemin yüksekliğini al
+                Vector3 cellPosition = new Vector3(gridOrigin.x + x * cellSize, 2f, gridOrigin.z + z * cellSize);
+                RaycastHit hit = default;
+                if (Physics.Raycast(cellPosition + Vector3.up * 10f, Vector3.down, out hit, 20f))
                 {
-                    cellPosition.y = hit.point.y; // Yüksekliği güncelle
+                    cellPosition.y = hit.point.y;
                 }
 
-                // Hücreyi instantiate et
                 GameObject newCell = Instantiate(gridCellPrefab, cellPosition, Quaternion.identity, transform);
-                AlignToSurface(newCell, hit); // Hücreyi yüzeye hizala
-                gridCells[x, z] = newCell; // Hücreyi gridCells dizisine ekle
+                AlignToSurface(newCell, hit);
+                gridCells[x, z] = newCell;
             }
         }
     }
 
-    // Hücreyi yüzeyle hizalar
     private void AlignToSurface(GameObject cell, RaycastHit hit)
     {
         if (hit.collider != null)
         {
-            cell.transform.position = hit.point; // Hücrenin pozisyonunu hizala
-            cell.transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal); // Hücrenin rotasını hizala
+            cell.transform.position = hit.point;
+            cell.transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
         }
     }
 
-    // Grid'in görünürlüğünü günceller
     private void UpdateGridVisibility()
     {
-        if (!player) return; // Eğer oyuncu objesi yoksa hiçbir şey yapma
+        if (!player)
+        {
+            return;
+        }
 
-        int halfWidth = gridWidth / 2;
-        int halfHeight = gridHeight / 2;
+        float maxDistance = renderDistance * cellSize;
+        float maxDistanceSqr = maxDistance * maxDistance;
 
-        // Her hücreyi kontrol et ve oyuncuya ne kadar yakın olduğunu hesapla
         for (int x = 0; x < gridWidth; x++)
         {
             for (int z = 0; z < gridHeight; z++)
             {
                 GameObject cell = gridCells[x, z];
-                if (cell == null) continue;
+                if (cell == null)
+                {
+                    continue;
+                }
 
-                float distance = Vector3.Distance(player.position, cell.transform.position); // Oyuncuya olan mesafeyi hesapla
-                cell.SetActive(distance <= renderDistance * cellSize); // Mesafe, renderDistance ile karşılaştır ve aktifliğini ayarla
+                float distanceSqr = (player.position - cell.transform.position).sqrMagnitude;
+                bool shouldBeActive = distanceSqr <= maxDistanceSqr;
+
+                if (cell.activeSelf != shouldBeActive)
+                {
+                    cell.SetActive(shouldBeActive);
+                }
             }
         }
     }

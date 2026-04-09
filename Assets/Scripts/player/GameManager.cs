@@ -1,7 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Oyuncu, UI ve temel oyun yoneticilerini merkezi olarak bir arada tutar.
+/// </summary>
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
@@ -9,7 +10,7 @@ public class GameManager : MonoBehaviour
     public UI_Manager uiManager;
     public StateManger stateManger;
     public Player player;
-    public Toolbar_UI toolbarUI; // Toolbar UI referansı
+    public Toolbar_UI toolbarUI;
 
     private void Awake()
     {
@@ -22,29 +23,27 @@ public class GameManager : MonoBehaviour
             instance = this;
         }
 
-        //DontDestroyOnLoad(this.gameObject);
-
-        // Bileşenlerin atanıp atanmadığını kontrol ediyoruz
         itemManager = GetComponent<ItemManager>();
         if (itemManager == null)
         {
-            Debug.LogWarning("GameManager: ItemManager bileşeni atanmadı!");
+            Debug.LogWarning("GameManager: ItemManager bileseni atanmad�!");
         }
+
         uiManager = GetComponent<UI_Manager>();
         if (uiManager == null)
         {
-            Debug.LogWarning("GameManager: UI_Manager bileşeni atanmadı!");
+            Debug.LogWarning("GameManager: UI_Manager bileseni atanmad�!");
         }
 
         player = FindObjectOfType<Player>();
         if (player == null)
         {
-            Debug.LogWarning("GameManager: Oyuncu (Player) nesnesi sahnede bulunamadı!");
+            Debug.LogWarning("GameManager: Oyuncu (Player) nesnesi sahnede bulunamad�!");
         }
 
         if (toolbarUI == null)
         {
-            Debug.LogWarning("GameManager: Toolbar_UI referansı atanmadı!");
+            Debug.LogWarning("GameManager: Toolbar_UI referans� atanmad�!");
         }
     }
 }

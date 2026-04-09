@@ -1,6 +1,9 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
+/// <summary>
+/// QuestManager, tek bir gorev zincirinin aktif adimini ilerletip UI ile senkron tutar.
+/// </summary>
 public class QuestManager : MonoBehaviour
 {
     public static QuestManager Instance { get; private set; }
@@ -9,32 +12,42 @@ public class QuestManager : MonoBehaviour
     public QuestEditorAsset questChain;
 
     [Header("UI")]
-    public QuestUI questUI;         // QuestUI komponentine referans
-    public TMP_Text headerText;     // (İsteğe bağlı üst başlık)
+    public QuestUI questUI;
+    public TMP_Text headerText;
 
     private int currentIndex = 0;
     private IQuestStep currentStep;
 
-    void Awake()
+    private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    void Start()
+    private void Start()
     {
         if (questChain == null)
         {
-            Debug.LogError("QuestChain atanmadı!");
+            Debug.LogError("QuestChain atanmadi!");
             enabled = false;
             return;
         }
+
         LoadCurrentStep();
     }
 
-    void CheckingQuest()
+    private void CheckingQuest()
     {
-        if (currentStep == null) return;
+        if (currentStep == null)
+        {
+            return;
+        }
 
         currentStep.OnUpdate();
 
@@ -48,25 +61,35 @@ public class QuestManager : MonoBehaviour
             else
             {
                 if (headerText != null)
-                    headerText.text = "<color=#00FF00>✔️ All quests done!</color>";
+                {
+                    headerText.text = "<color=#00FF00>All quests done!</color>";
+                }
+
                 currentStep = null;
             }
+
             if (questUI != null)
+            {
                 questUI.UpdateQuestUI();
+            }
         }
     }
 
-    void LoadCurrentStep()
+    private void LoadCurrentStep()
     {
-        var container = questChain.quests[currentIndex];
+        QuestContainer container = questChain.quests[currentIndex];
         currentStep = container.GetStepInstance();
         currentStep.OnStart();
 
         if (headerText != null)
+        {
             headerText.text = $"<b>Quest {currentIndex + 1}:</b> {currentStep.GetName()}";
+        }
 
         if (questUI != null)
+        {
             questUI.UpdateQuestUI();
+        }
     }
 
     public int GetCurrentIndex() => currentIndex;

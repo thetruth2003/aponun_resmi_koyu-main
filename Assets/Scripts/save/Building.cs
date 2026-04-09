@@ -1,10 +1,12 @@
-ï»¿using UnityEngine;
-// public class Building : Item  // Item tabanlÄ±ysa bunu aÃ§
+using UnityEngine;
+/// <summary>
+/// Building sinifi, kayit sistemiyle ilgili davranisi yonetir.
+/// </summary>
 public class Building : MonoBehaviour
 {
     public string building_name;
 
-    [Tooltip("KalÄ±cÄ± benzersiz ID (prefabda boÅŸ bÄ±rak).")]
+    [Tooltip("Kalıcı benzersiz ID (prefabda boş bırak).")]
     public string persistentId;
 
     private void Awake()

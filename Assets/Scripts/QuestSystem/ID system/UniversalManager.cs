@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Sahnedeki UniversalIdentifier nesnelerini toplayip ID uzerinden hizli erisim saglar.
+/// </summary>
 public class UniversalManager : MonoBehaviour
 {
     public static UniversalManager Instance;
@@ -21,6 +24,9 @@ public class UniversalManager : MonoBehaviour
         RegisterAll();
     }
 
+    /// <summary>
+    /// Tum aktif UniversalIdentifier nesnelerini yeniden tarayip lookup tablosunu tazeler.
+    /// </summary>
     void RegisterAll()
     {
         idLookup.Clear();
@@ -51,5 +57,5 @@ public class UniversalManager : MonoBehaviour
         return idLookup.ContainsKey(id.ToLower());
     }
 
-    public void Refresh() => RegisterAll(); // Sahne dinamikse çağrılabilir
+    public void Refresh() => RegisterAll();
 }

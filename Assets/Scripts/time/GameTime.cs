@@ -1,6 +1,9 @@
 using UnityEngine;
 using System;
 
+/// <summary>
+/// GameTime sinifi, ilgili davranis veya veriyi yonetmek icin kullanilir.
+/// </summary>
 public class GameTime : MonoBehaviour
 {
     public static GameTime Instance;

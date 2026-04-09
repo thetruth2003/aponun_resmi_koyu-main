@@ -1,18 +1,19 @@
-    using UnityEngine;
+using UnityEngine;
 
-    [CreateAssetMenu(fileName = "Seed Data", menuName = "Seed Data", order = 51)]
-    public class SeedData : ScriptableObject
-    {
-        public SeedType seedType;
-        
-        [Tooltip("Her growth stage için prefab'lar (0 = ekildiği an, 1..n büyüme aşamaları)")]
-        public GameObject[] growthStages;
+/// <summary>
+/// Bir tohumun buyume asamalari ve temel tarim ayarlarini tutar.
+/// </summary>
+[CreateAssetMenu(fileName = "Seed Data", menuName = "Seed Data", order = 51)]
+public class SeedData : ScriptableObject
+{
+    public SeedType seedType;
 
-        [Tooltip("Sulama yapılmazsa kurumasına izin verilen maksimum gün sayısı")]
-        public int maxDryDays = 2;
+    [Tooltip("Her growth stage icin prefablar. 0 = ekildigi an, 1..n = buyume asamalari.")]
+    public GameObject[] growthStages;
 
-        [Tooltip("Market satış fiyatı")]
-        public int sellPrice;
+    [Tooltip("Sulama yapilmazsa kurumasina izin verilen maksimum gun sayisi.")]
+    public int maxDryDays = 2;
 
-        // İleride eklenecek tohum özellikleri...
-    }
+    [Tooltip("Market satis fiyati.")]
+    public int sellPrice;
+}

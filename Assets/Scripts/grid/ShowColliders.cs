@@ -1,19 +1,22 @@
-﻿using UnityEngine;
+using UnityEngine;
 
+/// <summary>
+/// ShowColliders sinifi, ilgili davranis veya veriyi yonetmek icin kullanilir.
+/// </summary>
 public class ShowColliders : MonoBehaviour
 {
-    public GameObject[] cells; // Bütün cell'leri içeren dizi
+    public GameObject[] cells;
 
     void OnDrawGizmos()
     {
         foreach (GameObject cell in cells)
         {
-            if (cell != null) // Eğer cell varsa
+            if (cell != null)
             {
-                Collider collider = cell.GetComponent<Collider>(); // Collider'ı al
-                if (collider != null) // Eğer collider varsa
+                Collider collider = cell.GetComponent<Collider>();
+                if (collider != null)
                 {
-                    Gizmos.DrawWireCube(collider.bounds.center, collider.bounds.size); // Collider'ın sınırlarını çiz
+                    Gizmos.DrawWireCube(collider.bounds.center, collider.bounds.size);
                 }
             }
         }

@@ -3,8 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DefaultExecutionOrder(-50)]
+/// <summary>
+/// Gunluk futbol maclarini ureten, kuponlari tutan ve gun degisiminde kupon sonuclarini hesaplayan yoneticidir.
+/// </summary>
 public class FutbolKuponManager : MonoBehaviour
 {
+    private const string DayCountKey = "DayCount";
+
+    /// <summary>
+    /// MatchResult sinifi, pazar ve ekonomi akislarinda kullanilan ilgili davranisi yonetir.
+    /// </summary>
     public enum MatchResult
     {
         HomeWin,
@@ -13,6 +21,9 @@ public class FutbolKuponManager : MonoBehaviour
     }
 
     [Serializable]
+    /// <summary>
+    /// Takim gucu ve illegal etki ihtimali gibi mac hesaplarinda kullanilan temel takim verisini tutar.
+    /// </summary>
     public class TeamPower
     {
         public string teamName;
@@ -22,6 +33,9 @@ public class FutbolKuponManager : MonoBehaviour
     }
 
     [Serializable]
+    /// <summary>
+    /// Bir gun icin uretilen macin oran, olasilik ve sonuc bilgisini saklar.
+    /// </summary>
     public class MatchCard
     {
         public int day;
@@ -41,35 +55,41 @@ public class FutbolKuponManager : MonoBehaviour
     }
 
     [Serializable]
-    public class BetTicket
+    /// <summary>
+    /// Kupondaki tek bir mac secimini ve o anda kilitlenen orani tutar.
+    /// </summary>
+    public class CouponLeg
     {
-        public int day;
         public int matchIndex;
         public string homeTeam;
         public string awayTeam;
         public MatchResult selection;
-        public int stake;
         public float lockedOdds;
     }
 
-    [Header("Team Pool")]
-    [SerializeField] private List<TeamPower> teams = new List<TeamPower>();
+    [Serializable]
+    /// <summary>
+    /// Bir gun icin yatirilan tum kuponu, yatirilan tutari ve toplam oraniyla birlikte saklar.
+    /// </summary>
+    public class DailyCoupon
+    {
+        public int day;
+        public int stake;
+        public float totalOdds;
+        public List<CouponLeg> legs = new List<CouponLeg>();
+    }
 
-    [Header("Simulation")]
+    [SerializeField] private List<TeamPower> teams = new List<TeamPower>();
     [SerializeField] private int currentDay = 1;
     [SerializeField] private float houseEdge = 0.92f;
     [SerializeField] private int matchesPerDay = 2;
-    [SerializeField] private int demoStartingMoney = 5000;
-
-    [Header("State")]
     [SerializeField] private List<MatchCard> todayMatches = new List<MatchCard>();
     [SerializeField] private List<MatchCard> tomorrowMatches = new List<MatchCard>();
-    [SerializeField] private List<BetTicket> openTickets = new List<BetTicket>();
+    [SerializeField] private List<DailyCoupon> openCoupons = new List<DailyCoupon>();
+    [SerializeField] private List<CouponLeg> pendingCouponLegs = new List<CouponLeg>();
     [SerializeField] private string latestResultsSummary = "";
 
     private Muhasebeci muhasebeci;
-    private Money legacyMoney;
-    private int fallbackMoney;
     private bool initialized;
 
     public event Action OnStateChanged;
@@ -81,9 +101,21 @@ public class FutbolKuponManager : MonoBehaviour
 
     private void Awake()
     {
-        CacheMoneySystems();
+        CacheMuhasebeci();
         EnsureDefaults();
+        SyncWithWorldDay(false);
         InitializeIfNeeded();
+    }
+
+    private void OnEnable()
+    {
+        game_start.OnDayChanged -= HandleWorldDayChanged;
+        game_start.OnDayChanged += HandleWorldDayChanged;
+    }
+
+    private void OnDisable()
+    {
+        game_start.OnDayChanged -= HandleWorldDayChanged;
     }
 
     private void OnValidate()
@@ -93,68 +125,98 @@ public class FutbolKuponManager : MonoBehaviour
 
     public void ForceRefresh()
     {
-        CacheMoneySystems();
+        CacheMuhasebeci();
         EnsureDefaults();
+        SyncWithWorldDay(false);
         InitializeIfNeeded();
         NotifyStateChanged();
     }
 
     public int GetCurrentMoney()
     {
-        if (muhasebeci != null)
-        {
-            return muhasebeci.GetMoney();
-        }
-
-        if (legacyMoney != null)
-        {
-            return legacyMoney.currentMoney;
-        }
-
-        return fallbackMoney;
+        return muhasebeci != null ? muhasebeci.GetMoney() : 0;
     }
 
-    public bool PlaceBet(int matchIndex, MatchResult selection, int stake, out string message)
+    public void SetPendingSelection(int matchIndex, MatchResult selection)
     {
-        message = string.Empty;
-
-        if (stake <= 0)
-        {
-            message = "Miktar sifirdan buyuk olmali.";
-            return false;
-        }
-
         if (matchIndex < 0 || matchIndex >= todayMatches.Count)
         {
-            message = "Mac bulunamadi.";
-            return false;
+            return;
         }
 
         MatchCard match = todayMatches[matchIndex];
-        if (match.resolved)
+        CouponLeg leg = new CouponLeg
         {
-            message = "Bu mac zaten sonuclanmis.";
+            matchIndex = matchIndex,
+            homeTeam = match.homeTeam,
+            awayTeam = match.awayTeam,
+            selection = selection,
+            lockedOdds = GetOddsForSelection(match, selection)
+        };
+
+        int existingIndex = pendingCouponLegs.FindIndex(x => x.matchIndex == matchIndex);
+        if (existingIndex >= 0) pendingCouponLegs[existingIndex] = leg;
+        else pendingCouponLegs.Add(leg);
+
+        NotifyStateChanged();
+    }
+
+    public bool PlaceCurrentCoupon(int stake, out string message)
+    {
+        message = string.Empty;
+
+        if (muhasebeci == null)
+        {
+            message = "Muhasebeci bulunamadi.";
             return false;
         }
 
-        if (!TrySpendMoney(stake))
+        if (stake <= 0)
+        {
+            message = "Kupon miktari sifirdan buyuk olmali.";
+            return false;
+        }
+
+        if (pendingCouponLegs.Count != todayMatches.Count || todayMatches.Count == 0)
+        {
+            message = "Kuponu yatirmak icin tum maclara secim yapmalisin.";
+            return false;
+        }
+
+        int currentMoney = muhasebeci.GetMoney();
+        if (currentMoney < stake)
         {
             message = "Yeterli para yok.";
             return false;
         }
 
-        openTickets.Add(new BetTicket
+        muhasebeci.SetMoney(currentMoney - stake);
+
+        float totalOdds = 1f;
+        DailyCoupon coupon = new DailyCoupon
         {
             day = currentDay,
-            matchIndex = matchIndex,
-            homeTeam = match.homeTeam,
-            awayTeam = match.awayTeam,
-            selection = selection,
-            stake = stake,
-            lockedOdds = GetOddsForSelection(match, selection)
-        });
+            stake = stake
+        };
 
-        message = $"{match.homeTeam} - {match.awayTeam} macina bahis yapildi.";
+        for (int i = 0; i < pendingCouponLegs.Count; i++)
+        {
+            CouponLeg leg = pendingCouponLegs[i];
+            totalOdds *= leg.lockedOdds;
+            coupon.legs.Add(new CouponLeg
+            {
+                matchIndex = leg.matchIndex,
+                homeTeam = leg.homeTeam,
+                awayTeam = leg.awayTeam,
+                selection = leg.selection,
+                lockedOdds = leg.lockedOdds
+            });
+        }
+
+        coupon.totalOdds = totalOdds;
+        openCoupons.Add(coupon);
+        pendingCouponLegs.Clear();
+        message = $"Kupon yatirildi. {stake} TL | Toplam oran {totalOdds:0.00}";
         NotifyStateChanged();
         return true;
     }
@@ -167,34 +229,84 @@ public class FutbolKuponManager : MonoBehaviour
         }
 
         ResolveTodayMatches();
-        SettleOpenTickets();
+        SettleOpenCoupons();
 
         currentDay++;
         todayMatches = CloneMatches(tomorrowMatches);
         tomorrowMatches = GenerateMatchSet(currentDay + 1);
+        pendingCouponLegs.Clear();
         NotifyStateChanged();
     }
 
     public string GetTicketSummaryForTodayMatch(int matchIndex)
     {
-        int ticketCount = 0;
-        int totalStake = 0;
-
-        for (int i = 0; i < openTickets.Count; i++)
+        CouponLeg pending = pendingCouponLegs.Find(x => x.matchIndex == matchIndex);
+        if (pending != null)
         {
-            if (openTickets[i].day == currentDay && openTickets[i].matchIndex == matchIndex)
+            return $"Secim: {GetSelectionLabel(pending.selection)} | Oran: {pending.lockedOdds:0.00}";
+        }
+
+        int couponCount = 0;
+        for (int i = 0; i < openCoupons.Count; i++)
+        {
+            DailyCoupon coupon = openCoupons[i];
+            if (coupon.day == currentDay && coupon.legs.Exists(x => x.matchIndex == matchIndex))
             {
-                ticketCount++;
-                totalStake += openTickets[i].stake;
+                couponCount++;
             }
         }
 
-        if (ticketCount == 0)
+        return couponCount > 0 ? $"{couponCount} acik kuponda secildi." : "Henuz secim yok.";
+    }
+
+    public string GetOpenTicketSummary()
+    {
+        List<string> lines = new List<string>();
+        int todayCouponCount = 0;
+        int totalStake = 0;
+
+        if (pendingCouponLegs.Count > 0)
         {
-            return "Bu maca acik bahis yok.";
+            float pendingOdds = 1f;
+            lines.Add("Hazirlanan kupon:");
+            for (int i = 0; i < pendingCouponLegs.Count; i++)
+            {
+                CouponLeg leg = pendingCouponLegs[i];
+                pendingOdds *= leg.lockedOdds;
+                lines.Add($"{leg.homeTeam} - {leg.awayTeam} | {GetSelectionLabel(leg.selection)} | {leg.lockedOdds:0.00}");
+            }
+
+            lines.Add($"Hazir oran: {pendingOdds:0.00}");
+            lines.Add(string.Empty);
         }
 
-        return $"{ticketCount} bahis acik, toplam {totalStake} TL.";
+        for (int i = 0; i < openCoupons.Count; i++)
+        {
+            DailyCoupon coupon = openCoupons[i];
+            if (coupon.day != currentDay)
+            {
+                continue;
+            }
+
+            todayCouponCount++;
+            totalStake += coupon.stake;
+            lines.Add($"Yatirilan kupon {todayCouponCount}: {coupon.stake} TL | Oran {coupon.totalOdds:0.00}");
+            for (int legIndex = 0; legIndex < coupon.legs.Count; legIndex++)
+            {
+                CouponLeg leg = coupon.legs[legIndex];
+                lines.Add($"- {leg.homeTeam} - {leg.awayTeam} | {GetSelectionLabel(leg.selection)} | {leg.lockedOdds:0.00}");
+            }
+            lines.Add(string.Empty);
+        }
+
+        if (todayCouponCount == 0 && pendingCouponLegs.Count == 0)
+        {
+            return "Bugun acik ya da hazirlanan kupon yok.";
+        }
+
+        lines.Insert(0, $"Toplam risk: {totalStake} TL");
+        lines.Insert(0, $"Acik kupon: {todayCouponCount}");
+        return string.Join("\n", lines);
     }
 
     public string FormatOdds(MatchCard match)
@@ -204,10 +316,7 @@ public class FutbolKuponManager : MonoBehaviour
 
     public string GetResultLabel(MatchCard match)
     {
-        if (!match.resolved)
-        {
-            return "Sonuc bekleniyor.";
-        }
+        if (!match.resolved) return "Sonuc bekleniyor.";
 
         return match.result switch
         {
@@ -216,6 +325,28 @@ public class FutbolKuponManager : MonoBehaviour
             MatchResult.AwayWin => $"{match.awayTeam} kazandi",
             _ => "Sonuc yok"
         };
+    }
+
+    private void HandleWorldDayChanged()
+    {
+        SyncWithWorldDay(true);
+    }
+
+    private void SyncWithWorldDay(bool settleIfAdvanced)
+    {
+        int worldDay = PlayerPrefs.GetInt(DayCountKey, currentDay);
+        worldDay = Mathf.Max(1, worldDay);
+
+        if (!settleIfAdvanced)
+        {
+            currentDay = Mathf.Max(currentDay, worldDay);
+            return;
+        }
+
+        while (currentDay < worldDay)
+        {
+            AdvanceDay();
+        }
     }
 
     private void InitializeIfNeeded()
@@ -233,11 +364,6 @@ public class FutbolKuponManager : MonoBehaviour
         if (tomorrowMatches.Count == 0)
         {
             tomorrowMatches = GenerateMatchSet(currentDay + 1);
-        }
-
-        if (GetCurrentMoney() <= 0)
-        {
-            ForceSetMoney(demoStartingMoney);
         }
 
         initialized = true;
@@ -268,45 +394,51 @@ public class FutbolKuponManager : MonoBehaviour
         latestResultsSummary = string.Join("\n", lines);
     }
 
-    private void SettleOpenTickets()
+    private void SettleOpenCoupons()
     {
-        List<BetTicket> remaining = new List<BetTicket>();
+        List<DailyCoupon> remaining = new List<DailyCoupon>();
         List<string> resultLines = new List<string>();
 
-        for (int i = 0; i < openTickets.Count; i++)
+        for (int i = 0; i < openCoupons.Count; i++)
         {
-            BetTicket ticket = openTickets[i];
-            if (ticket.day != currentDay)
+            DailyCoupon coupon = openCoupons[i];
+            if (coupon.day != currentDay)
             {
-                remaining.Add(ticket);
+                remaining.Add(coupon);
                 continue;
             }
 
-            if (ticket.matchIndex < 0 || ticket.matchIndex >= todayMatches.Count)
+            bool allCorrect = true;
+            for (int legIndex = 0; legIndex < coupon.legs.Count; legIndex++)
             {
-                continue;
+                CouponLeg leg = coupon.legs[legIndex];
+                if (leg.matchIndex < 0 || leg.matchIndex >= todayMatches.Count)
+                {
+                    allCorrect = false;
+                    break;
+                }
+
+                MatchCard match = todayMatches[leg.matchIndex];
+                if (!match.resolved || leg.selection != match.result)
+                {
+                    allCorrect = false;
+                    break;
+                }
             }
 
-            MatchCard match = todayMatches[ticket.matchIndex];
-            if (!match.resolved)
+            if (allCorrect && muhasebeci != null)
             {
-                remaining.Add(ticket);
-                continue;
-            }
-
-            if (ticket.selection == match.result)
-            {
-                int winAmount = Mathf.RoundToInt(ticket.stake * ticket.lockedOdds);
-                AddMoney(winAmount);
-                resultLines.Add($"KAZANAN: {ticket.homeTeam} - {ticket.awayTeam} | +{winAmount} TL");
+                int winAmount = Mathf.RoundToInt(coupon.stake * coupon.totalOdds);
+                muhasebeci.AddMoney(winAmount);
+                resultLines.Add($"KAZANAN KUPON: {coupon.stake} TL x {coupon.totalOdds:0.00} = +{winAmount} TL");
             }
             else
             {
-                resultLines.Add($"KAYBEDEN: {ticket.homeTeam} - {ticket.awayTeam} | -{ticket.stake} TL");
+                resultLines.Add($"KAYBEDEN KUPON: -{coupon.stake} TL");
             }
         }
 
-        openTickets = remaining;
+        openCoupons = remaining;
 
         if (resultLines.Count > 0)
         {
@@ -353,14 +485,8 @@ public class FutbolKuponManager : MonoBehaviour
             illegalSwing = favored.illegalInfluenceBoost * UnityEngine.Random.Range(0.65f, 1.35f);
             illegalFavoredTeam = favored.teamName;
 
-            if (favorHome)
-            {
-                homeBoost = illegalSwing;
-            }
-            else
-            {
-                awayBoost = illegalSwing;
-            }
+            if (favorHome) homeBoost = illegalSwing;
+            else awayBoost = illegalSwing;
         }
 
         float effectiveHome = home.power + homeBoost;
@@ -401,16 +527,8 @@ public class FutbolKuponManager : MonoBehaviour
     private MatchResult RollMatchResult(float homeChance, float drawChance, float awayChance)
     {
         float roll = UnityEngine.Random.value;
-        if (roll <= homeChance)
-        {
-            return MatchResult.HomeWin;
-        }
-
-        if (roll <= homeChance + drawChance)
-        {
-            return MatchResult.Draw;
-        }
-
+        if (roll <= homeChance) return MatchResult.HomeWin;
+        if (roll <= homeChance + drawChance) return MatchResult.Draw;
         return MatchResult.AwayWin;
     }
 
@@ -425,83 +543,28 @@ public class FutbolKuponManager : MonoBehaviour
         };
     }
 
-    private void CacheMoneySystems()
+    private string GetSelectionLabel(MatchResult selection)
     {
-        muhasebeci = FindFirstObjectByType<Muhasebeci>();
-        legacyMoney = FindFirstObjectByType<Money>();
+        return selection switch
+        {
+            MatchResult.HomeWin => "1",
+            MatchResult.Draw => "X",
+            MatchResult.AwayWin => "2",
+            _ => "?"
+        };
     }
 
-    private bool TrySpendMoney(int amount)
+    private void CacheMuhasebeci()
     {
-        if (amount <= 0)
+        if (GameManager.instance != null)
         {
-            return true;
+            muhasebeci = GameManager.instance.GetComponent<Muhasebeci>();
         }
 
-        if (muhasebeci != null)
+        if (muhasebeci == null)
         {
-            int currentMoney = muhasebeci.GetMoney();
-            if (currentMoney < amount)
-            {
-                return false;
-            }
-
-            muhasebeci.SetMoney(currentMoney - amount);
-            return true;
+            muhasebeci = FindFirstObjectByType<Muhasebeci>();
         }
-
-        if (legacyMoney != null)
-        {
-            return legacyMoney.SpendMoney(amount);
-        }
-
-        if (fallbackMoney < amount)
-        {
-            return false;
-        }
-
-        fallbackMoney -= amount;
-        return true;
-    }
-
-    private void AddMoney(int amount)
-    {
-        if (amount <= 0)
-        {
-            return;
-        }
-
-        if (muhasebeci != null)
-        {
-            muhasebeci.AddMoney(amount);
-            return;
-        }
-
-        if (legacyMoney != null)
-        {
-            legacyMoney.AddMoney(amount);
-            return;
-        }
-
-        fallbackMoney += amount;
-    }
-
-    private void ForceSetMoney(int amount)
-    {
-        if (muhasebeci != null)
-        {
-            muhasebeci.SetMoney(amount);
-            return;
-        }
-
-        if (legacyMoney != null)
-        {
-            legacyMoney.currentMoney = amount;
-            legacyMoney.UpdateMoneyUI();
-            return;
-        }
-
-        fallbackMoney = amount;
     }
 
     private List<MatchCard> CloneMatches(List<MatchCard> source)

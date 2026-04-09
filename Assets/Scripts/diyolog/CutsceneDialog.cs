@@ -4,6 +4,9 @@ using TMPro;
 using UnityEngine.UI;
 using System.Collections;
 
+/// <summary>
+/// CutsceneDialog sinifi, cutscene akislarinda kullanilan ilgili davranisi yonetir.
+/// </summary>
 public class CutsceneDialog : MonoBehaviour
 {
     [Header("Data & UI")]
@@ -32,24 +35,22 @@ public class CutsceneDialog : MonoBehaviour
     public GameObject[] hideWhilePlaying;
 
     [Header("Fade Panel")]
-    [Tooltip("Full-screen siyah panel. CanvasGroup varsa onu, yoksa Image alpha’yı kullanır.")]
+    [Tooltip("Full-screen siyah panel. CanvasGroup varsa onu, yoksa Image alpha�????y???� kullan???�r.")]
     public GameObject fadePanel;
-    public float fadeInDuration  = 0.35f;  // 1 → 0 (açılma)
-    public float fadeOutDuration = 0.35f;  // 0 → 1 (kapanma)
-    public float fadeHold = 0.05f;         // küçük bekleme (realtime)
+    public float fadeInDuration  = 0.35f;
+    public float fadeOutDuration = 0.35f;
+    public float fadeHold = 0.05f;
     public bool disableSelfOnEnd = true;
 
-    // runtime
     private int sectionIndex = 0;
     private int lineIndex = 0;
     private List<DialogSection> sections;
-    private AudioSource audioSource;           // opsiyonel
+    private AudioSource audioSource;
     private float originalFOV = 60f;
     private float lineTimer = 0f;
     private bool isPlaying = false;
     private Coroutine currentCo;
 
-    // cached fade drivers
     private CanvasGroup fadeCg;
     private Image       fadeImg;
 
@@ -64,7 +65,7 @@ public class CutsceneDialog : MonoBehaviour
         targetCamera ??= Camera.main;
         if (targetCamera) originalFOV = targetCamera.fieldOfView;
 
-        audioSource = GetComponent<AudioSource>(); // opsiyonel
+        audioSource = GetComponent<AudioSource>();
 
         PrepareFadePanel();
 
@@ -88,7 +89,7 @@ public class CutsceneDialog : MonoBehaviour
         }
 
         fadePanel.SetActive(true);
-        SetFadeAlpha(1f); // güvenli başlangıç: siyah
+        SetFadeAlpha(1f);
     }
 
     public void StartCutscene()
@@ -99,7 +100,6 @@ public class CutsceneDialog : MonoBehaviour
 
     IEnumerator CoStartCutscene()
     {
-        // === BAŞLANGIÇ: tek fade-in (1→0) ===
         if (fadePanel)
         {
             fadePanel.SetActive(true);
@@ -109,7 +109,6 @@ public class CutsceneDialog : MonoBehaviour
             fadePanel.SetActive(false);
         }
 
-        // === ORTAMI HAZIRLA & DİYALOGU BAŞLAT ===
         if (playerControllerToDisable) playerControllerToDisable.enabled = false;
         if (hideWhilePlaying != null) foreach (var go in hideWhilePlaying) if (go) go.SetActive(false);
 
@@ -226,7 +225,6 @@ public class CutsceneDialog : MonoBehaviour
             if (fadeHold > 0f) yield return new WaitForSecondsRealtime(fadeHold);
         }
 
-
         if (audioSource && audioSource.isPlaying) audioSource.Stop();
 
         if (dialogText) dialogText.gameObject.SetActive(false);
@@ -237,14 +235,12 @@ public class CutsceneDialog : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        // Manager'a "oynadı" işaretini gönder
         GetComponent<CutsceneClip>()?.Finish();
 
         if (disableSelfOnEnd) gameObject.SetActive(false);
         fadePanel.SetActive(false);
     }
 
-    // ---------- Fade helpers ----------
     void SetFadeAlpha(float a)
     {
         if (!fadePanel) return;
@@ -266,7 +262,7 @@ public class CutsceneDialog : MonoBehaviour
         float t = 0f;
         while (t < duration)
         {
-            t += Time.unscaledDeltaTime; // timescale'den bağımsız
+            t += Time.unscaledDeltaTime;
             float k = Mathf.Clamp01(t / duration);
             SetFadeAlpha(Mathf.Lerp(start, target, k));
             yield return null;

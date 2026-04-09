@@ -1,7 +1,14 @@
-/*using System.Collections.Generic;
+/*
+Bu dosya su an aktif kullanilmayan eski NPC dukkan prototipini tutuyor.
+Yeni sisteme tasinmadigi icin yorum blogu olarak birakildi.
+
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// NPCShopU sinifi, oyuncu tarafindaki ilgili davranis veya veriyi yonetir.
+/// </summary>
 public class NPCShopUI : MonoBehaviour
 {
     public GameObject panel;
@@ -56,7 +63,7 @@ public class NPCShopUI : MonoBehaviour
             GameManager.instance.player.DecreaseMoney(price);
             GameObject itemObj = GameObject.Instantiate(slot.item.itemPrefab);
             playerInventory.Add(itemObj.GetComponent<Item>());
-            Debug.Log($"Satın alındı: {slot.item.itemName} - {price}₺");
+            Debug.Log($"Sat�n al�nd�: {slot.item.itemName} - {price}?");
         }
         else
         {
@@ -66,7 +73,6 @@ public class NPCShopUI : MonoBehaviour
 
     void SeedShop()
     {
-        // Test verisi, oyun başında dükkanı doldurur
         var itemDB = GameManager.instance.itemDatabase;
         for (int i = 0; i < slotCount; i++)
         {

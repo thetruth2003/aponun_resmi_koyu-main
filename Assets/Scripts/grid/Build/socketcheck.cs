@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// socketcheck sinifi, ilgili davranis veya veriyi yonetmek icin kullanilir.
+/// </summary>
 public class socketcheck : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)

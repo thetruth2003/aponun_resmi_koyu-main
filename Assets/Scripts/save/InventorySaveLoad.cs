@@ -1,31 +1,37 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+/// <summary>
+/// InventorySaveLoad sinifi, envanter verisini dosyaya kaydetmek ve geri yuklemek icin kullanilir.
+/// </summary>
 public class InventorySaveLoad : MonoBehaviour
 {
     [Header("References")]
-    public Inventory target;                 // Kaydedilecek envanter
+    public Inventory target;
 
-    [Header("Item kaynaÄŸÄ± (ItemDatabase yerine)")]
-    [Tooltip("Ä°Ã§inde Item component'i ve data'sÄ± setli PREFABLAR. Ä°sim eÅŸleÅŸmesi item.data.itemName ile yapÄ±lÄ±r.")]
+    [Header("Item kaynaðý (ItemDatabase yerine)")]
+    [Tooltip("Ýçinde Item component'i ve data'sý setli PREFABLAR. Ýsim eþleþmesi item.data.itemName ile yapýlýr.")]
     public List<Item> itemCatalog = new List<Item>();
 
-    [Tooltip("Katalogta bulunamazsa Resources'tan da dene. Ã–rn: Assets/Resources/items/<name>.prefab")]
+    [Tooltip("Katalogta bulunamazsa Resources'tan da dene. Örn: Assets/Resources/items/<name>.prefab")]
     public bool fallbackToResources = true;
 
-    [Tooltip("Resources iÃ§indeki klasÃ¶r adÄ± (Item prefabÄ± ya da ItemData arar).")]
+    [Tooltip("Resources içindeki klasör adý (Item prefabý ya da ItemData arar).")]
     public string resourcesFolder = "items";
 
     [Header("Test hotkeys (opsiyonel)")]
     public bool enableHotkeys = true;
-    public KeyCode saveKey = KeyCode.I;   // I = Save
-    public KeyCode loadKey = KeyCode.O;   // O = Load
+    public KeyCode saveKey = KeyCode.I;
+    public KeyCode loadKey = KeyCode.O;
 
-    [Header("Dosya adÄ±")]
+    [Header("Dosya adý")]
     public string fileName = "inventory_player.json";
 
+    /// <summary>
+    /// SlotRec sinifi, kayit sistemiyle ilgili davranisi yonetir.
+    /// </summary>
     [Serializable]
     private struct SlotRec
     {
@@ -34,6 +40,9 @@ public class InventorySaveLoad : MonoBehaviour
         public int count;
     }
 
+    /// <summary>
+    /// FileModel sinifi, kayit sistemiyle ilgili davranisi yonetir.
+    /// </summary>
     [Serializable]
     private class FileModel
     {
@@ -50,7 +59,6 @@ public class InventorySaveLoad : MonoBehaviour
         if (Input.GetKeyDown(loadKey)) Load();
     }
 
-    // ---------- SAVE ----------
     public void Save()
     {
         if (target == null) { Debug.LogWarning("[InventorySave] target yok"); return; }
@@ -72,10 +80,9 @@ public class InventorySaveLoad : MonoBehaviour
         }
 
         File.WriteAllText(SavePath, JsonUtility.ToJson(fm));
-        Debug.Log($"[InventorySave] {fm.slots.Count} slot kaydedildi â†’ {SavePath}");
+        Debug.Log($"[InventorySave] {fm.slots.Count} slot kaydedildi › {SavePath}");
     }
 
-    // ---------- LOAD ----------
     public void Load()
     {
         if (target == null) { Debug.LogWarning("[InventoryLoad] target yok"); return; }
@@ -83,19 +90,15 @@ public class InventorySaveLoad : MonoBehaviour
 
         var fm = JsonUtility.FromJson<FileModel>(File.ReadAllText(SavePath));
 
-        // Kapasiteyi uydur
         EnsureCapacity(target, fm.capacity);
 
-        // Temizle
         for (int i = 0; i < target.slots.Count; i++)
             target.slots[i].Clear();
 
-        // KayÄ±tlarÄ± uygula
         foreach (var rec in fm.slots)
         {
             if (rec.index < 0 || rec.index >= target.slots.Count) continue;
 
-            // ItemData'yÄ± Item Ã¼zerinden bul
             ItemData data = GetItemDataByName(rec.itemName);
 
             var s = target.slots[rec.index];
@@ -112,7 +115,6 @@ public class InventorySaveLoad : MonoBehaviour
             }
             else
             {
-                // Bulunamazsa en azÄ±ndan isim + adet kalsÄ±n
                 s.item = null;
                 s.icon = null;
                 if (s.maxAllowed <= 0) s.maxAllowed = 99;
@@ -120,16 +122,14 @@ public class InventorySaveLoad : MonoBehaviour
         }
 
         RefreshAllSlotUI(target);
-        Debug.Log($"[InventoryLoad] {fm.slots.Count} slot yÃ¼klendi â† {SavePath}");
+        Debug.Log($"[InventoryLoad] {fm.slots.Count} slot yüklendi ‹ {SavePath}");
     }
 
-    // ---------- Helpers ----------
     private ItemData GetItemDataByName(string itemName)
     {
         if (string.IsNullOrWhiteSpace(itemName)) return null;
         string key = itemName.Trim();
 
-        // 1) Katalogta ara
         for (int i = 0; i < itemCatalog.Count; i++)
         {
             var it = itemCatalog[i];
@@ -140,7 +140,6 @@ public class InventorySaveLoad : MonoBehaviour
 
         if (!fallbackToResources) return null;
 
-        // 2) Resources'ta Ã¶nce Item prefabÄ±nda Item.data ara
         var itemPrefab = Resources.Load<GameObject>($"{resourcesFolder}/{key}");
         if (itemPrefab)
         {
@@ -148,11 +147,10 @@ public class InventorySaveLoad : MonoBehaviour
             if (comp && comp.data != null) return comp.data;
         }
 
-        // 3) Olmazsa doÄŸrudan ItemData asset dene
         var data = Resources.Load<ItemData>($"{resourcesFolder}/{key}");
         if (data) return data;
 
-        Debug.LogWarning($"[InventoryLoad] Item bulunamadÄ±: '{key}' (katalog + Resources/{resourcesFolder})");
+        Debug.LogWarning($"[InventoryLoad] Item bulunamadý: '{key}' (katalog + Resources/{resourcesFolder})");
         return null;
     }
 
@@ -161,7 +159,6 @@ public class InventorySaveLoad : MonoBehaviour
         if (targetCount <= 0) return;
         while (inv.slots.Count < targetCount)
             inv.slots.Add(new Inventory.Slot());
-        // KÃ¼Ã§Ã¼ltme genelde gerekmez; istersen burada yapabilirsin.
     }
 
     private static void RefreshAllSlotUI(Inventory inv)

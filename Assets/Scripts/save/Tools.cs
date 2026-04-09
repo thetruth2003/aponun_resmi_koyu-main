@@ -1,5 +1,8 @@
-ï»¿using UnityEngine;
+using UnityEngine;
 
+/// <summary>
+/// Tools sinifi, kayit sistemiyle ilgili davranisi yonetir.
+/// </summary>
 public class Tools : MonoBehaviour
 {
     public float duration;
@@ -8,7 +11,7 @@ public class Tools : MonoBehaviour
     public int amount;
     public int sellPrice => price / 2;
 
-    [Tooltip("KalÄ±cÄ± benzersiz ID (prefabda boÅŸ bÄ±rak).")]
+    [Tooltip("Kalıcı benzersiz ID (prefabda boş bırak).")]
     public string persistentId;
 
     private void Awake()

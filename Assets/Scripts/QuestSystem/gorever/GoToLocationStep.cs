@@ -1,5 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 
+/// <summary>
+/// GoToLocationStep sinifi, gorev sistemindeki ilgili adimi temsil eder.
+/// </summary>
 [System.Serializable]
 public class GoToLocationStep : IQuestStep
 {
@@ -21,7 +24,6 @@ public class GoToLocationStep : IQuestStep
 
     public void MarkCompleted()
     {
-        // opsiyonel: elle tetiklemek istersen
         if (!IsComplete())
             GameStateTracker.Instance.SetFlag(GetKey(), true);
     }

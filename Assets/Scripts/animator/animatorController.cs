@@ -2,54 +2,50 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// animatorController sinifi, ilgili nesnenin kontrol ve davranis akislarini yonetir.
+/// </summary>
 public class animatorController : MonoBehaviour
 {
-    public float walkingSpeed = 3.0f;  // Yürüme hýzý
-    public float runningSpeed = 6.0f;  // Koþma hýzý
+    public float walkingSpeed = 3.0f;
+    public float runningSpeed = 6.0f;
 
-    private Animator animator;         // Animator referansý
+    private Animator animator;
     private CharacterController characterController;
 
     void Start()
     {
-        animator = GetComponent<Animator>();  // Animator'u al
-        characterController = GetComponent<CharacterController>();  // KarakterController'ý al
+        animator = GetComponent<Animator>();
+        characterController = GetComponent<CharacterController>();
     }
 
     void Update()
     {
-        // Hareket parametrelerini al
-        float vertical = Input.GetAxis("Vertical");  // Ýleri ve geri hareket
-        bool isRunning = Input.GetKey(KeyCode.LeftShift); // Koþma durumunu kontrol et
+        float vertical = Input.GetAxis("Vertical");
+        bool isRunning = Input.GetKey(KeyCode.LeftShift);
 
-        // Hareketi hesapla
         float currentSpeed = isRunning ? runningSpeed : walkingSpeed;
 
-        // Yalnýzca W tuþuna basýldýðýnda hareket etmesini saðla
-        if (vertical > 0)  // W tuþuna basýldýðýnda
+        if (vertical > 0)
         {
-            // Karakteri ileri hareket ettir
             Vector3 movement = transform.forward * currentSpeed * vertical * Time.deltaTime;
             characterController.Move(movement);
 
-            // Animator'a hareket parametresi gönder
-            animator.SetFloat("Speed", currentSpeed);  // Hýz parametresi ile animasyonu kontrol et
+            animator.SetFloat("Speed", currentSpeed);
 
-            // Eðer koþuyorsa animasyon geçiþini saðla
             if (isRunning)
             {
-                animator.SetBool("isRunning", true);  // Koþma animasyonu tetiklenecek
+                animator.SetBool("isRunning", true);
             }
             else
             {
-                animator.SetBool("isRunning", false); // Koþma animasyonu duracak, yürüme animasyonuna geçecek
+                animator.SetBool("isRunning", false);
             }
         }
         else
         {
-            // Yavaþla, durmaya geç
-            animator.SetFloat("Speed", 0);  // Animasyonu durdur
-            animator.SetBool("isRunning", false); // Koþma animasyonunu durdur
+            animator.SetFloat("Speed", 0);
+            animator.SetBool("isRunning", false);
         }
     }
 }

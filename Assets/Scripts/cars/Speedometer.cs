@@ -1,38 +1,36 @@
-﻿using UnityEngine;
-using TMPro; // Eğer TextMeshPro kullanıyorsanız bunu ekleyin
+using UnityEngine;
+using TMPro;
 
+/// <summary>
+/// Speedometer sinifi, arac sistemindeki ilgili davranisi yonetir.
+/// </summary>
 public class Speedometer : MonoBehaviour
 {
-    public TextMeshProUGUI speedText; // Hız göstergesi için TextMeshPro referansı
-    public Rigidbody activeCarRb;   // Aktif aracın Rigidbody referansı
-    public Transform needleTransform; // İğnenin Transform'u
-    public float maxNeedleRotation = -90f; // Maksimum dönüş açısı (en yüksek hız)
-    public float minNeedleRotation = 90f;  // Minimum dönüş açısı (durma)
+    public TextMeshProUGUI speedText;
+    public Rigidbody activeCarRb;
+    public Transform needleTransform;
+    public float maxNeedleRotation = -90f;
+    public float minNeedleRotation = 90f;
 
     void Update()
     {
-        // Eğer aktif bir araç varsa, hızını göster
         if (StateManger.Instance.car != null)
         {
-            // Aktif aracın Rigidbody'sini kontrol et
             if (activeCarRb == null || activeCarRb.gameObject != StateManger.Instance.car)
             {
                 activeCarRb = StateManger.Instance.car.GetComponent<Rigidbody>();
             }
 
             {
-                // Hızı al ve UI'yi güncelle
-                float speed = activeCarRb.linearVelocity.magnitude * 3.6f; // m/s -> km/h dönüşümü
+                float speed = activeCarRb.linearVelocity.magnitude * 3.6f;
                 speedText.text = Mathf.RoundToInt(speed).ToString() + " km/h";
 
-                // İğnenin açısını hesapla
-                float needleRotation = Mathf.Lerp(minNeedleRotation, maxNeedleRotation, speed / 200f); // 200 km/h varsayılan maksimum hız
+                float needleRotation = Mathf.Lerp(minNeedleRotation, maxNeedleRotation, speed / 200f);
                 needleTransform.localRotation = Quaternion.Euler(0, 0, needleRotation);
             }
         }
         else
         {
-            // Araç yoksa sıfırla
             speedText.text = "0 km/h";
             if (needleTransform != null)
                 needleTransform.localRotation = Quaternion.Euler(0, 0, minNeedleRotation);

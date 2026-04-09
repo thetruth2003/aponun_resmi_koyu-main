@@ -1,20 +1,24 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// ActiveQuestSystem sinifi, gorev sistemi icindeki ilgili davranis veya veriyi yonetir.
+/// </summary>
 public class ActiveQuestSystem : MonoBehaviour
 {
     public static ActiveQuestSystem Instance;
 
-    // görev-adım değiştiğinde haber verir: (asset, newIndex)
     public event System.Action<QuestEditorAsset, int> OnActiveStepChanged;
 
+    /// <summary>
+    /// TrackedQuest sinifi, gorev sistemi icindeki ilgili davranis veya veriyi yonetir.
+    /// </summary>
     [System.Serializable]
     public class TrackedQuest
     {
         public QuestEditorAsset asset;
-        public int currentIndex = 0; // ✅ 0-based başla
+        public int currentIndex = 0;
 
-        // ✅ Şu anki aktif adımı verir (null değilse)
         public QuestContainer GetActiveStep()
         {
             if (asset == null || asset.quests == null) return null;
@@ -44,7 +48,7 @@ public class ActiveQuestSystem : MonoBehaviour
                 if (step == null || step.IsComplete())
                 {
                     tracked.currentIndex++;
-                    OnActiveStepChanged?.Invoke(tracked.asset, tracked.currentIndex); // ✅ event
+                    OnActiveStepChanged?.Invoke(tracked.asset, tracked.currentIndex);
                 }
                 else
                 {
@@ -65,10 +69,9 @@ public class ActiveQuestSystem : MonoBehaviour
         return allQuests.Find(q => q.asset == asset);
     }
 
-    // 🔁 Tüm takip edilen görevleri verir
     public List<TrackedQuest> GetAllTracked()
     {
-        
+
         return allQuests;
     }
 }

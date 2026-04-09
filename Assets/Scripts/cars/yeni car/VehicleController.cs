@@ -3,13 +3,16 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 
+/// <summary>
+/// Yeni arac kontrol sisteminde vites, tork, direksiyon ve denge akislarini yonetir.
+/// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public class VehicleController : MonoBehaviour
 {
     public VehicleConfig config;
 
     [Header("Exit Point")]
-    public Transform exitPoint; // Oyuncunun ineceği nokta (opsiyonel)
+    public Transform exitPoint;
 
     [Header("Wheels")]
     public WheelCollider frontLeft;
@@ -28,38 +31,36 @@ public class VehicleController : MonoBehaviour
     public TextMeshProUGUI gearText;
     public TextMeshProUGUI speedText;
 
-    // ===== Braking & Reverse =====
     [Header("Instant Brake (Space)")]
-    [Tooltip("Space ile verilecek yüksek fren torku")]
+    [Tooltip("Space ile verilecek yuksek fren torku")]
     public float instantBrakeTorque = 6000f;
 
     [Tooltip("Motor freni (gaz yokken hafif fren)")]
     public float engineBrakeTorque = 1500f;
 
     [Header("Reverse Gear (S)")]
-    [Tooltip("S basılıyken otomatik geri vites")]
+    [Tooltip("S basiliyken otomatik geri vites")]
     public bool useAutoReverse = true;
 
-    [Tooltip("Geri vites oranı (pozitif yaz; içeride negatif uygulanır)")]
+    [Tooltip("Geri vites orani (pozitif yaz; iceride negatif uygulanir)")]
     public float reverseGearRatio = 3.0f;
 
-    [Tooltip("Geri viteste hız limiti (km/h)")]
+    [Tooltip("Geri viteste hiz limiti (km/h)")]
     public float maxReverseSpeedKmh = 20f;
 
-    [Tooltip("İleri giderken S'ye basınca önce bu hıza kadar frenle (km/h)")]
+    [Tooltip("???°leri giderken S'ye bas???±nca Ã¶nce bu h???±za kadar frenle (km/h)")]
     public float stopForReverseKmh = 1.0f;
 
     private bool isReverse = false;
 
-    // ===== Recovery =====
     [Header("Recovery (R ile)")]
-    [Tooltip("Takla/çakılma durumunda yukarı kaldırma yüksekliği")]
+    [Tooltip("Takla veya cakilma durumunda yukari kaldirma yuksekligi")]
     public float recoverLift = 1.5f;
 
-    [Tooltip("R spam'ini önlemek için bekleme (sn)")]
+    [Tooltip("R spamini onlemek icin bekleme (sn)")]
     public float recoverCooldown = 2.0f;
 
-    [Tooltip("Güvenli poz kaydı için minimum hız (km/h)")]
+    [Tooltip("Guvenli poz kaydi icin minimum hiz (km/h)")]
     public float safeSpeedKmh = 5f;
 
     private float _lastRecoverTime;
@@ -67,7 +68,6 @@ public class VehicleController : MonoBehaviour
     private Quaternion _lastSafeRot;
     private bool _hasSafePose;
 
-    // ===== Drivetrain / Physics =====
     private Rigidbody rb;
     private int currentGear = 0;
     private float currentRPM;
@@ -88,11 +88,14 @@ public class VehicleController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.mass = config.mass;
-        rb.linearDamping = config.drag;                 // linearDamping değil -> drag
+        rb.linearDamping = config.drag;
         rb.centerOfMass += comOffset;
         SetupWheels();
     }
 
+    /// <summary>
+    /// Input, motor, fren, teker gorselleri ve UI guncellemelerini tek karelik oyun akisinda toplar.
+    /// </summary>
     private void Update()
     {
         HandleInput();
@@ -102,7 +105,7 @@ public class VehicleController : MonoBehaviour
 
         HandleSteering();
         HandleEngine(Time.deltaTime);
-        HandleBrakingInstant(); // Space fren
+        HandleBrakingInstant();
         UpdateWheelVisuals();
         UpdateUI();
 
@@ -116,17 +119,15 @@ public class VehicleController : MonoBehaviour
         StabilizeSideSlip();
     }
 
-    // ---------------- INPUT ----------------
     private void HandleInput()
     {
-        throttleInput = Input.GetAxis("Vertical"); // W/S ekseni
+        throttleInput = Input.GetAxis("Vertical");
     }
 
-    // ---------------- STEERING ----------------
     private void HandleSteering()
     {
         float steerInput = Input.GetAxis("Horizontal");
-        float speed = rb.linearVelocity.magnitude * 3.6f; // km/h
+        float speed = rb.linearVelocity.magnitude * 3.6f;
         float steerLimiter = Mathf.Lerp(1f, 0.5f, speed / highSpeedSteerReducer);
         float steerAngle = steerInput * config.maxSteerAngle * steerLimiter;
 
@@ -134,37 +135,35 @@ public class VehicleController : MonoBehaviour
         frontRight.steerAngle = steerAngle;
     }
 
-    // ---------------- ENGINE / GEARS / REVERSE ----------------
+    /// <summary>
+    /// Aracin devrine, hizina ve ileri-geri durumuna gore uygun torku ve vites gecisini hesaplar.
+    /// </summary>
     private void HandleEngine(float delta)
     {
         float vehicleSpeedKmh = rb.linearVelocity.magnitude * 3.6f;
-        float vertical = Input.GetAxis("Vertical"); // W=+1, S=-1
+        float vertical = Input.GetAxis("Vertical");
 
-        // === AUTO REVERSE LOGIC ===
         if (useAutoReverse)
         {
-            if (vertical < -0.1f) // S basılıyor
+            if (vertical < -0.1f)
             {
                 if (!isReverse && vehicleSpeedKmh > stopForReverseKmh)
                 {
-                    // İleri gidiyoruz; önce durana kadar frenle
                     frontLeft.motorTorque = frontRight.motorTorque = 0f;
                     rearLeft.motorTorque  = rearRight.motorTorque  = 0f;
                     SetBrakeAll(instantBrakeTorque);
-                    return; // bu frame sadece fren uygula
+                    return;
                 }
                 isReverse = true;
             }
-            else if (vertical > 0.1f) // W → ileri
+            else if (vertical > 0.1f)
             {
                 isReverse = false;
             }
-            // 0 civarında ise state korunur (motor freni devrede)
         }
 
         if (!isReverse)
         {
-            // ---- FORWARD CALC ----
             float gearRatio = config.gearRatios[currentGear];
             float wheelRPM = (rearLeft.rpm + rearRight.rpm) * 0.5f;
 
@@ -200,13 +199,14 @@ public class VehicleController : MonoBehaviour
         }
         else
         {
-            // ---- REVERSE CALC ----
             ApplyTorqueReverse(vertical);
-            // basit rpm stabilizasyonu
             currentRPM = Mathf.Lerp(currentRPM, Mathf.Clamp(currentRPM, config.idleRPM, config.maxRPM), Time.deltaTime * 5f);
         }
     }
 
+    /// <summary>
+    /// Vites degisimini kisa bir gecikme ile gerceklestirip ses tetigini de ayni anda calistirir.
+    /// </summary>
     private IEnumerator ShiftGear(int newGear)
     {
         isShifting = true;
@@ -216,7 +216,9 @@ public class VehicleController : MonoBehaviour
         yield return null;
     }
 
-    // ---------------- TORQUE (FORWARD/REVERSE) ----------------
+    /// <summary>
+    /// Ileri viteste secili cekis tipine gore tekerlere motor torkunu dagitir.
+    /// </summary>
     private void ApplyTorqueForward(float throttle)
     {
         float gearRatio = config.gearRatios[currentGear];
@@ -241,12 +243,13 @@ public class VehicleController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Geri viteste hiz limitini koruyarak araci kontrollu sekilde geriye iter.
+    /// </summary>
     private void ApplyTorqueReverse(float vertical)
     {
-        // S -> vertical ~ -1  => gaz miktarını pozitif yapalım
         float input = Mathf.Clamp01(-vertical);
 
-        // hız limiti
         float speedKmh = rb.linearVelocity.magnitude * 3.6f;
         if (speedKmh > maxReverseSpeedKmh)
         {
@@ -256,7 +259,7 @@ public class VehicleController : MonoBehaviour
             return;
         }
 
-        float gearRatio = -Mathf.Abs(reverseGearRatio); // NEGATİF uygula
+        float gearRatio = -Mathf.Abs(reverseGearRatio);
         float engineTorque = config.torque * config.torqueCurve.Evaluate(Mathf.Clamp01(currentRPM / config.maxRPM)) * input;
         float wheelTorque = engineTorque * gearRatio;
 
@@ -278,14 +281,12 @@ public class VehicleController : MonoBehaviour
         }
     }
 
-    // ---------------- INSTANT BRAKE (SPACE) ----------------
     private void HandleBrakingInstant()
     {
         bool spaceBrake = Input.GetKey(KeyCode.Space);
 
         if (spaceBrake)
         {
-            // Motor torklarını kes + yüksek fren
             frontLeft.motorTorque = 0f;
             frontRight.motorTorque = 0f;
             rearLeft.motorTorque = 0f;
@@ -293,7 +294,6 @@ public class VehicleController : MonoBehaviour
 
             SetBrakeAll(instantBrakeTorque);
         }
-        // S için fren yapmıyoruz; S geri vites mantığında kullanılıyor.
     }
 
     private void SetBrakeAll(float t)
@@ -304,7 +304,9 @@ public class VehicleController : MonoBehaviour
         rearRight.brakeTorque = t;
     }
 
-    // ---------------- VISUALS / UI ----------------
+    /// <summary>
+    /// Teker collider pozlarini mesh kemiklerine tasiyarak gorsel jant hareketini guncel tutar.
+    /// </summary>
     private void UpdateWheelVisuals()
     {
         UpdateWheelPose(frontLeft, frontLeftMesh);
@@ -323,6 +325,9 @@ public class VehicleController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Devir, vites ve hiz bilgisini ekrana anlik olarak yazar.
+    /// </summary>
     private void UpdateUI()
     {
         if (rpmText != null)
@@ -341,7 +346,6 @@ public class VehicleController : MonoBehaviour
         }
     }
 
-    // ---------------- STABILITY ----------------
     void ApplyAntiRoll(WheelCollider left, WheelCollider right)
     {
         WheelHit hit;
@@ -370,7 +374,9 @@ public class VehicleController : MonoBehaviour
         rb.linearVelocity = transform.TransformDirection(localVel);
     }
 
-    // ---------------- RECOVERY ----------------
+    /// <summary>
+    /// Arac ters kaldiysa son guvenli poza veya mevcut konuma yakin bir noktaya toparlanma uygular.
+    /// </summary>
     private void TryRecover()
     {
         if (Time.time < _lastRecoverTime + recoverCooldown) return;
@@ -395,12 +401,15 @@ public class VehicleController : MonoBehaviour
         Physics.SyncTransforms();
     }
 
+    /// <summary>
+    /// Arac durumu guvenliyken geri donus noktasi olarak kullanilacak son pozu hafizada tutar.
+    /// </summary>
     private void SaveSafePoseTick()
     {
         float speed = rb.linearVelocity.magnitude * 3.6f;
         Vector3 up = transform.up;
 
-        bool uprightEnough = Vector3.Dot(up, Vector3.up) > 0.7f; // ~> 45° den dik
+        bool uprightEnough = Vector3.Dot(up, Vector3.up) > 0.7f;
         if (uprightEnough && speed > safeSpeedKmh)
         {
             _lastSafePos = transform.position;
@@ -409,7 +418,9 @@ public class VehicleController : MonoBehaviour
         }
     }
 
-    // ---------------- INIT ----------------
+    /// <summary>
+    /// Dort tekerin suspansiyon, surtunme ve kutle ayarlarini config verisinden kurar.
+    /// </summary>
     private void SetupWheels()
     {
         SetupSingleWheel(frontLeft);

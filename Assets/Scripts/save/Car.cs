@@ -1,5 +1,8 @@
-ï»¿using UnityEngine;
+using UnityEngine;
 
+/// <summary>
+/// Car sinifi, kayit sistemiyle ilgili davranisi yonetir.
+/// </summary>
 public class Car : MonoBehaviour
 {
     public float duration;
@@ -7,7 +10,7 @@ public class Car : MonoBehaviour
     public int price;
     public float Fuel;
 
-    [Tooltip("KalÄ±cÄ± benzersiz ID (prefabda boÅŸ bÄ±rak).")]
+    [Tooltip("Kalıcı benzersiz ID (prefabda boş bırak).")]
     public string persistentId;
 
     private void Awake()

@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Harvest sinifi, gorev sistemi icindeki ilgili davranis veya veriyi yonetir.
+/// </summary>
 [System.Serializable]
 public class HarvestItemStep : IQuestStep
 {
@@ -11,14 +14,13 @@ public class HarvestItemStep : IQuestStep
     public string GetName()
     {
         string name = string.IsNullOrEmpty(itemID) ? "???" : itemID;
-        return $"Harvest {requiredAmount}× {name}";
+        return $"Harvest {requiredAmount}Ãƒâ€” {name}";
     }
 
     public void OnStart() { }
 
     public void OnUpdate()
     {
-        // Opsiyonel tetikleyici
     }
 
     public bool IsComplete()

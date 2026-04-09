@@ -1,6 +1,9 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
+/// <summary>
+/// Bakilan NPC veya esya icin bilgi panelini guncelleyip ekranda gosterir.
+/// </summary>
 public class update_info : MonoBehaviour
 {
     [Header("Raycast Settings")]
@@ -15,7 +18,7 @@ public class update_info : MonoBehaviour
     public GameObject itemInfoPanel;
     public TextMeshProUGUI itemNameText;
     public TextMeshProUGUI itemPriceText;
-    public Muhasebeci money;   // mevcut Money script'in
+    public Muhasebeci money;
 
     private void Update()
     {
@@ -26,9 +29,11 @@ public class update_info : MonoBehaviour
         {
             bool somethingShown = false;
 
-            // ===== NPC BİLGİSİ =====
             UniversalIdentifier npc = hit.collider.GetComponent<UniversalIdentifier>();
-            if (npc == null) npc = hit.collider.GetComponentInParent<UniversalIdentifier>();
+            if (npc == null)
+            {
+                npc = hit.collider.GetComponentInParent<UniversalIdentifier>();
+            }
 
             if (npc != null)
             {
@@ -41,9 +46,11 @@ public class update_info : MonoBehaviour
                 NpcInfoPanel.SetActive(false);
             }
 
-            // ===== ITEM (TOOLS) BİLGİSİ =====
             Tools item = hit.collider.GetComponent<Tools>();
-            if (item == null) item = hit.collider.GetComponentInParent<Tools>();
+            if (item == null)
+            {
+                item = hit.collider.GetComponentInParent<Tools>();
+            }
 
             if (item != null)
             {
@@ -54,14 +61,13 @@ public class update_info : MonoBehaviour
                 int currentMoney;
                 if (!int.TryParse(money.moneyText.text, out currentMoney))
                 {
-                    Debug.LogWarning("Parayı parse edemedim: " + money.moneyText.text);
+                    Debug.LogWarning("Parayi parse edemedim: " + money.moneyText.text);
                     currentMoney = 0;
                 }
 
                 bool canAfford = currentMoney >= item.price;
                 itemNameText.color = canAfford ? Color.green : Color.red;
                 itemPriceText.color = canAfford ? Color.green : Color.red;
-
                 somethingShown = true;
             }
             else
@@ -77,7 +83,6 @@ public class update_info : MonoBehaviour
         }
         else
         {
-            // Hiçbir şeye bakmıyorsan her şeyi kapat
             NpcInfoPanel.SetActive(false);
             itemInfoPanel.SetActive(false);
         }

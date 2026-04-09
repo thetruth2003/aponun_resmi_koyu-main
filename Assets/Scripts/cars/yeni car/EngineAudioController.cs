@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Aracin motor ve vites gecis seslerini devir bilgisine gore canlandirir.
+/// </summary>
 [RequireComponent(typeof(AudioSource))]
 public class EngineAudioController : MonoBehaviour
 {
@@ -10,6 +13,9 @@ public class EngineAudioController : MonoBehaviour
     private AudioSource engineSource;
     private AudioSource shiftSource;
 
+    /// <summary>
+    /// Motor ve vites degisim ses kaynaklarini olusturup temel 3D ses ayarlarini uygular.
+    /// </summary>
     void Awake()
     {
         engineSource = gameObject.AddComponent<AudioSource>();
@@ -33,6 +39,9 @@ public class EngineAudioController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Arac devrine gore motor sesinin pitch ve ses seviyesini surekli ayarlar.
+    /// </summary>
     void Update()
     {
         if (vehicle == null || vehicle.config == null || engineClip == null)

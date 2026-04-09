@@ -2,21 +2,24 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// CutsceneClip sinifi, cutscene akislarinda kullanilan ilgili davranisi yonetir.
+/// </summary>
 public class CutsceneClip : MonoBehaviour
 {
     [Header("Kimlik")]
-    public string id; // Manager state için benzersiz
+    public string id;
 
     [Header("Oynatma Event'leri")]
-    public bool deactivateSelfOnFinish = true;  // bitince GameObject kapansın
-    public UnityEvent onPlay;                   // Timeline/dialog başlat
-    public UnityEvent onSkip;                   // zaten oynandıysa yapılacaklar
+    public bool deactivateSelfOnFinish = true;
+    public UnityEvent onPlay;
+    public UnityEvent onSkip;
 
-    [NonSerialized] public string triggerKey;   // Manager doldurur (Entries)
-    [NonSerialized] public string groupKey;     // Manager doldurur (Entries)
-    [NonSerialized] public CutscenePlayType playType = CutscenePlayType.Once; // Manager doldurur
-    [NonSerialized] public int priority = 0;    // Manager doldurur
-    [NonSerialized] public int sequenceIndex = -1; // Manager doldurur
+    [NonSerialized] public string triggerKey;
+    [NonSerialized] public string groupKey;
+    [NonSerialized] public CutscenePlayType playType = CutscenePlayType.Once;
+    [NonSerialized] public int priority = 0;
+    [NonSerialized] public int sequenceIndex = -1;
 
     private CutsceneManager manager;
 
@@ -26,24 +29,21 @@ public class CutsceneClip : MonoBehaviour
         if (!manager) manager = FindObjectOfType<CutsceneManager>();
 
         if (string.IsNullOrWhiteSpace(id))
-            id = Guid.NewGuid().ToString("N"); // bir kez üret; Inspector’da bırak, artık sabit
+            id = Guid.NewGuid().ToString("N");
     }
 
-    // Manager çağırır
     public void Play()
     {
         gameObject.SetActive(true);
         onPlay?.Invoke();
     }
 
-    // Manager/boot çağırabilir
     public void Skip()
     {
         onSkip?.Invoke();
         if (deactivateSelfOnFinish) gameObject.SetActive(false);
     }
 
-    // Timeline/Signal/Anim Event → bunu çağır
     public void Finish()
     {
         manager?.OnClipFinished(this);

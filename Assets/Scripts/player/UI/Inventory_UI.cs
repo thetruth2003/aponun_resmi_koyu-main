@@ -1,42 +1,49 @@
-﻿using System.Collections.Generic;
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Belirli bir envanterin UI tarafini, slotlarini ve surukle-birak akislarini yonetir.
+/// </summary>
 public class Inventory_UI : MonoBehaviour
 {
     [Header("Inventory Settings")]
-    public string inventoryName;                // örn: "backpack"
+    public string inventoryName;
     public List<Slot_UI> slots = new List<Slot_UI>();
     public Canvas canvas;
     private Inventory inventory;
     public static Inventory_UI instance;
-    public Muhasebeci money;                         // Para UI referansı
+    public Muhasebeci money;
 
     public string UniqueID => GetUniqueID();
 
     private void Awake()
     {
         instance = this;
-        // Canvas otomatik bul
+
         if (canvas == null)
+        {
             canvas = FindObjectOfType<Canvas>();
+        }
 
-        // InventoryManager hazırsa inventory çek
-        var invManager = GameManager.instance?.player?.inventoryManager;
+        InventoryManager invManager = GameManager.instance?.player?.inventoryManager;
         if (invManager != null)
+        {
             inventory = invManager.GetInventoryByName(inventoryName);
+        }
 
-        // Slot listesini boşsa initialize et
         if (slots == null)
+        {
             slots = new List<Slot_UI>();
+        }
     }
 
     private void Start()
     {
-        // Envanteri Start'ta da tekrar çekelim (bazı durumlarda Awake sırasında GameManager hazır değil)
         if (inventory == null && GameManager.instance != null)
         {
-            var invManager = GameManager.instance.player.inventoryManager;
+            InventoryManager invManager = GameManager.instance.player.inventoryManager;
             inventory = invManager.GetInventoryByName(inventoryName);
         }
 
@@ -45,31 +52,37 @@ public class Inventory_UI : MonoBehaviour
     }
 
     /// <summary>
-    /// Envanter UI'ını yeniler
+    /// Envanter UI'�n� yeniler.
     /// </summary>
     public void Refresh()
     {
         if (inventory == null || inventory.slots == null)
         {
-            Debug.LogError($"[Inventory_UI.Refresh] inventory veya inventory.slots = NULL — UI objesi: {gameObject.name}", this);
+            Debug.LogError($"[Inventory_UI.Refresh] inventory veya inventory.slots = NULL � UI objesi: {gameObject.name}", this);
             return;
         }
 
         if (slots.Count != inventory.slots.Count)
         {
-            Debug.LogWarning($"[Inventory_UI.Refresh] Slot sayısı uyuşmuyor ({slots.Count} vs {inventory.slots.Count}) — {inventoryName}");
+            Debug.LogWarning($"[Inventory_UI.Refresh] Slot say�s� uyu�muyor ({slots.Count} vs {inventory.slots.Count}) � {inventoryName}");
             return;
         }
 
         for (int i = 0; i < slots.Count; i++)
         {
             if (slots[i].slotID < 0)
+            {
                 slots[i].slotID = i;
+            }
 
             if (!inventory.slots[i].IsEmpty)
+            {
                 slots[i].SetItem(inventory.slots[i]);
+            }
             else
+            {
                 slots[i].SetEmpty();
+            }
         }
     }
 
@@ -78,7 +91,6 @@ public class Inventory_UI : MonoBehaviour
         if (UI_Manager.draggedSlot != null)
         {
             Item itemToDrop = GameManager.instance.itemManager.GetItemByName(inventory.slots[UI_Manager.draggedSlot.slotID].itemName);
-
             if (itemToDrop != null)
             {
                 if (UI_Manager.dragSingle)
@@ -112,13 +124,18 @@ public class Inventory_UI : MonoBehaviour
     public void SlotDrag()
     {
         if (UI_Manager.draggedSlot != null)
+        {
             MoveToMousePosition(UI_Manager.draggedIcon.gameObject);
+        }
     }
 
     public void SlotEndDrag()
     {
         if (UI_Manager.draggedIcon != null)
+        {
             Destroy(UI_Manager.draggedIcon.gameObject);
+        }
+
         UI_Manager.draggedIcon = null;
     }
 
@@ -166,11 +183,9 @@ public class Inventory_UI : MonoBehaviour
             counter++;
         }
     }
-    // Inventory_UI class'ının İÇİNE ekle (herhangi bir yere, ama class kapanışından önce)
+
     public bool InventoryIsReady()
     {
-        // 'inventory' alanın zaten sınıf içinde var.
-        // 'slots' bazen null olabilir; onu da kontrol edelim.
         return inventory != null && inventory.slots != null;
     }
 
@@ -192,8 +207,11 @@ public class Inventory_UI : MonoBehaviour
         {
             money.playerMoney = para;
             if (money.moneyText != null)
+            {
                 money.moneyText.text = money.playerMoney.ToString();
+            }
         }
+
         Debug.Log("load para");
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+using System.Collections;
 using TMPro;
 using UniStorm;
 using UnityEngine;
@@ -7,6 +6,9 @@ using UnityEngine.UI;
 using System.Linq;
 using UnityEditor;
 
+/// <summary>
+/// Oyun gun akisini, fade gecislerini ve saat arayuzunu yonetir.
+/// </summary>
 public class game_start : MonoBehaviour
 {
     public int dayCount = 1;
@@ -22,24 +24,29 @@ public class game_start : MonoBehaviour
     public Light sunLight;
 
     [Header("Sun Rotation Settings")]
-    public Vector3 sunriseRotation = new Vector3(20, 30, 0); // 06:00
-    public Vector3 sunsetRotation = new Vector3(200, 30, 0); // 18:00
+    public Vector3 sunriseRotation = new Vector3(20, 30, 0);
+    public Vector3 sunsetRotation = new Vector3(200, 30, 0);
+
+    public static event System.Action OnDayChanged;
+
+    private int lastShownDay = -1;
+    private float sliderLookupTimer;
 
     public void Start()
     {
-        PlayerPrefs.DeleteKey("DayCount");   // sadece gün sayacını siler
         fadePanel.gameObject.SetActive(true);
         dayCount = PlayerPrefs.GetInt("DayCount", 1);
-        dayCounterText.text = $"Day {dayCount}";
+        UpdateDayCounter(dayCount);
         StartCoroutine(CheckMidNight());
     }
-    public static event System.Action OnDayChanged;
+
     public IEnumerator FadeIn()
     {
         fadePanel.gameObject.SetActive(true);
         Color startColor = fadePanel.color;
         float timer = 0f;
         fadePanel.color = new Color(startColor.r, startColor.g, startColor.b, 0f);
+
         while (timer < fadeDuration)
         {
             float alpha = Mathf.Lerp(0f, 1f, timer / fadeDuration);
@@ -47,6 +54,7 @@ public class game_start : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
+
         fadePanel.color = new Color(startColor.r, startColor.g, startColor.b, 1f);
     }
 
@@ -56,6 +64,7 @@ public class game_start : MonoBehaviour
         Color startColor = fadePanel.color;
         float timer = 0f;
         fadePanel.color = new Color(startColor.r, startColor.g, startColor.b, 1f);
+
         while (timer < fadeDuration)
         {
             float alpha = Mathf.Lerp(1f, 0f, timer / fadeDuration);
@@ -63,52 +72,47 @@ public class game_start : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
+
         fadePanel.color = new Color(startColor.r, startColor.g, startColor.b, 0f);
         fadePanel.gameObject.SetActive(false);
     }
 
-
-public IEnumerator CheckMidNight()
-{
-    while (true)
+    public IEnumerator CheckMidNight()
     {
-        if (UniStormSystem.Instance != null)
+        while (true)
         {
-            int hour = UniStormSystem.Instance.Hour;
-            int minute = UniStormSystem.Instance.Minute;
-
-            //Debug.Log($"[CheckMidNight] Saat: {hour:D2}:{minute:D2} | isMidNight: {isMidNight}");
-
-            if (hour == 0 && minute == 0 && !isMidNight)
+            if (UniStormSystem.Instance != null)
             {
-                isMidNight = true;
-                Debug.Log("[CheckMidNight] >>> GECE YARISI TETİKLENDİ <<<");
+                int hour = UniStormSystem.Instance.Hour;
+                int minute = UniStormSystem.Instance.Minute;
 
-                // 1️⃣ Önce ekranı karart
-                yield return StartCoroutine(FadeIn());
+                if (hour == 0 && minute == 0 && !isMidNight)
+                {
+                    isMidNight = true;
+                    Debug.Log("[CheckMidNight] >>> GECE YARISI TETIKLENDI <<<");
 
-                // 2️⃣ Şimdi gün/saat/güncellemeleri yap (ekran kapalıyken)
-                dayCount++;
-                dayCounterText.text = $"Day {dayCount}";
-                PlayerPrefs.SetInt("DayCount", dayCount);
-                UniStormSystem.Instance.Morning();
-                UniStormSystem.Instance.UpdateTimeSlider();
-                Debug.Log("New day started at midnight.");
-                OnDayChanged?.Invoke();
-                //saveobjevt();
-                // 3️⃣ Sonra ekranı aç
+                    yield return StartCoroutine(FadeIn());
+
+                    dayCount++;
+                    UpdateDayCounter(dayCount);
+                    PlayerPrefs.SetInt("DayCount", dayCount);
+                    UniStormSystem.Instance.Morning();
+                    UniStormSystem.Instance.UpdateTimeSlider();
+                    Debug.Log("New day started at midnight.");
+                    OnDayChanged?.Invoke();
                     yield return StartCoroutine(FadeOut());
+                }
+                else if ((hour != 0 || minute != 0) && isMidNight)
+                {
+                    isMidNight = false;
+                    Debug.Log("[CheckMidNight] isMidNight sifirlandi.");
+                }
             }
-            else if ((hour != 0 || minute != 0) && isMidNight)
-            {
-                isMidNight = false;
-                Debug.Log("[CheckMidNight] isMidNight sıfırlandı.");
-            }
-        }
 
-        yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1f);
+        }
     }
-}
+
     public IEnumerator MidNight()
     {
         fadePanel.gameObject.SetActive(true);
@@ -138,33 +142,66 @@ public IEnumerator CheckMidNight()
 
             UpdateSunRotation(hour, minute);
         }
-        GameObject sliderObj = GameObject.Find("UniStorm Canvas/Time Slider");
-        if (sliderObj != null)
-            timeSlider = sliderObj.GetComponent<Slider>();
-                // Güncellenmiş gün sayısını göster
+
+        TryBindTimeSlider();
+
         if (GameTime.Instance != null)
-            dayCounterText.text = $"Day {GameTime.Instance.dayCount}";
+        {
+            UpdateDayCounter(GameTime.Instance.dayCount);
+        }
     }
 
     void saveobjevt()
     {
         ISaveable[] allSaveables = FindObjectsOfType<MonoBehaviour>().OfType<ISaveable>().ToArray();
 
-        foreach (var Save in allSaveables)
+        foreach (var save in allSaveables)
         {
-            Save.SaveData();
+            save.SaveData();
         }
     }
 
     void UpdateSunRotation(int hour, int minute)
     {
-        if (sunLight == null) return;
+        if (sunLight == null)
+        {
+            return;
+        }
 
-        // Gün içindeki zamanı 0.0 - 1.0 arası normalize et
         float normalizedTime = (hour * 60f + minute) / (24f * 60f);
-
-        // Güneşin açısını sabah-akşam arasında Lerp’le döndür
         Vector3 targetRotation = Vector3.Lerp(sunriseRotation, sunsetRotation, normalizedTime);
         sunLight.transform.rotation = Quaternion.Euler(targetRotation);
+    }
+
+    private void TryBindTimeSlider()
+    {
+        if (timeSlider != null)
+        {
+            return;
+        }
+
+        sliderLookupTimer -= Time.deltaTime;
+        if (sliderLookupTimer > 0f)
+        {
+            return;
+        }
+
+        sliderLookupTimer = 1f;
+        GameObject sliderObj = GameObject.Find("UniStorm Canvas/Time Slider");
+        if (sliderObj != null)
+        {
+            timeSlider = sliderObj.GetComponent<Slider>();
+        }
+    }
+
+    private void UpdateDayCounter(int value)
+    {
+        if (dayCounterText == null || lastShownDay == value)
+        {
+            return;
+        }
+
+        lastShownDay = value;
+        dayCounterText.text = $"Day {value}";
     }
 }

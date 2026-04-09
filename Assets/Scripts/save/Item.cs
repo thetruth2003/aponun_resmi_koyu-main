@@ -1,14 +1,15 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Item sinifi, sahnedeki esyanin veri, kayit ve bagli bilesen durumlarini yonetmek icin kullanilir.
+/// </summary>
 [RequireComponent(typeof(MeshRenderer))]
 public class Item : MonoBehaviour//, ISaveable
 {
     public ItemData data;
-    public SeedData seedData; // SeedPoint için kullanılacak
-
-
+    public SeedData seedData;
 
     public string GetUniqueID() => transform.GetInstanceID().ToString();
 
@@ -41,7 +42,7 @@ public class Item : MonoBehaviour//, ISaveable
         if (gameObject.GetComponent<Tools>())
         {
             gameObject.GetComponent<Tools>().duration = PlayerPrefs.GetFloat(GetUniqueID() + "_duration");
-            
+
         }
         if (gameObject.GetComponent<Car>())
         {

@@ -3,6 +3,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+/// <summary>
+/// Suruklenen envanter slotunu kabul edip satis icin onizleme ve onay akisini yonetir.
+/// </summary>
 public class TestSaleDropZone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private Image previewIcon;
@@ -12,6 +15,8 @@ public class TestSaleDropZone : MonoBehaviour, IDropHandler, IPointerEnterHandle
     [SerializeField] private TextMeshProUGUI totalPriceText;
     [SerializeField] private TextMeshProUGUI statusText;
     [SerializeField] private Image dropHighlight;
+    [SerializeField] private Sprite emptyPreviewSprite;
+    [SerializeField] private Color emptyPreviewColor = Color.white;
 
     private Slot_UI boundSlot;
     private int pendingAmount;
@@ -23,6 +28,12 @@ public class TestSaleDropZone : MonoBehaviour, IDropHandler, IPointerEnterHandle
 
     private void Awake()
     {
+        if (previewIcon != null)
+        {
+            emptyPreviewSprite = previewIcon.sprite;
+            emptyPreviewColor = previewIcon.color;
+        }
+
         ClearPreview("Buraya slot surukle.");
     }
 
@@ -139,8 +150,8 @@ public class TestSaleDropZone : MonoBehaviour, IDropHandler, IPointerEnterHandle
 
         if (previewIcon != null)
         {
-            previewIcon.sprite = null;
-            previewIcon.color = new Color(1f, 1f, 1f, 0f);
+            previewIcon.sprite = emptyPreviewSprite;
+            previewIcon.color = emptyPreviewSprite != null ? emptyPreviewColor : new Color(1f, 1f, 1f, 0f);
         }
 
         if (itemNameText != null) itemNameText.text = "Bos";
