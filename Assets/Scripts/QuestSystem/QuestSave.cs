@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// QuestSave, GameStateTracker icindeki gorevle ilgili verileri PlayerPrefs uzerinden kaydedip geri yukler.
+/// QuestSave, GameStateTracker icindeki gorev/state verisini tip bilgisiyle birlikte
+/// PlayerPrefs'e yazip daha sonra ayni anahtarlarla geri kurar.
 /// </summary>
 public class QuestSave : MonoBehaviour
 {
@@ -30,6 +31,8 @@ public class QuestSave : MonoBehaviour
         Dictionary<string, object> allState = gameStateTracker.GetAll();
         List<string> keys = new List<string>();
 
+        // Her deger type prefix'i ile kaydediliyor; state_keys de bu listeyi tutuyor.
+        // Boylece load sirasinda hangi anahtarin nasil okunacagi biliniyor.
         foreach (KeyValuePair<string, object> kv in allState)
         {
             string key = kv.Key;
@@ -75,6 +78,8 @@ public class QuestSave : MonoBehaviour
         string json = PlayerPrefs.GetString("state_keys");
         KeyListWrapper wrapper = JsonUtility.FromJson<KeyListWrapper>(json);
 
+        // Her kayit "tip:anahtar" formatinda. Uygun setter cagrilarak
+        // hem cache hem PlayerPrefs ayni yoldan tekrar senkronlaniyor.
         foreach (string typedKey in wrapper.keys)
         {
             if (!typedKey.Contains(":"))

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// Harvest sinifi, gorev sistemi icindeki ilgili davranis veya veriyi yonetir.
+/// HarvestItemStep, belirli bir urunun hasat edilme miktarini bekleyen gorev adimidir.
 /// </summary>
 [System.Serializable]
 public class HarvestItemStep : IQuestStep
@@ -14,26 +14,37 @@ public class HarvestItemStep : IQuestStep
     public string GetName()
     {
         string name = string.IsNullOrEmpty(itemID) ? "???" : itemID;
-        return $"Harvest {requiredAmount}Ãƒâ€” {name}";
+        return $"Harvest {requiredAmount} {name}";
     }
 
     public void OnStart() { }
 
-    public void OnUpdate()
-    {
-    }
+    public void OnUpdate() { }
 
     public bool IsComplete()
     {
         if (isCompleted) return true;
         if (string.IsNullOrEmpty(itemID)) return false;
+        if (GameStateTracker.Instance == null) return false;
 
-        int harvested = GameStateTracker.Instance.GetCount($"Harvested_{itemID}");
+        int harvested = GameStateTracker.Instance.GetCount(GetProgressKey());
         if (harvested >= requiredAmount)
         {
             isCompleted = true;
         }
 
         return isCompleted;
+    }
+
+    public string GetProgressKey()
+    {
+        return $"Harvested_{NormalizeId(itemID)}";
+    }
+
+    private static string NormalizeId(string value)
+    {
+        return string.IsNullOrWhiteSpace(value)
+            ? string.Empty
+            : value.Trim().ToLowerInvariant();
     }
 }

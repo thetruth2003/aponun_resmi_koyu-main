@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -39,19 +39,36 @@ public class Sales_UI : MonoBehaviour
         int currentMoney = money.playerMoney;
         foreach (Slot_UI slot in saleSlots)
         {
-            if (!slot.IsEmpty())
+            if (slot.IsEmpty())
             {
-                int count = slot.inventorySlot.count;
-                int pricePerItem = slot.inventorySlot.item.sellPrice;
-                int slotTotal = count * pricePerItem;
-
-                currentMoney += slotTotal;
-                Debug.Log($"Satildi: {count} x {slot.inventorySlot.item.itemName} -> {slotTotal} TL");
-
-                slot.inventorySlot.Clear();
-                slot.Clear();
-                money.AddMoney(slotTotal);
+                continue;
             }
+
+            int count = slot.inventorySlot.count;
+            int pricePerItem = slot.inventorySlot.item.sellPrice;
+            int slotTotal = count * pricePerItem;
+            string itemId = NormalizeItemId(slot.inventorySlot.item.itemName);
+
+            currentMoney += slotTotal;
+            Debug.Log($"Satildi: {count} x {slot.inventorySlot.item.itemName} -> {slotTotal} TL");
+
+            if (GameStateTracker.Instance != null && !string.IsNullOrWhiteSpace(itemId))
+            {
+                GameStateTracker.Instance.IncrementCount($"Sold_{itemId}", count);
+            }
+
+            slot.inventorySlot.Clear();
+            slot.Clear();
+            money.AddMoney(slotTotal);
         }
+
+        totalEarnings = currentMoney;
+    }
+
+    private static string NormalizeItemId(string value)
+    {
+        return string.IsNullOrWhiteSpace(value)
+            ? string.Empty
+            : value.Trim().ToLowerInvariant();
     }
 }

@@ -14,26 +14,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sections:
   - lines:
-    - text: "selamuun aleykum ab\u0131 "
+    - text: "Kimsiniz olm siz gec gece"
       voiceClip: {fileID: 0}
-    - text: aleykum selam hocam
+    - text: "abi ev biz\u015fm sen kimsin"
       voiceClip: {fileID: 0}
-    - text: "abi bi ciftel 2000 mavi alcakt\u0131m bide bi selam veriyim dedim yeni
-        tas\u0131nd\u0131k"
+    - text: "Ne s\u0131z\u0131n oglum Ahmed\u0131nb ev\u0131 bura"
       voiceClip: {fileID: 0}
-    - text: "sen yen\u0131 gelen arkadass\u0131n duymustum \u0131s\u0131m neyd\u0131
-        hocam"
+    - text: "Ahmed\u0131n ogluyum ben ab\u0131 alperen ben yen\u0131 tas\u0131nd\u0131k s\u0131md\u0131 geld\u0131k"
       voiceClip: {fileID: 0}
-    - text: alperen abi senin?
+    - text: "Oglum neb\u0131ley\u0131m ben sen\u0131n ahmed\u0131n oglu oldugunu Gece vakt\u0131 \u0131s\u0131g\u0131 gordum geld\u0131m"
       voiceClip: {fileID: 0}
-    - text: 'ibrahim kardesim '
+    - text: "Her \u0131s\u0131k olan eve g\u0131r\u0131yor musun sen sen k\u0131ms\u0131n?"
       voiceClip: {fileID: 0}
-    - text: 'memnun oldum abi '
+    - text: "Ben senin besikteki halini bilirim, Ahmet benim gardasim gibidir, evine biri geldigini gorunce tabi gelecem"
       voiceClip: {fileID: 0}
-    - text: eyvallah ne istemistin kardesim
+    - text: "Dayi babam oleli 1 sene oldu"
       voiceClip: {fileID: 0}
-    - text: ciftel 2000 abi
+    - text: "Siktir lan"
       voiceClip: {fileID: 0}
-    - text: "o s\u0131k\u0131nt\u0131 hocam onu bulaman burda"
+    - text: "N-Nasil oldu, ne zaman old- BIZIM NEDEN HABERIMIZ YOK?"
+      voiceClip: {fileID: 0}
+    - text: "Dayi fabrikada calisiyodu, kalptten...."
+      voiceClip: {fileID: 0}
+    - text: "Oglum emekli adam neden calissin?"
+      voiceClip: {fileID: 0}
+    - text: "Abi emekli kime yetiyo ki?"
+      voiceClip: {fileID: 0}
+    - text: "Basininz sagolsun yegenim/yenge hanim, kusura kalmayin. Ben Mansur, Rahmetlinin cocukluk arkadasiyim."
+      voiceClip: {fileID: 0}
+    - text: "Oglum gece vakti gelmissiniz, kariya solyiyim birseyler hazirlasin"
+      voiceClip: {fileID: 0}
+    - text: "Abi biz bi dinlenelim, yani yarin bi bakar - tamam"
+      voiceClip: {fileID: 0}
+    - text: "Hayirli geceler yegenim"
+      voiceClip: {fileID: 0}
+    - text: "O kadar da kotu DEGILMIS hayatim"
       voiceClip: {fileID: 0}
     viewKey: 

@@ -42,6 +42,11 @@ public class QuestManager : MonoBehaviour
         LoadCurrentStep();
     }
 
+    private void Update()
+    {
+        CheckingQuest();
+    }
+
     private void CheckingQuest()
     {
         if (currentStep == null)

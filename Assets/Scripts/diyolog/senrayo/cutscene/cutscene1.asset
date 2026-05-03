@@ -14,27 +14,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sections:
   - lines:
-    - text: "aleyna:bok vard\u0131 dem\u0131  geld\u0131k bu amk koyune "
+    - text: "B\u0131z boyle m\u0131 konusmustuk, Alperen."
       voiceClip: {fileID: 8300000, guid: 46554ad7e2219be49975003372e7a223, type: 3}
-    - text: "yeter da yeter sabahtan ber\u0131 kafam\u0131 s\u0131kt\u0131n "
+    - text: "evet ama baska carem\u0131z m\u0131 vard\u0131  ."
       voiceClip: {fileID: 8300000, guid: 8d998b8ac0b4c0b45848ab0f61591515, type: 3}
-    - text: "ben m\u0131 s\u0131kt\u0131m cok s\u0131k\u0131ld\u0131ysan \u0131n\u0131y\u0131m
-        ben arabadan cek saga"
+    - text: "Tamama da buras\u0131 da ne b\u0131l\u0131y\u0131m of ."
       voiceClip: {fileID: 8300000, guid: 05531d6aa4addea479c8d7775d21450b, type: 3}
-    - text: "ya aleyna allah ask\u0131na sus be k\u0131z\u0131m konustuk bunlar\u0131
-        evde demed\u0131k m\u0131 bereaber karar vermed\u0131k m\u0131 "
+    - text: "daha g\u0131rmed\u0131k b\u0131le b\u0131 bekle b\u0131 bakal\u0131m, belki o kadar kotu degildir"
       voiceClip: {fileID: 8300000, guid: e457bf3ff6e5e6d4f94735be1b6c384a, type: 3}
-    - text: "ben kafamda boyle dusunmem\u0131st\u0131m kokjuya bak amk boyle b\u0131
-        yer dusunmem\u0131st\u0131m aq "
+    - text: "pek\u0131 neden buras\u0131 baska yer m\u0131 bulamad\u0131k"
       voiceClip: {fileID: 8300000, guid: cdf3a3e8158813e4ebdf336e8230e666, type: 3}
-    - text: "ban guven ask\u0131m guven bana"
+    - text: "el\u0131f k\u0131ra odem\u0131cez ya en az\u0131ndan"
       voiceClip: {fileID: 8300000, guid: f0f2276dbcd465a4a91f32a574800e4e, type: 3}
-    - text: DSFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+    - text: "tamam alperen"
       voiceClip: {fileID: 0}
-    - text: SDFSDFSDF SDFSD FSDFSDFSDFSDFSDFSDFSFSD
+    - text: "can\u0131m tamam b\u0131l\u0131yorum zor ama b\u0131 bakal\u0131m"
       voiceClip: {fileID: 0}
-    - text: SFSDF3E24234EDFGVSDFSDFE2W4523EFDSCVCDFWRF234FGDSFS3R2
+    - text: "\u0131y\u0131 en az\u0131ndan heryer yes\u0131ll\u0131k"
       voiceClip: {fileID: 0}
-    - text: SFSDF3E24234EDFGVSDFSDFE2W4523EFDSCVCDFWRF234FGDSFS3R2
+    - text: "hersey\u0131 almay\u0131 unutma"
+      voiceClip: {fileID: 0}
+    - text: "e zaten aq"
+      voiceClip: {fileID: 0}
+    - text: "al \u0131ste"
+      voiceClip: {fileID: 0}
+    - text: "\u015ealter falan vard\u0131r. Ben bakar\u0131m."
       voiceClip: {fileID: 0}
     viewKey: 

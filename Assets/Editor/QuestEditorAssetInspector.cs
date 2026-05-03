@@ -120,6 +120,51 @@ public class QuestEditorAssetInspector : Editor
                 EditorGUILayout.TextField("Item ID", harvest.itemID);
                 EditorGUILayout.IntField("Required Amount", harvest.requiredAmount);
             }
+            else if (step is ChoiceStep choice)
+            {
+                EditorGUILayout.TextField("Choice Key", choice.choiceKey);
+                EditorGUILayout.TextField("Expected Value", choice.expectedValue);
+                EditorGUILayout.Toggle("Complete On Any Value", choice.completeOnAnyValue);
+            }
+            else if (step is ModifyStatStep modify)
+            {
+                EditorGUILayout.TextField("Mode", modify.mode.ToString());
+                EditorGUILayout.TextField("State Key", modify.statKey);
+
+                switch (modify.mode)
+                {
+                    case ModifyStatStep.ModifyMode.AddCount:
+                    case ModifyStatStep.ModifyMode.SetCount:
+                        EditorGUILayout.IntField("Int Value", modify.intValue);
+                        break;
+
+                    case ModifyStatStep.ModifyMode.SetFlag:
+                        EditorGUILayout.Toggle("Bool Value", modify.boolValue);
+                        break;
+
+                    case ModifyStatStep.ModifyMode.SetString:
+                        EditorGUILayout.TextField("String Value", modify.stringValue);
+                        break;
+                }
+            }
+            else if (step is SpendMoneyStep spend)
+            {
+                EditorGUILayout.TextField("Spend Key", spend.spendKey);
+                EditorGUILayout.IntField("Required Amount", spend.requiredAmount);
+            }
+            else if (step is WaitForDayStep waitForDay)
+            {
+                EditorGUILayout.TextField("Wait Mode", waitForDay.waitMode.ToString());
+
+                if (waitForDay.waitMode == WaitForDayStep.WaitMode.AbsoluteDay)
+                {
+                    EditorGUILayout.IntField("Target Day", waitForDay.targetDay);
+                }
+                else
+                {
+                    EditorGUILayout.IntField("Days To Wait", waitForDay.daysToWait);
+                }
+            }
             else if (step == null)
             {
                 EditorGUILayout.HelpBox("This step could not be read from stored type/json data.", MessageType.Error);

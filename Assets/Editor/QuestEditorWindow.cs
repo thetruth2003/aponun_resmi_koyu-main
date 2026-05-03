@@ -19,7 +19,11 @@ public class QuestEditorWindow : EditorWindow
         "Go To Location",
         "Sell Item",
         "Buy Item",
-        "Harvest Item"
+        "Harvest Item",
+        "Choice",
+        "Modify Stat",
+        "Spend Money",
+        "Wait For Day"
     };
 
     [MenuItem("Window/Quest Editor")]
@@ -295,6 +299,51 @@ public class QuestEditorWindow : EditorWindow
             harvest.itemID = EditorGUILayout.TextField("Item ID", harvest.itemID);
             harvest.requiredAmount = EditorGUILayout.IntField("Required Amount", harvest.requiredAmount);
         }
+        else if (step is ChoiceStep choice)
+        {
+            choice.choiceKey = EditorGUILayout.TextField("Choice Key", choice.choiceKey);
+            choice.expectedValue = EditorGUILayout.TextField("Expected Value", choice.expectedValue);
+            choice.completeOnAnyValue = EditorGUILayout.Toggle("Complete On Any Value", choice.completeOnAnyValue);
+        }
+        else if (step is ModifyStatStep modify)
+        {
+            modify.mode = (ModifyStatStep.ModifyMode)EditorGUILayout.EnumPopup("Mode", modify.mode);
+            modify.statKey = EditorGUILayout.TextField("State Key", modify.statKey);
+
+            switch (modify.mode)
+            {
+                case ModifyStatStep.ModifyMode.AddCount:
+                case ModifyStatStep.ModifyMode.SetCount:
+                    modify.intValue = EditorGUILayout.IntField("Int Value", modify.intValue);
+                    break;
+
+                case ModifyStatStep.ModifyMode.SetFlag:
+                    modify.boolValue = EditorGUILayout.Toggle("Bool Value", modify.boolValue);
+                    break;
+
+                case ModifyStatStep.ModifyMode.SetString:
+                    modify.stringValue = EditorGUILayout.TextField("String Value", modify.stringValue);
+                    break;
+            }
+        }
+        else if (step is SpendMoneyStep spend)
+        {
+            spend.spendKey = EditorGUILayout.TextField("Spend Key", spend.spendKey);
+            spend.requiredAmount = EditorGUILayout.IntField("Required Amount", spend.requiredAmount);
+        }
+        else if (step is WaitForDayStep waitForDay)
+        {
+            waitForDay.waitMode = (WaitForDayStep.WaitMode)EditorGUILayout.EnumPopup("Wait Mode", waitForDay.waitMode);
+
+            if (waitForDay.waitMode == WaitForDayStep.WaitMode.AbsoluteDay)
+            {
+                waitForDay.targetDay = EditorGUILayout.IntField("Target Day", waitForDay.targetDay);
+            }
+            else
+            {
+                waitForDay.daysToWait = EditorGUILayout.IntField("Days To Wait", waitForDay.daysToWait);
+            }
+        }
         else
         {
             EditorGUILayout.HelpBox($"Unsupported step type: {step.GetType().Name}", MessageType.Warning);
@@ -317,6 +366,10 @@ public class QuestEditorWindow : EditorWindow
             2 => new SellItemStep(),
             3 => new BuyItemStep(),
             4 => new HarvestItemStep(),
+            5 => new ChoiceStep(),
+            6 => new ModifyStatStep(),
+            7 => new SpendMoneyStep(),
+            8 => new WaitForDayStep(),
             _ => null
         };
     }

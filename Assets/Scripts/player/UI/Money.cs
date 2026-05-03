@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -9,6 +9,11 @@ public class Money : MonoBehaviour
     public static Money Instance;
     public int currentMoney = 0;
     public TextMeshProUGUI moneyText;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {

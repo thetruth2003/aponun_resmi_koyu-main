@@ -4,15 +4,16 @@ using System.IO;
 using UnityEngine;
 
 /// <summary>
-/// CutsceneManager sinifi, ilgili sistemin akisini ve durum yonetimini ustlenir.
+/// CutsceneManager, sahnedeki cutscene kliplerini toplayip hangi tetikte hangisinin
+/// oynatilacagini belirler ve oynanma durumunu kalici olarak saklar.
 /// </summary>
 public class CutsceneManager : MonoBehaviour
 {
     [Header("Tarama")]
-    [Tooltip("Sadece bunun alt???±ndaki CutsceneClip'leri toplar; bo≈üsa sahnede hepsini bulur")]
+    [Tooltip("Sadece bunun altindaki CutsceneClip'leri toplar; bossa sahnede hepsini bulur")]
     public Transform clipsParent;
 
-    [Header("Konfig (opsiyonel) ‚Äî Listeyle y√∂netmek i√ßin doldur")]
+    [Header("Konfig (opsiyonel) - Listeyle yonetmek icin doldur")]
     [SerializeField] private List<CutsceneEntry> entries = new();
 
     [Header("Persistans")]
@@ -63,6 +64,8 @@ public class CutsceneManager : MonoBehaviour
         allClips.Clear();
         allById.Clear();
 
+        // Inspector'daki entries listesi doluysa runtime konfigurasini oradan kur.
+        // Bu sayede trigger / play type gibi alanlar merkezi bir listeden yonetilebilir.
         if (entries != null && entries.Count > 0)
         {
             foreach (var e in entries)
@@ -87,6 +90,7 @@ public class CutsceneManager : MonoBehaviour
             return;
         }
 
+        // Liste bos ise fallback olarak sahnedeki tum CutsceneClip'leri tara.
         var found = clipsParent
             ? clipsParent.GetComponentsInChildren<CutsceneClip>(includeInactive: true)
             : FindObjectsOfType<CutsceneClip>(includeInactive: true);
@@ -118,6 +122,8 @@ public class CutsceneManager : MonoBehaviour
 
         foreach (var kv in buckets)
         {
+            // SequenceStep klipleri groupKey icinde priority'ye gore siralanir.
+            // sequenceIndex, o grup icin "siradaki oynanmasi gereken step" kontrolunde kullanilir.
             kv.Value.Sort((a, b) => a.priority.CompareTo(b.priority));
             for (int i = 0; i < kv.Value.Count; i++)
                 kv.Value[i].sequenceIndex = i;
@@ -132,10 +138,12 @@ public class CutsceneManager : MonoBehaviour
 
             if (playedIds.Contains(c.id))
             {
+                // Daha once tamamlanmis clip tekrar aktif acilmasin diye skip akisini uygula.
                 c.Skip();
             }
             else
             {
+                // Oynanmamis klipler finish sonunda kendini kapatiyorsa boot'ta kapali baslatilir.
                 if (c.deactivateSelfOnFinish) c.gameObject.SetActive(false);
             }
         }
@@ -183,9 +191,13 @@ public class CutsceneManager : MonoBehaviour
         }
     }
 
-    /// <summary>Uygun klibi bulur ve oynat???±r. Bulamazsa false d√∂ner.</summary>
+    /// <summary>Uygun klibi bulur ve oynatir. Bulamazsa false doner.</summary>
     public bool TryStart(string triggerKey)
     {
+        // Oncelik sirasi:
+        // 1) O trigger icin siradaki sequence adimi
+        // 2) Henuz oynanmamis once clip
+        // 3) Her zaman tekrar oynanabilen clip
         CutsceneClip candidate = FindNextSequence(triggerKey);
         if (candidate == null) candidate = FindBestOnce(triggerKey);
         if (candidate == null) candidate = FindBestRepeatable(triggerKey);
@@ -195,7 +207,7 @@ public class CutsceneManager : MonoBehaviour
         return true;
     }
 
-    /// <summary>Oynanm???±≈ü (Once/Sequence) kliplerin Skip ak???±≈ü???±n???± √ßal???±≈üt???±r???±r.</summary>
+    /// <summary>Oynanmis (Once/Sequence) kliplerin Skip akislarini calistirir.</summary>
     public bool RunSkipForTrigger(string triggerKey)
     {
         bool any = false;
@@ -215,7 +227,7 @@ public class CutsceneManager : MonoBehaviour
         return any;
     }
 
-    /// <summary>√ñnce oynatmay???± dener; olmazsa Skip ak???±≈ü???±n???± √ßal???±≈üt???±r???±r.</summary>
+    /// <summary>Once oynatmayi dener; olmazsa Skip akisini calistirir.</summary>
     public void TryStartOrSkip(string triggerKey)
     {
         if (!TryStart(triggerKey))
@@ -237,6 +249,7 @@ public class CutsceneManager : MonoBehaviour
                 playedIds.Add(clip.id);
                 string gk = string.IsNullOrWhiteSpace(clip.groupKey) ? "__DEFAULT__" : clip.groupKey.Trim();
                 int next = GetGroupNextIndex(gk);
+                // Sadece beklenen sequence adimi tamamlandiysa bir sonraki index'e ilerle.
                 if (clip.sequenceIndex == next) next++;
                 groupNextIndex[gk] = next;
                 break;
@@ -263,6 +276,7 @@ public class CutsceneManager : MonoBehaviour
 
             string gk = string.IsNullOrWhiteSpace(c.groupKey) ? "__DEFAULT__" : c.groupKey.Trim();
             int next = GetGroupNextIndex(gk);
+            // Tetik uyussa bile grup icinde sira bu clipte degilse secilmez.
             if (c.sequenceIndex != next) continue;
 
             if (c.priority < bestPriority) { bestPriority = c.priority; best = c; }

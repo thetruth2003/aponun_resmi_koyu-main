@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -130,9 +130,15 @@ public class TestSaleDropZone : MonoBehaviour, IDropHandler, IPointerEnterHandle
 
         int unitPrice = boundSlot.inventorySlot.item.sellPrice;
         int total = unitPrice * pendingAmount;
+        string itemId = NormalizeItemId(boundSlot.inventorySlot.item.itemName);
 
         boundSlot.inventory.Remove(boundSlot.slotID, pendingAmount);
         muhasebeci.AddMoney(total);
+
+        if (GameStateTracker.Instance != null && !string.IsNullOrWhiteSpace(itemId))
+        {
+            GameStateTracker.Instance.IncrementCount($"Sold_{itemId}", pendingAmount);
+        }
 
         if (GameManager.instance != null && GameManager.instance.uiManager != null)
         {
@@ -169,5 +175,12 @@ public class TestSaleDropZone : MonoBehaviour, IDropHandler, IPointerEnterHandle
                 ? new Color(0.29f, 0.63f, 0.35f, 0.85f)
                 : new Color(0.18f, 0.2f, 0.24f, 0.85f);
         }
+    }
+
+    private static string NormalizeItemId(string value)
+    {
+        return string.IsNullOrWhiteSpace(value)
+            ? string.Empty
+            : value.Trim().ToLowerInvariant();
     }
 }

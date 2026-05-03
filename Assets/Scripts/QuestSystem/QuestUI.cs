@@ -60,20 +60,43 @@ public class QuestUI : MonoBehaviour
             else if (step is SellItemStep sell)
             {
                 questTypeText.text = $"Sell {sell.requiredAmount} {sell.itemID}";
-                int sold = GameStateTracker.Instance.GetCount($"Sold_{sell.itemID}");
+                int sold = GameStateTracker.Instance.GetCount(sell.GetProgressKey());
                 requirementText.text = $"{sold}/{sell.requiredAmount}";
             }
             else if (step is BuyItemStep buy)
             {
                 questTypeText.text = $"Buy {buy.requiredAmount} {buy.itemID}";
-                int bought = GameStateTracker.Instance.GetCount($"Bought_{buy.itemID}");
+                int bought = GameStateTracker.Instance.GetCount(buy.GetProgressKey());
                 requirementText.text = $"{bought}/{buy.requiredAmount}";
             }
             else if (step is HarvestItemStep harvest)
             {
                 questTypeText.text = $"Harvest {harvest.requiredAmount} {harvest.itemID}";
-                int harvested = GameStateTracker.Instance.GetCount($"Harvested_{harvest.itemID}");
+                int harvested = GameStateTracker.Instance.GetCount(harvest.GetProgressKey());
                 requirementText.text = $"{harvested}/{harvest.requiredAmount}";
+            }
+            else if (step is ChoiceStep choice)
+            {
+                questTypeText.text = $"Choice: {choice.choiceKey}";
+                string currentValue = choice.GetCurrentValue();
+                requirementText.text = string.IsNullOrWhiteSpace(currentValue)
+                    ? "Waiting for player choice"
+                    : $"Selected: {currentValue}";
+            }
+            else if (step is ModifyStatStep modify)
+            {
+                questTypeText.text = "Apply state result";
+                requirementText.text = modify.GetName();
+            }
+            else if (step is SpendMoneyStep spend)
+            {
+                questTypeText.text = $"Pay for {spend.spendKey}";
+                requirementText.text = $"{spend.GetCurrentProgress()}/{spend.requiredAmount} TL";
+            }
+            else if (step is WaitForDayStep waitForDay)
+            {
+                questTypeText.text = "Wait for day";
+                requirementText.text = $"Day {waitForDay.GetCurrentDay()} / {waitForDay.GetTargetDay()}";
             }
             else
             {

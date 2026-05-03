@@ -2,7 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 
 /// <summary>
-/// GameStateTracker sinifi, ilgili davranis veya veriyi yonetmek icin kullanilir.
+/// GameStateTracker, gameplay anahtarlarini bellek icinde cache'leyip
+/// PlayerPrefs ile senkron tutan hafif bir durum deposudur.
 /// </summary>
 public class GameStateTracker : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class GameStateTracker : MonoBehaviour
     {
         if (state.ContainsKey(key)) return (int)state[key];
 
+        // Bellekte yoksa PlayerPrefs'ten oku ve cache'e al.
         int value = PlayerPrefs.GetInt(key, 0);
         state[key] = value;
         return value;
@@ -54,6 +56,7 @@ public class GameStateTracker : MonoBehaviour
     {
         if (state.ContainsKey(key)) return (bool)state[key];
 
+        // Bool degerler PlayerPrefs'te 0/1 olarak saklandigi icin burada bool'e cevrilir.
         bool value = PlayerPrefs.GetInt(key, 0) == 1;
         state[key] = value;
         return value;
@@ -128,12 +131,13 @@ public class GameStateTracker : MonoBehaviour
 
         if (ActiveQuestSystem.Instance != null)
         {
+            // Genel state sifirlanirken gorev ilerlemesi de basa alinacak sekilde baglanmis.
             foreach (var q in ActiveQuestSystem.Instance.allQuests)
             {
                 q.currentIndex = 0;
             }
         }
 
-        Debug.Log("[GameStateTracker] T√ºm state ve g√∂rev ilerlemesi s???±f???±rland???±.");
+        Debug.Log("[GameStateTracker] Tum state ve gorev ilerlemesi sifirlandi.");
     }
 }

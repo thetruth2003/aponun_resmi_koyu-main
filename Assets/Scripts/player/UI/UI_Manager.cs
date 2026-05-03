@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Envanter, radyal menu ve surukle-birak arayuzlerini merkezi olarak yonetir.
+/// UI_Manager, oyuncu arayuzlerinin ac/kapa durumunu ve Inventory_UI referanslarini
+/// tek merkezde tutup refresh akislarini koordine eder.
 /// </summary>
 public class UI_Manager : MonoBehaviour
 {
@@ -186,12 +187,14 @@ public class UI_Manager : MonoBehaviour
 
         if (!inventoryUIByName.TryGetValue(inventoryName, out Inventory_UI invUI) || invUI == null)
         {
-            Debug.LogWarning($"[UI_Manager] Inventory UI bulunamadý: '{inventoryName}'");
+            Debug.LogWarning($"[UI_Manager] Inventory UI bulunamadi: '{inventoryName}'");
             yield break;
         }
 
         const int maxWait = 60;
         int waited = 0;
+        // Inventory_UI bazen slot referanslarini bir frame gec kuruyor.
+        // Hazir degilse timeout'a kadar bekleyip sonra refresh deniyoruz.
         while (!invUI.InventoryIsReady() && waited < maxWait)
         {
             waited++;
@@ -200,7 +203,7 @@ public class UI_Manager : MonoBehaviour
 
         if (!invUI.InventoryIsReady())
         {
-            Debug.LogWarning($"[UI_Manager] '{inventoryName}' inventory hazýr olmadý (timeout). Refresh atlandý.");
+            Debug.LogWarning($"[UI_Manager] '{inventoryName}' inventory hazir olmadi (timeout). Refresh atlandi.");
             yield break;
         }
 
@@ -246,6 +249,8 @@ public class UI_Manager : MonoBehaviour
             return;
         }
 
+        // Sahnedeki Inventory_UI referanslarini isimle map'leyip daha sonra
+        // "backpack", "chest" gibi anahtarlarla hizli ulasilabilir hale getir.
         foreach (Inventory_UI ui in inventoryUIs)
         {
             if (ui == null)
@@ -256,7 +261,7 @@ public class UI_Manager : MonoBehaviour
             string key = (ui.inventoryName ?? "").Trim();
             if (string.IsNullOrEmpty(key))
             {
-                Debug.LogWarning("[UI_Manager] Inventory_UI 'inventoryName' boþ.", ui);
+                Debug.LogWarning("[UI_Manager] Inventory_UI 'inventoryName' bos.", ui);
                 continue;
             }
 
@@ -266,7 +271,7 @@ public class UI_Manager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"[UI_Manager] Ayný isimli Inventory_UI zaten var: '{key}'", ui);
+                Debug.LogWarning($"[UI_Manager] Ayni isimli Inventory_UI zaten var: '{key}'", ui);
             }
         }
 
