@@ -182,55 +182,151 @@ public class CutsceneMover : MonoBehaviour
 
     IEnumerator RunMoveStep(Step s)
     {
-        Vector3 dir = GetDirectionVector(s.direction, s.customDirection).normalized;
-        if (dir.sqrMagnitude < 0.0001f) yield break;
+        Vector3 startPosition = transform.position;
+        bool useCustomWorldTarget = s.direction == Direction8.Custom && s.customMoveKind == CustomMoveKind.WorldTarget;
+        bool wantsCustomTargetTransform = s.direction == Direction8.Custom && s.customMoveKind == CustomMoveKind.TargetTransform;
+        bool useCustomTargetTransform = wantsCustomTargetTransform && s.customTargetTransform;
 
-        var refTr = forwardReference ? forwardReference : transform;
-        dir = refTr.TransformDirection(dir);
-
-        if (s.faceDirection)
+        if (wantsCustomTargetTransform && !s.customTargetTransform)
         {
-            var targetRot = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.z).normalized, Vector3.up);
-            float rotT = 0f;
-            while (rotT < 1f && s.turnSpeed > 0f)
-            {
-                rotT += Time.deltaTime * s.turnSpeed;
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Mathf.Clamp01(rotT));
-                yield return null;
-            }
-            transform.rotation = targetRot;
+            yield break;
         }
 
-        if (s.moveMode == MoveMode.ByDistance)
+        Vector3 dir;
+        Vector3 finalTargetPosition = startPosition;
+
+        if (useCustomWorldTarget)
         {
-            float distance = Mathf.Max(0f, s.distance);
-            float moved = 0f;
-            Vector3 start = transform.position;
+            Vector3 targetDelta = s.customWorldTarget - startPosition;
+            float targetDistance = targetDelta.magnitude;
+            if (targetDistance < 0.0001f) yield break;
 
-            while (moved < distance)
-            {
-                float step = Mathf.Max(0f, s.speed) * Time.deltaTime;
-                float t = Mathf.Clamp01(moved / Mathf.Max(0.0001f, distance));
-                step *= EaseFactor(s.easing, t);
+            dir = targetDelta / targetDistance;
+            finalTargetPosition = s.customWorldTarget;
+        }
+        else if (useCustomTargetTransform)
+        {
+            finalTargetPosition = GetApproachTargetPosition(startPosition, s.customTargetTransform.position, s.customTargetStopDistance);
+            Vector3 targetDelta = finalTargetPosition - startPosition;
+            float targetDistance = targetDelta.magnitude;
+            if (targetDistance < 0.0001f) yield break;
 
-                MoveDriver(dir * step);
-                moved = Vector3.Distance(start, transform.position);
-                yield return null;
-            }
+            dir = targetDelta / targetDistance;
         }
         else
         {
-            float dur = Mathf.Max(0.0001f, s.duration);
-            float t = 0f;
-            while (t < dur)
+            dir = GetDirectionVector(s.direction, s.customDirection).normalized;
+            if (dir.sqrMagnitude < 0.0001f) yield break;
+
+            var refTr = forwardReference ? forwardReference : transform;
+            dir = refTr.TransformDirection(dir);
+        }
+
+        Quaternion targetRot = transform.rotation;
+        bool hasFacingTarget = false;
+
+        if (s.faceDirection)
+        {
+            Vector3 flatDir = new Vector3(dir.x, 0f, dir.z);
+            if (flatDir.sqrMagnitude > 0.0001f)
             {
-                float ratio = Mathf.Clamp01(t / dur);
-                float step = Mathf.Max(0f, s.speed) * Time.deltaTime * EaseFactor(s.easing, ratio);
-                MoveDriver(dir * step);
-                t += Time.deltaTime;
+                targetRot = Quaternion.LookRotation(flatDir.normalized, Vector3.up);
+                hasFacingTarget = true;
+            }
+        }
+
+        if (hasFacingTarget && s.waitForFacingBeforeMove)
+        {
+            while (!UpdateFacingTowards(targetRot, s.turnSpeed))
+            {
                 yield return null;
             }
         }
+
+        float totalDistance;
+        float totalDuration;
+
+        if (s.moveMode == MoveMode.ByDistance)
+        {
+            totalDistance = (useCustomWorldTarget || useCustomTargetTransform)
+                ? Vector3.Distance(startPosition, finalTargetPosition)
+                : Mathf.Max(0f, s.distance);
+            float moveSpeed = Mathf.Max(0f, s.speed);
+            if (totalDistance <= 0f || moveSpeed <= 0f) yield break;
+
+            totalDuration = totalDistance / moveSpeed;
+        }
+        else
+        {
+            totalDuration = Mathf.Max(0.0001f, s.duration);
+            totalDistance = (useCustomWorldTarget || useCustomTargetTransform)
+                ? Vector3.Distance(startPosition, finalTargetPosition)
+                : Mathf.Max(0f, s.speed) * totalDuration;
+            if (totalDistance <= 0f) yield break;
+        }
+
+        float elapsed = 0f;
+        float previousProgress = 0f;
+        float appliedDistance = 0f;
+
+        while (elapsed < totalDuration)
+        {
+            if (hasFacingTarget && !s.waitForFacingBeforeMove)
+            {
+                UpdateFacingTowards(targetRot, s.turnSpeed);
+            }
+
+            float nextElapsed = Mathf.Min(totalDuration, elapsed + Time.deltaTime);
+            float nextProgress = Ease01(s.easing, Mathf.Clamp01(nextElapsed / totalDuration));
+            float deltaProgress = Mathf.Max(0f, nextProgress - previousProgress);
+            float stepDistance = totalDistance * deltaProgress;
+
+            if (stepDistance > 0f)
+            {
+                MoveDriver(dir * stepDistance);
+                appliedDistance += stepDistance;
+            }
+
+            elapsed = nextElapsed;
+            previousProgress = nextProgress;
+            yield return null;
+        }
+
+        float remainingDistance = totalDistance - appliedDistance;
+        if (remainingDistance > 0.0001f)
+        {
+            MoveDriver(dir * remainingDistance);
+        }
+
+        if (useCustomWorldTarget || useCustomTargetTransform)
+        {
+            TeleportDriver(finalTargetPosition);
+        }
+    }
+
+    static Vector3 GetApproachTargetPosition(Vector3 startPosition, Vector3 targetPosition, float stopDistance)
+    {
+        Vector3 delta = targetPosition - startPosition;
+        float fullDistance = delta.magnitude;
+        if (fullDistance < 0.0001f) return startPosition;
+
+        float targetTravelDistance = Mathf.Max(0f, fullDistance - Mathf.Max(0f, stopDistance));
+        if (targetTravelDistance <= 0.0001f) return startPosition;
+
+        return startPosition + delta / fullDistance * targetTravelDistance;
+    }
+
+    bool UpdateFacingTowards(Quaternion targetRot, float turnSpeed)
+    {
+        if (turnSpeed <= 0f)
+        {
+            transform.rotation = targetRot;
+            return true;
+        }
+
+        float t = Mathf.Clamp01(Time.deltaTime * turnSpeed);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, t);
+        return Quaternion.Angle(transform.rotation, targetRot) <= 0.2f;
     }
 
     IEnumerator RunRotateStep(Step s)
@@ -419,6 +515,11 @@ public enum StepType { Move, PlayAnimation, Wait, Rotate, Fade, Teleport, Attach
 public enum MoveMode { ByDistance, ByDuration }
 
 /// <summary>
+/// CustomMoveKind sinifi, custom move alaninin vector mu yoksa world target mi oldugunu belirler.
+/// </summary>
+public enum CustomMoveKind { DirectionVector, WorldTarget, TargetTransform }
+
+/// <summary>
 /// Direction8 sinifi, cutscene akislarinda kullanilan ilgili davranisi yonetir.
 /// </summary>
 public enum Direction8
@@ -480,7 +581,14 @@ public class Step
 
     public MoveMode moveMode = MoveMode.ByDistance;
     public Direction8 direction = Direction8.Forward;
+    public CustomMoveKind customMoveKind = CustomMoveKind.DirectionVector;
     public Vector3 customDirection = Vector3.forward;
+    [Tooltip("Custom move world target modunda obje bu kesin world pozisyonunda biter.")]
+    public Vector3 customWorldTarget = Vector3.zero;
+    [Tooltip("Custom target transform modunda obje bu hedefe yaklasir.")]
+    public Transform customTargetTransform;
+    [Tooltip("Target Transform modunda hedef objeye ne kadar mesafe kala duracagi.")]
+    public float customTargetStopDistance = 0f;
     [Tooltip("ByDistance modunda kullanilir. Birim metredir.")]
     public float distance = 2f;
     [Tooltip("ByDuration veya Rotate stepinde kullanilir. Birim saniyedir.")]
@@ -491,6 +599,8 @@ public class Step
     public bool faceDirection = true;
     [Tooltip("Move stepinde yuzunu hedef yone ne kadar hizli cevirecegi. 0 ise aninda doner.")]
     public float turnSpeed = 8f;
+    [Tooltip("Aciksa obje once donusunu bitirir, sonra yurur. Kapaliysa yurururken ayni anda yone doner.")]
+    public bool waitForFacingBeforeMove = false;
 
     public RotateMode rotateMode = RotateMode.WorldEuler;
     public Vector3 worldEuler = Vector3.zero;

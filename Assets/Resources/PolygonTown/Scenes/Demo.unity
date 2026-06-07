@@ -16764,6 +16764,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Bld_Shop_Sign_01 (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 1639268940228986, guid: e3dc7921c2c385247b231bf902b70b7c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4200427269618168, guid: e3dc7921c2c385247b231bf902b70b7c, type: 3}
       propertyPath: m_RootOrder
       value: 2863

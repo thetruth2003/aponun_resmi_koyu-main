@@ -64,7 +64,7 @@ public class PauseMenuUI : MonoBehaviour
     [SerializeField] private bool hardFreezeEverything = true;
     public static bool IsInputLocked = false;
     [Header("Scenes")]
-    [SerializeField] private string mainMenuSceneName = "MainMenu";
+    [SerializeField] private string mainMenuSceneName = "Main Menu";
 
     private readonly Dictionary<Animator, float> _animatorSpeeds = new Dictionary<Animator, float>();
     private readonly List<ParticleSystem> _pausedParticles = new List<ParticleSystem>();
@@ -194,6 +194,8 @@ public class PauseMenuUI : MonoBehaviour
 
     private void QuitToMenu()
     {
+        SaveCoordinator.Instance?.SaveGame("quit to menu");
+
         if (hardFreezeEverything) UnfreezeWorld();
 
         Time.timeScale = 1f;
@@ -208,7 +210,7 @@ public class PauseMenuUI : MonoBehaviour
         IsPaused = false;
 
         if (string.IsNullOrEmpty(mainMenuSceneName))
-            mainMenuSceneName = "MainMenu";
+            mainMenuSceneName = "Main Menu";
 
         SceneManager.LoadScene(mainMenuSceneName, LoadSceneMode.Single);
     }
@@ -509,6 +511,7 @@ public class PauseMenuUI : MonoBehaviour
 
     private void QuitToDesktop()
     {
+        SaveCoordinator.Instance?.SaveGame("quit to desktop");
         ResumeHard();
         Application.Quit();
 #if UNITY_EDITOR

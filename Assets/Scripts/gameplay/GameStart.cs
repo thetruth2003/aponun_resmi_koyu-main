@@ -96,6 +96,7 @@ public class game_start : MonoBehaviour
                     dayCount++;
                     UpdateDayCounter(dayCount);
                     PlayerPrefs.SetInt("DayCount", dayCount);
+                    PlayerPrefs.Save();
                     UniStormSystem.Instance.Morning();
                     UniStormSystem.Instance.UpdateTimeSlider();
                     Debug.Log("New day started at midnight.");

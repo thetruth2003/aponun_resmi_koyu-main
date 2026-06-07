@@ -1,0 +1,1875 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1563236475290670005
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7674096047035155628}
+  m_Layer: 0
+  m_Name: cutscene2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7674096047035155628
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1563236475290670005}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.58523, y: 1.21517, z: -10.33165}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4377501759063085363}
+  - {fileID: 3585905296253470966}
+  - {fileID: 2863802663978355210}
+  - {fileID: 2356901130414817135}
+  - {fileID: 7126531671647214662}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7910808885634964302
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6690152434885408601}
+  - component: {fileID: 2727684639217470884}
+  - component: {fileID: 2777658106632402723}
+  m_Layer: 0
+  m_Name: Camera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6690152434885408601
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7910808885634964302}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.112}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2131597191262059441}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!20 &2727684639217470884
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7910808885634964302}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!81 &2777658106632402723
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7910808885634964302}
+  m_Enabled: 1
+--- !u!1001 &2358487392943610961
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7674096047035155628}
+    m_Modifications:
+    - target: {fileID: 1160220439793846, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+      propertyPath: m_Name
+      value: tekel
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049357556114238, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -421.6384
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049357556114238, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.3617183
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049357556114238, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 60.340294
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049357556114238, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.3569104
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049357556114238, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049357556114238, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.93413866
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049357556114238, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049357556114238, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049357556114238, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 138.179
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049357556114238, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 95311695241237188, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 62b77df2849f256479cce1e8779f4e24, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1160220439793846, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 311092096870249163}
+  m_SourcePrefab: {fileID: 100100000, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+--- !u!4 &2356901130414817135 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4049357556114238, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+  m_PrefabInstance: {fileID: 2358487392943610961}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2359632214880734439 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1160220439793846, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+  m_PrefabInstance: {fileID: 2358487392943610961}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &311092096870249163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2359632214880734439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67e39dcb4540b0b428a2d7605574c162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CutsceneMover
+  playOnAwake: 1
+  loop: 0
+  forwardReference: {fileID: 2356901130414817135}
+  animator: {fileID: 2443654365986115221}
+  fadeCanvasGroup: {fileID: 0}
+  OnSequenceFinished:
+    m_PersistentCalls:
+      m_Calls: []
+  driver: 0
+  character: {fileID: 0}
+  rb: {fileID: 0}
+  steps:
+  - type: 2
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 1
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 22
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 3
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 0.3
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 1
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 3585905296253470966}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 1
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: talk1
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 1
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: talk2
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 1
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: talk3
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+--- !u!95 &2443654365986115221 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 95311695241237188, guid: 3c3a8236be548bb4c892cf39a5abadfe, type: 3}
+  m_PrefabInstance: {fileID: 2358487392943610961}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2859600791890934258
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7674096047035155628}
+    m_Modifications:
+    - target: {fileID: 1858355190577810, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+      propertyPath: m_Name
+      value: kamyon
+      objectReference: {fileID: 0}
+    - target: {fileID: 4805542088995832, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.722
+      objectReference: {fileID: 0}
+    - target: {fileID: 4805542088995832, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.39517
+      objectReference: {fileID: 0}
+    - target: {fileID: 4805542088995832, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 23.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4805542088995832, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7546295
+      objectReference: {fileID: 0}
+    - target: {fileID: 4805542088995832, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4805542088995832, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.6561511
+      objectReference: {fileID: 0}
+    - target: {fileID: 4805542088995832, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4805542088995832, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4805542088995832, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 637.986
+      objectReference: {fileID: 0}
+    - target: {fileID: 4805542088995832, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: -4622255602628762848, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1858355190577810, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1365838633431960455}
+  m_SourcePrefab: {fileID: 100100000, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+--- !u!1 &2858041864673919840 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1858355190577810, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+  m_PrefabInstance: {fileID: 2859600791890934258}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1365838633431960455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2858041864673919840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67e39dcb4540b0b428a2d7605574c162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CutsceneMover
+  playOnAwake: 1
+  loop: 0
+  forwardReference: {fileID: 2863802663978355210}
+  animator: {fileID: 0}
+  fadeCanvasGroup: {fileID: 0}
+  OnSequenceFinished:
+    m_PersistentCalls:
+      m_Calls: []
+  driver: 0
+  character: {fileID: 0}
+  rb: {fileID: 0}
+  steps:
+  - type: 2
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 18
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 5
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: -427.086, y: 0, z: 55.556}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+--- !u!4 &2863802663978355210 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4805542088995832, guid: 9f951889d571d8d43a9afdc8caf44225, type: 3}
+  m_PrefabInstance: {fileID: 2859600791890934258}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &3588567835770359680
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7674096047035155628}
+    m_Modifications:
+    - target: {fileID: 1350103588185370, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+      propertyPath: m_Name
+      value: alperen
+      objectReference: {fileID: 0}
+    - target: {fileID: 4106335723276150, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.995
+      objectReference: {fileID: 0}
+    - target: {fileID: 4106335723276150, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.006
+      objectReference: {fileID: 0}
+    - target: {fileID: 4106335723276150, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 13.135
+      objectReference: {fileID: 0}
+    - target: {fileID: 4106335723276150, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.16258731
+      objectReference: {fileID: 0}
+    - target: {fileID: 4106335723276150, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4106335723276150, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.98669416
+      objectReference: {fileID: 0}
+    - target: {fileID: 4106335723276150, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4106335723276150, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4106335723276150, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 161.286
+      objectReference: {fileID: 0}
+    - target: {fileID: 4106335723276150, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 95365376127056996, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: bdc92a8a7052a284496b0015e9aa78b9, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3195817634949575729, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6690152434885408601}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1350103588185370, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5709206897782204051}
+  m_SourcePrefab: {fileID: 100100000, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+--- !u!4 &2131597191262059441 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3195817634949575729, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+  m_PrefabInstance: {fileID: 3588567835770359680}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &3503775372062798820 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 95365376127056996, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+  m_PrefabInstance: {fileID: 3588567835770359680}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3585905296253470966 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4106335723276150, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+  m_PrefabInstance: {fileID: 3588567835770359680}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3587658644951706266 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1350103588185370, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
+  m_PrefabInstance: {fileID: 3588567835770359680}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5709206897782204051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3587658644951706266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67e39dcb4540b0b428a2d7605574c162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CutsceneMover
+  playOnAwake: 1
+  loop: 0
+  forwardReference: {fileID: 3585905296253470966}
+  animator: {fileID: 3503775372062798820}
+  fadeCanvasGroup: {fileID: 0}
+  OnSequenceFinished:
+    m_PersistentCalls:
+      m_Calls: []
+  driver: 0
+  character: {fileID: 0}
+  rb: {fileID: 0}
+  steps:
+  - type: 1
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 1
+    animParam: walk
+    boolValue: 1
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 0
+    skip: 0
+    waitForCompletion: 0
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 1
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 4
+    duration: 3
+    speed: 2.71
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 1
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 1
+    animParam: walk
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 2
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 7
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 3
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: -5.04, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 0
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 1
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: -8.02, y: 0, z: -32.3}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 6
+    duration: 3.5
+    speed: 3
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 0
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 1
+    direction: 8
+    customMoveKind: 0
+    customDirection: {x: 0.86, y: -1.2, z: 7.85}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 2.8
+    speed: 2
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 1
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: entercar
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 4
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 2
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 5
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: exitcar
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: -420.77, y: 0.61, z: 55.66}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 4
+    skip: 0
+    waitForCompletion: 0
+    startDelay: 3
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 3
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 1
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 3
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 180, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 0
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 2
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 1
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 2
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 1
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: talk
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 10
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 2
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 10
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 4
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 5
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: -476.74823, y: 0.28699398, z: 27.772015}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 4
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 1
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 1
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 1
+    animParam: walkn
+    boolValue: 1
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 8
+    customMoveKind: 2
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 7126531671647214662}
+    customTargetStopDistance: 2
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 0
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 8
+    customMoveKind: 2
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 7126531671647214662}
+    customTargetStopDistance: 2
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 1
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 1
+    animParam: walkn
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 8
+    customMoveKind: 2
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 7126531671647214662}
+    customTargetStopDistance: 2
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+--- !u!1001 &4299940280257212236
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7674096047035155628}
+    m_Modifications:
+    - target: {fileID: 534932537567723135, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.49677002
+      objectReference: {fileID: 0}
+    - target: {fileID: 534932537567723135, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.0036873817
+      objectReference: {fileID: 0}
+    - target: {fileID: 534932537567723135, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.7696495
+      objectReference: {fileID: 0}
+    - target: {fileID: 534932537567723135, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.03682844
+      objectReference: {fileID: 0}
+    - target: {fileID: 534932537567723135, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 534932537567723135, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.99932164
+      objectReference: {fileID: 0}
+    - target: {fileID: 534932537567723135, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 534932537567723135, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 534932537567723135, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -175.779
+      objectReference: {fileID: 0}
+    - target: {fileID: 534932537567723135, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 875852148887643333, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+      propertyPath: m_Name
+      value: elif
+      objectReference: {fileID: 0}
+    - target: {fileID: 5876171237959951365, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 6d656b1f77f3efb469c245417db55b63, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 875852148887643333, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1637477340313161607}
+  m_SourcePrefab: {fileID: 100100000, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+--- !u!1 &4002523611459619721 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 875852148887643333, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+  m_PrefabInstance: {fileID: 4299940280257212236}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1637477340313161607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4002523611459619721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67e39dcb4540b0b428a2d7605574c162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CutsceneMover
+  playOnAwake: 1
+  loop: 0
+  forwardReference: {fileID: 4377501759063085363}
+  animator: {fileID: 7647163280303557449}
+  fadeCanvasGroup: {fileID: 0}
+  OnSequenceFinished:
+    m_PersistentCalls:
+      m_Calls: []
+  driver: 0
+  character: {fileID: 0}
+  rb: {fileID: 0}
+  steps: []
+--- !u!4 &4377501759063085363 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 534932537567723135, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+  m_PrefabInstance: {fileID: 4299940280257212236}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &7647163280303557449 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5876171237959951365, guid: 71b8f25b6988ef44bb111ffc373a1731, type: 3}
+  m_PrefabInstance: {fileID: 4299940280257212236}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7127066354647532176
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7674096047035155628}
+    m_Modifications:
+    - target: {fileID: 1019791486663424, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+      propertyPath: m_Name
+      value: manav
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199973734178518, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -466.32953
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199973734178518, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.0273646
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199973734178518, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 58.676773
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199973734178518, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.21061292
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199973734178518, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199973734178518, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.9775696
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199973734178518, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199973734178518, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199973734178518, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -155.683
+      objectReference: {fileID: 0}
+    - target: {fileID: 4199973734178518, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 95309627407803296, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: f14c3da4343466d45ba183ad86051c0c, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1019791486663424, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3886447861144287596}
+  m_SourcePrefab: {fileID: 100100000, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+--- !u!4 &7126531671647214662 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4199973734178518, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+  m_PrefabInstance: {fileID: 7127066354647532176}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7128057363770718608 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1019791486663424, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+  m_PrefabInstance: {fileID: 7127066354647532176}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3886447861144287596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7128057363770718608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67e39dcb4540b0b428a2d7605574c162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CutsceneMover
+  playOnAwake: 1
+  loop: 0
+  forwardReference: {fileID: 7126531671647214662}
+  animator: {fileID: 7186327250843115824}
+  fadeCanvasGroup: {fileID: 0}
+  OnSequenceFinished:
+    m_PersistentCalls:
+      m_Calls: []
+  driver: 0
+  character: {fileID: 0}
+  rb: {fileID: 0}
+  steps:
+  - type: 2
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 0
+    animParam: 
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 30
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+  - type: 1
+    skip: 0
+    waitForCompletion: 1
+    startDelay: 0
+    title: 
+    note: 
+    playAnimAtStart: 0
+    animSetType: 1
+    animParam: talk
+    boolValue: 0
+    floatValue: 0
+    intValue: 0
+    waitSeconds: 0
+    moveMode: 0
+    direction: 0
+    customMoveKind: 0
+    customDirection: {x: 0, y: 0, z: 1}
+    customWorldTarget: {x: 0, y: 0, z: 0}
+    customTargetTransform: {fileID: 0}
+    customTargetStopDistance: 0
+    distance: 2
+    duration: 1
+    speed: 1.5
+    easing: 0
+    faceDirection: 1
+    turnSpeed: 8
+    waitForFacingBeforeMove: 0
+    rotateMode: 0
+    worldEuler: {x: 0, y: 0, z: 0}
+    lookTarget: {fileID: 0}
+    fadeMode: 0
+    teleportWorldPosition: {x: 0, y: 0, z: 0}
+    attachMode: 0
+    attachObject: {fileID: 0}
+    attachTarget: {fileID: 0}
+    keepWorldTransform: 0
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localEulerOffset: {x: 0, y: 0, z: 0}
+    onInvoke:
+      m_PersistentCalls:
+        m_Calls: []
+--- !u!95 &7186327250843115824 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 95309627407803296, guid: 827a26e9b261b7847ac6cc3df54f2677, type: 3}
+  m_PrefabInstance: {fileID: 7127066354647532176}
+  m_PrefabAsset: {fileID: 0}

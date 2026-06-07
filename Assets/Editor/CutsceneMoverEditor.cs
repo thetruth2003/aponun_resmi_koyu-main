@@ -138,7 +138,7 @@ public class CutsceneMoverEditor : Editor
         {
             EditorGUILayout.LabelField("Cutscene Mover", EditorStyles.boldLabel);
             EditorGUILayout.HelpBox(
-                "Bu editor step'leri turune gore ayirir ve gereksiz alanlari gizler. Move stepinde 'Speed' yurume hizidir. 'Turn Speed' sadece hareketten once yone donmeyi etkiler. Rotate stepinde hiz degil 'Duration' kullanilir.",
+                "Bu editor step'leri turune gore ayirir ve gereksiz alanlari gizler. Move stepinde 'Speed' yurume hizidir. 'Turn Speed' yuzunu ne kadar hizli cevirecegini belirler. Rotate stepinde hiz degil 'Duration' kullanilir.",
                 MessageType.Info);
 
             if (mover.steps == null || mover.steps.Count == 0)
@@ -463,17 +463,22 @@ public class CutsceneMoverEditor : Editor
 
     void DrawMoveFields(SerializedProperty stepProp)
     {
-        EditorGUILayout.HelpBox("Move stepi objeyi ilerletir. Speed yurume hizidir. Face Direction aciksa once yone doner. Turn Speed sadece bu on donusu etkiler.", MessageType.None);
+        EditorGUILayout.HelpBox("Move stepi objeyi ilerletir. Speed yurume hizidir. Face Direction aciksa yuzunu hedef yone cevirir. Istersen hareketten once bekletebilir, istersen yururken de dondurebilirsin.", MessageType.None);
 
         SerializedProperty moveModeProp = stepProp.FindPropertyRelative("moveMode");
         SerializedProperty directionProp = stepProp.FindPropertyRelative("direction");
+        SerializedProperty customMoveKindProp = stepProp.FindPropertyRelative("customMoveKind");
         SerializedProperty customDirectionProp = stepProp.FindPropertyRelative("customDirection");
+        SerializedProperty customWorldTargetProp = stepProp.FindPropertyRelative("customWorldTarget");
+        SerializedProperty customTargetTransformProp = stepProp.FindPropertyRelative("customTargetTransform");
+        SerializedProperty customTargetStopDistanceProp = stepProp.FindPropertyRelative("customTargetStopDistance");
         SerializedProperty distanceProp = stepProp.FindPropertyRelative("distance");
         SerializedProperty durationProp = stepProp.FindPropertyRelative("duration");
         SerializedProperty speedProp = stepProp.FindPropertyRelative("speed");
         SerializedProperty easingProp = stepProp.FindPropertyRelative("easing");
         SerializedProperty faceDirectionProp = stepProp.FindPropertyRelative("faceDirection");
         SerializedProperty turnSpeedProp = stepProp.FindPropertyRelative("turnSpeed");
+        SerializedProperty waitForFacingProp = stepProp.FindPropertyRelative("waitForFacingBeforeMove");
 
         using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
         {
@@ -483,10 +488,30 @@ public class CutsceneMoverEditor : Editor
 
             if ((Direction8)directionProp.enumValueIndex == Direction8.Custom)
             {
-                EditorGUILayout.PropertyField(customDirectionProp, new GUIContent("Custom Direction", "Sifir vector verirsen step hareket etmez."));
-                if (customDirectionProp.vector3Value.sqrMagnitude < 0.0001f)
+                EditorGUILayout.PropertyField(customMoveKindProp, new GUIContent("Custom Type", "Vector olarak mi yoksa kesin world hedef olarak mi kullanilsin?"));
+
+                if ((CustomMoveKind)customMoveKindProp.enumValueIndex == CustomMoveKind.WorldTarget)
                 {
-                    EditorGUILayout.HelpBox("Custom Direction su an sifir. Bu step hareket etmeyecek.", MessageType.Warning);
+                    EditorGUILayout.PropertyField(customWorldTargetProp, new GUIContent("World Target", "Obje step sonunda bu world koordinatinda biter."));
+                    EditorGUILayout.HelpBox("World Target modunda step hedef noktaya gider. ByDistance ise hizdan sure hesaplanir. ByDuration ise sureye gore gidip hedefte biter.", MessageType.None);
+                }
+                else if ((CustomMoveKind)customMoveKindProp.enumValueIndex == CustomMoveKind.TargetTransform)
+                {
+                    EditorGUILayout.PropertyField(customTargetTransformProp, new GUIContent("Target Transform", "Yaklasilacak hedef obje."));
+                    EditorGUILayout.PropertyField(customTargetStopDistanceProp, new GUIContent("Stop Distance", "Hedef objeye ne kadar mesafe kala dursun?"));
+                    EditorGUILayout.HelpBox("Target Transform modunda obje hedefe gider ama istersen tam dibine degil, belirttigin mesafe kala durur.", MessageType.None);
+                    if (customTargetTransformProp.objectReferenceValue == null)
+                    {
+                        EditorGUILayout.HelpBox("Target Transform henuz atanmagan. Bu step hedefsiz kalirsa hareket etmeyecek.", MessageType.Warning);
+                    }
+                }
+                else
+                {
+                    EditorGUILayout.PropertyField(customDirectionProp, new GUIContent("Custom Direction", "Sifir vector verirsen step hareket etmez."));
+                    if (customDirectionProp.vector3Value.sqrMagnitude < 0.0001f)
+                    {
+                        EditorGUILayout.HelpBox("Custom Direction su an sifir. Bu step hareket etmeyecek.", MessageType.Warning);
+                    }
                 }
             }
         }
@@ -508,7 +533,7 @@ public class CutsceneMoverEditor : Editor
             else
             {
                 EditorGUILayout.PropertyField(durationProp, new GUIContent("Duration (sec)", "Ne kadar sure hareket edecegi."));
-                EditorGUILayout.HelpBox("ByDuration modunda toplam gidilen mesafe kabaca Speed x Duration kadar olur. Easing secimi hisi degistirir, preview bu mesafeyi yaklasik cizer.", MessageType.None);
+                EditorGUILayout.HelpBox("ByDuration modunda hedef mesafe Speed x Duration olur. Easing sadece hiz profilini degistirir; toplam hedef mesafe degismez.", MessageType.None);
                 if (durationProp.floatValue <= 0f)
                 {
                     EditorGUILayout.HelpBox("Duration 0 veya daha kucuk. Runtime bunu cok kisa bir sureye clamp eder.", MessageType.Warning);
@@ -521,11 +546,12 @@ public class CutsceneMoverEditor : Editor
         using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
         {
             EditorGUILayout.LabelField("Facing", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(faceDirectionProp, new GUIContent("Face Direction First", "Yurumeden once yuzunu hareket yonune cevirsin mi?"));
+            EditorGUILayout.PropertyField(faceDirectionProp, new GUIContent("Face Direction", "Yuzunu hareket yonune cevirsin mi?"));
 
             if (faceDirectionProp.boolValue)
             {
                 EditorGUILayout.PropertyField(turnSpeedProp, new GUIContent("Facing Turn Speed", "Buyuk sayi daha hizli yone doner. 0 olursa aninda doner."));
+                EditorGUILayout.PropertyField(waitForFacingProp, new GUIContent("Wait For Facing First", "Aciksa once tam doner sonra yurur. Kapaliysa yururken ayni anda doner."));
             }
             else
             {
@@ -749,7 +775,7 @@ public class CutsceneMoverEditor : Editor
         {
             EditorGUILayout.LabelField("Mental Model", EditorStyles.boldLabel);
             EditorGUILayout.HelpBox(
-                "1) Move: yurur. Speed hareket hizidir.\n2) Move + Face Direction: once yone doner. Turn Speed sadece bu kismi etkiler.\n3) Rotate: oldugu yerde doner. Burada hiz yerine Duration vardir.\n4) Wait: sadece bekler.\n5) Animation: animator parametresi yollar.\n6) Fade: ekrani yumusakca karartir ya da acar.\n7) Teleport: objeyi world position'a aninda tasir.\n8) Attach: baska objeyi ele, bagaja ya da baska target'a parent eder.\n9) Event: hareket etmeden ekstra aksiyon baslatir.",
+                "1) Move: yurur. Speed hareket hizidir.\n2) Face Direction aciksa yuzunu hedef yone cevirir. Wait For Facing First aciksa once doner, kapaliysa yururken doner.\n3) Rotate: oldugu yerde doner. Burada hiz yerine Duration vardir.\n4) Wait: sadece bekler.\n5) Animation: animator parametresi yollar.\n6) Fade: ekrani yumusakca karartir ya da acar.\n7) Teleport: objeyi world position'a aninda tasir.\n8) Attach: baska objeyi ele, bagaja ya da baska target'a parent eder.\n9) Event: hareket etmeden ekstra aksiyon baslatir.",
                 MessageType.None);
         }
     }
@@ -854,13 +880,18 @@ public class CutsceneMoverEditor : Editor
 
         stepProp.FindPropertyRelative("moveMode").enumValueIndex = (int)MoveMode.ByDistance;
         stepProp.FindPropertyRelative("direction").enumValueIndex = (int)Direction8.Forward;
+        stepProp.FindPropertyRelative("customMoveKind").enumValueIndex = (int)CustomMoveKind.DirectionVector;
         stepProp.FindPropertyRelative("customDirection").vector3Value = Vector3.forward;
+        stepProp.FindPropertyRelative("customWorldTarget").vector3Value = Vector3.zero;
+        stepProp.FindPropertyRelative("customTargetTransform").objectReferenceValue = null;
+        stepProp.FindPropertyRelative("customTargetStopDistance").floatValue = 0f;
         stepProp.FindPropertyRelative("distance").floatValue = 2f;
         stepProp.FindPropertyRelative("duration").floatValue = 1f;
         stepProp.FindPropertyRelative("speed").floatValue = 1.5f;
         stepProp.FindPropertyRelative("easing").enumValueIndex = (int)Easing.Linear;
         stepProp.FindPropertyRelative("faceDirection").boolValue = true;
         stepProp.FindPropertyRelative("turnSpeed").floatValue = 8f;
+        stepProp.FindPropertyRelative("waitForFacingBeforeMove").boolValue = false;
 
         stepProp.FindPropertyRelative("rotateMode").enumValueIndex = (int)RotateMode.WorldEuler;
         stepProp.FindPropertyRelative("worldEuler").vector3Value = Vector3.zero;
@@ -994,7 +1025,35 @@ public class CutsceneMoverEditor : Editor
             {
                 MoveMode moveMode = (MoveMode)stepProp.FindPropertyRelative("moveMode").enumValueIndex;
                 Direction8 direction = (Direction8)stepProp.FindPropertyRelative("direction").enumValueIndex;
+                CustomMoveKind customMoveKind = (CustomMoveKind)stepProp.FindPropertyRelative("customMoveKind").enumValueIndex;
                 float speed = stepProp.FindPropertyRelative("speed").floatValue;
+
+                if (direction == Direction8.Custom && customMoveKind == CustomMoveKind.WorldTarget)
+                {
+                    Vector3 target = stepProp.FindPropertyRelative("customWorldTarget").vector3Value;
+                    if (moveMode == MoveMode.ByDistance)
+                    {
+                        return $"Move To {target.x:0.#}, {target.y:0.#}, {target.z:0.#} | {speed:0.##} m/s";
+                    }
+
+                    float targetDuration = stepProp.FindPropertyRelative("duration").floatValue;
+                    return $"Move To {target.x:0.#}, {target.y:0.#}, {target.z:0.#} | {targetDuration:0.##}s";
+                }
+
+                if (direction == Direction8.Custom && customMoveKind == CustomMoveKind.TargetTransform)
+                {
+                    Object targetObject = stepProp.FindPropertyRelative("customTargetTransform").objectReferenceValue;
+                    float stopDistance = stepProp.FindPropertyRelative("customTargetStopDistance").floatValue;
+                    string targetName = SafeLabel(targetObject ? targetObject.name : string.Empty, "target");
+
+                    if (moveMode == MoveMode.ByDistance)
+                    {
+                        return $"Move Near {targetName} | stop {stopDistance:0.##}m | {speed:0.##} m/s";
+                    }
+
+                    float targetDuration = stepProp.FindPropertyRelative("duration").floatValue;
+                    return $"Move Near {targetName} | stop {stopDistance:0.##}m | {targetDuration:0.##}s";
+                }
 
                 if (moveMode == MoveMode.ByDistance)
                 {
@@ -1068,7 +1127,8 @@ public class CutsceneMoverEditor : Editor
 
     static void DrawMovePreview(CutsceneMover mover, Step step, int index, ref Vector3 currentPos, ref Quaternion currentRotation)
     {
-        Vector3 worldDir = GetSceneDirection(mover, step, currentRotation);
+        bool useFixedTarget = IsCustomFixedTarget(step);
+        Vector3 worldDir = GetSceneDirection(mover, step, currentRotation, currentPos);
         if (worldDir.sqrMagnitude < 0.0001f)
         {
             Handles.color = new Color(1f, 0.5f, 0.3f, 1f);
@@ -1076,9 +1136,23 @@ public class CutsceneMoverEditor : Editor
             return;
         }
 
+        float distance = EstimateDistance(step, currentPos);
+        Vector3 nextPos = useFixedTarget
+            ? GetPreviewFixedTargetPosition(step, currentPos)
+            : currentPos + worldDir.normalized * distance;
+
+        worldDir = nextPos - currentPos;
+        if (worldDir.sqrMagnitude < 0.0001f)
+        {
+            Handles.color = new Color(1f, 0.5f, 0.3f, 1f);
+            Handles.Label(currentPos + Vector3.up * 0.45f, $"{index + 1}. Move (zero dir)");
+            currentPos = nextPos;
+            return;
+        }
+
         worldDir.Normalize();
 
-        if (!mover.forwardReference && step.faceDirection)
+        if (step.faceDirection)
         {
             Vector3 flatDir = new Vector3(worldDir.x, 0f, worldDir.z);
             if (flatDir.sqrMagnitude > 0.0001f)
@@ -1087,14 +1161,11 @@ public class CutsceneMoverEditor : Editor
             }
         }
 
-        float distance = EstimateDistance(step);
-        Vector3 nextPos = currentPos + worldDir * distance;
-
         Handles.color = new Color(0.25f, 0.85f, 1f, 1f);
         Handles.DrawAAPolyLine(4f, currentPos, nextPos);
         Handles.ArrowHandleCap(0, nextPos, Quaternion.LookRotation(worldDir), 0.7f, EventType.Repaint);
 
-        string distanceText = step.moveMode == MoveMode.ByDuration ? $"~{distance:0.##}m" : $"{distance:0.##}m";
+        string distanceText = $"{distance:0.##}m";
         Handles.Label(Vector3.Lerp(currentPos, nextPos, 0.5f) + Vector3.up * 0.25f, $"{index + 1}. Move {distanceText}");
 
         currentPos = nextPos;
@@ -1157,26 +1228,95 @@ public class CutsceneMoverEditor : Editor
         Handles.Label(currentPos + Vector3.up * 0.55f, $"{index + 1}. Attach");
     }
 
-    static Vector3 GetSceneDirection(CutsceneMover mover, Step step, Quaternion currentRotation)
+    static Vector3 GetSceneDirection(CutsceneMover mover, Step step, Quaternion currentRotation, Vector3 currentPos)
     {
+        if (step.direction == Direction8.Custom && step.customMoveKind == CustomMoveKind.TargetTransform && !step.customTargetTransform)
+        {
+            return Vector3.zero;
+        }
+
+        if (IsCustomFixedTarget(step))
+        {
+            return GetPreviewFixedTargetPosition(step, currentPos) - currentPos;
+        }
+
         Vector3 localDirection = GetDirectionVector(step.direction, step.customDirection);
         if (localDirection.sqrMagnitude < 0.0001f) return Vector3.zero;
 
-        Quaternion referenceRotation = mover.forwardReference
-            ? mover.forwardReference.rotation
-            : currentRotation;
+        Quaternion referenceRotation = GetPreviewReferenceRotation(mover, currentRotation);
 
         return referenceRotation * localDirection.normalized;
     }
 
-    static float EstimateDistance(Step step)
+    static Quaternion GetPreviewReferenceRotation(CutsceneMover mover, Quaternion currentRotation)
     {
+        if (!mover.forwardReference)
+        {
+            return currentRotation;
+        }
+
+        if (mover.forwardReference == mover.transform)
+        {
+            return currentRotation;
+        }
+
+        if (mover.forwardReference.IsChildOf(mover.transform))
+        {
+            Quaternion localOffset = Quaternion.Inverse(mover.transform.rotation) * mover.forwardReference.rotation;
+            return currentRotation * localOffset;
+        }
+
+        return mover.forwardReference.rotation;
+    }
+
+    static float EstimateDistance(Step step, Vector3 currentPos)
+    {
+        if (IsCustomFixedTarget(step))
+        {
+            return Vector3.Distance(currentPos, GetPreviewFixedTargetPosition(step, currentPos));
+        }
+
         if (step.moveMode == MoveMode.ByDistance)
         {
             return Mathf.Max(0f, step.distance);
         }
 
         return Mathf.Max(0f, step.speed) * Mathf.Max(0f, step.duration);
+    }
+
+    static bool IsCustomFixedTarget(Step step)
+    {
+        if (step.direction != Direction8.Custom) return false;
+        if (step.customMoveKind == CustomMoveKind.WorldTarget) return true;
+        if (step.customMoveKind == CustomMoveKind.TargetTransform && step.customTargetTransform) return true;
+        return false;
+    }
+
+    static Vector3 GetPreviewFixedTargetPosition(Step step, Vector3 currentPos)
+    {
+        if (step.customMoveKind == CustomMoveKind.WorldTarget)
+        {
+            return step.customWorldTarget;
+        }
+
+        if (step.customMoveKind == CustomMoveKind.TargetTransform && step.customTargetTransform)
+        {
+            return CalculateApproachPreviewPosition(currentPos, step.customTargetTransform.position, step.customTargetStopDistance);
+        }
+
+        return currentPos;
+    }
+
+    static Vector3 CalculateApproachPreviewPosition(Vector3 startPosition, Vector3 targetPosition, float stopDistance)
+    {
+        Vector3 delta = targetPosition - startPosition;
+        float fullDistance = delta.magnitude;
+        if (fullDistance < 0.0001f) return startPosition;
+
+        float targetTravelDistance = Mathf.Max(0f, fullDistance - Mathf.Max(0f, stopDistance));
+        if (targetTravelDistance <= 0.0001f) return startPosition;
+
+        return startPosition + delta / fullDistance * targetTravelDistance;
     }
 
     static Vector3 GetDirectionVector(Direction8 dir, Vector3 custom)
