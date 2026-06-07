@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 
 /// <summary>
 /// CutsceneActivator, gorev veya cutscene olaylarina gore sahnedeki cutscene objelerini acip kapatir.
@@ -25,6 +26,7 @@ public class CutsceneActivator : MonoBehaviour
 
     [Header("Cutscene Kosulu")]
     public CutsceneClip waitForCutscene;
+    public float triggerDelay = 0f;
 
     [Header("Ne yapacagiz?")]
     public List<GameObject> cutscenesToActivate = new List<GameObject>();
@@ -43,11 +45,17 @@ public class CutsceneActivator : MonoBehaviour
             {
                 Debug.Log($"[CutsceneActivator:{name}] ActiveQuestSystem bulundu, event'e abone oluyorum.");
                 ActiveQuestSystem.Instance.OnActiveStepChanged += OnQuestStepChanged;
+                EvaluateCurrentQuestState();
             }
             else
             {
                 Debug.LogWarning($"[CutsceneActivator:{name}] ActiveQuestSystem.Instance yok, event'e abone olamiyorum!");
             }
+        }
+
+        if (triggerType == TriggerType.OnCutsceneFinished)
+        {
+            CutsceneClip.AnyClipFinished += HandleWatchedCutsceneFinished;
         }
     }
 
@@ -57,6 +65,8 @@ public class CutsceneActivator : MonoBehaviour
         {
             ActiveQuestSystem.Instance.OnActiveStepChanged -= OnQuestStepChanged;
         }
+
+        CutsceneClip.AnyClipFinished -= HandleWatchedCutsceneFinished;
     }
 
     private void OnQuestStepChanged(QuestEditorAsset changedAsset, int newIndex)
@@ -84,6 +94,7 @@ public class CutsceneActivator : MonoBehaviour
                 if (newIndex == stepIndex)
                 {
                     Debug.Log($"[CutsceneActivator:{name}] STEP ESLESTI (newIndex={newIndex}), Trigger cagrilmali.");
+                    Trigger();
                 }
                 break;
 
@@ -91,6 +102,7 @@ public class CutsceneActivator : MonoBehaviour
                 if (newIndex >= quest.quests.Count)
                 {
                     Debug.Log($"[CutsceneActivator:{name}] GOREV TAMAMLANDI, Trigger cagrilmali.");
+                    Trigger();
                 }
                 break;
         }
@@ -115,7 +127,7 @@ public class CutsceneActivator : MonoBehaviour
             return;
         }
 
-        Trigger();
+        TryTriggerWithDelay();
     }
 
     private void Trigger()
@@ -143,5 +155,66 @@ public class CutsceneActivator : MonoBehaviour
         }
 
         enabled = false;
+    }
+
+    private void HandleWatchedCutsceneFinished(CutsceneClip finishedClip)
+    {
+        if (triggerType != TriggerType.OnCutsceneFinished)
+            return;
+
+        if (triggered)
+            return;
+
+        if (!waitForCutscene || finishedClip != waitForCutscene)
+            return;
+
+        Debug.Log($"[CutsceneActivator:{name}] Beklenen cutscene bitti, trigger akisi basliyor.");
+        TryTriggerWithDelay();
+    }
+
+    private void TryTriggerWithDelay()
+    {
+        if (triggerDelay <= 0f)
+        {
+            Trigger();
+            return;
+        }
+
+        StartCoroutine(CoTriggerAfterDelay());
+    }
+
+    private IEnumerator CoTriggerAfterDelay()
+    {
+        yield return new WaitForSeconds(triggerDelay);
+        Trigger();
+    }
+
+    private void EvaluateCurrentQuestState()
+    {
+        if (triggered || quest == null || ActiveQuestSystem.Instance == null)
+            return;
+
+        var tracked = ActiveQuestSystem.Instance.GetTracked(quest);
+        if (tracked == null)
+            return;
+
+        switch (triggerType)
+        {
+            case TriggerType.OnQuestStepReached:
+                if (tracked.currentIndex == stepIndex)
+                {
+                    Debug.Log($"[CutsceneActivator:{name}] Mevcut quest step zaten uygun, Trigger cagriliyor.");
+                    Trigger();
+                }
+                break;
+
+            case TriggerType.OnQuestCompleted:
+                if (quest.quests != null && tracked.currentIndex >= quest.quests.Count)
+                {
+                    Debug.Log($"[CutsceneActivator:{name}] Quest zaten tamamlanmis, Trigger cagriliyor.");
+                    Trigger();
+                }
+                break;
+        }
     }
 }

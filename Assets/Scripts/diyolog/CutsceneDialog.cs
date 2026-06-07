@@ -35,11 +35,13 @@ public class CutsceneDialog : MonoBehaviour
     public GameObject[] hideWhilePlaying;
 
     [Header("Fade Panel")]
-    [Tooltip("Full-screen siyah panel. CanvasGroup varsa onu, yoksa Image alphaâ€????y???± kullan???±r.")]
+    [Tooltip("Full-screen siyah panel. CanvasGroup varsa onu, yoksa Image alpha kullanir.")]
     public GameObject fadePanel;
     public float fadeInDuration  = 0.35f;
     public float fadeOutDuration = 0.35f;
     public float fadeHold = 0.05f;
+    [Tooltip("Bir sonraki cutscene fade-out ile devralacaksa siyah paneli kapanis sonunda acik birak.")]
+    public bool keepFadePanelVisibleOnEnd = false;
     public bool disableSelfOnEnd = true;
 
     private int sectionIndex = 0;
@@ -49,7 +51,9 @@ public class CutsceneDialog : MonoBehaviour
     private float originalFOV = 60f;
     private float lineTimer = 0f;
     private bool isPlaying = false;
+    private bool waitingInInterLinePause = false;
     private Coroutine currentCo;
+    private DialogLine currentLine;
 
     private CanvasGroup fadeCg;
     private Image       fadeImg;
@@ -68,8 +72,25 @@ public class CutsceneDialog : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
 
         PrepareFadePanel();
+    }
 
-        if (playOnAwake) StartCutscene();
+    void OnEnable()
+    {
+        if (playOnAwake)
+            StartCutscene();
+    }
+
+    void OnDisable()
+    {
+        if (currentCo != null)
+        {
+            StopCoroutine(currentCo);
+            currentCo = null;
+        }
+
+        isPlaying = false;
+        waitingInInterLinePause = false;
+        currentLine = null;
     }
 
     void PrepareFadePanel()
@@ -100,7 +121,10 @@ public class CutsceneDialog : MonoBehaviour
 
     IEnumerator CoStartCutscene()
     {
-        if (fadePanel)
+        var clip = GetComponent<CutsceneClip>();
+        bool clipHandlesActivationReveal = clip != null && clip.revealScreenWhenActivated;
+
+        if (fadePanel && !clipHandlesActivationReveal)
         {
             fadePanel.SetActive(true);
             SetFadeAlpha(1f);
@@ -141,11 +165,23 @@ public class CutsceneDialog : MonoBehaviour
         if (sec.lines == null || sec.lines.Count == 0) { AdvanceSectionOrEnd(); return; }
 
         var line = sec.lines[lineIndex];
+        currentLine = line;
+        waitingInInterLinePause = false;
         if (dialogText) dialogText.text = line.text ?? string.Empty;
 
         if (audioSource && audioSource.isPlaying) audioSource.Stop();
 
-        if (audioSource && line.voiceClip)
+        if (line.durationOverride > 0f)
+        {
+            if (audioSource && line.voiceClip)
+            {
+                audioSource.clip = line.voiceClip;
+                audioSource.Play();
+            }
+
+            lineTimer = line.durationOverride;
+        }
+        else if (audioSource && line.voiceClip)
         {
             audioSource.clip = line.voiceClip;
             audioSource.Play();
@@ -177,7 +213,17 @@ public class CutsceneDialog : MonoBehaviour
         if (!isPlaying) return;
 
         if (lineTimer > 0f) lineTimer -= Time.deltaTime;
-        if (lineTimer <= 0f) AdvanceLine();
+        if (lineTimer <= 0f)
+        {
+            if (!waitingInInterLinePause && currentLine != null && currentLine.pauseAfterLine > 0f)
+            {
+                BeginInterLinePause(currentLine);
+            }
+            else
+            {
+                AdvanceLine();
+            }
+        }
 
         if (targetCamera)
         {
@@ -190,6 +236,8 @@ public class CutsceneDialog : MonoBehaviour
     void AdvanceLine()
     {
         if (audioSource && audioSource.isPlaying) audioSource.Stop();
+        waitingInInterLinePause = false;
+        currentLine = null;
 
         lineIndex++;
         var sec = sections[sectionIndex];
@@ -235,10 +283,16 @@ public class CutsceneDialog : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        GetComponent<CutsceneClip>()?.Finish();
 
-        if (disableSelfOnEnd) gameObject.SetActive(false);
-        fadePanel.SetActive(false);
+        var clip = GetComponent<CutsceneClip>();
+        clip?.Finish();
+
+        bool clipWillHandleDeactivation = clip != null && clip.deactivateSelfOnFinish;
+        if (disableSelfOnEnd && !clipWillHandleDeactivation)
+            gameObject.SetActive(false);
+
+        if (fadePanel && !keepFadePanelVisibleOnEnd)
+            fadePanel.SetActive(false);
     }
 
     void SetFadeAlpha(float a)
@@ -274,5 +328,16 @@ public class CutsceneDialog : MonoBehaviour
     {
         if (currentCo != null) StopCoroutine(currentCo);
         currentCo = StartCoroutine(CoEndCutscene());
+    }
+
+    void BeginInterLinePause(DialogLine line)
+    {
+        waitingInInterLinePause = true;
+        lineTimer = line.pauseAfterLine;
+
+        if (line.hideSubtitleDuringPause && dialogText)
+        {
+            dialogText.text = string.Empty;
+        }
     }
 }

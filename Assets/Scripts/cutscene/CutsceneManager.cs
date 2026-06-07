@@ -73,8 +73,7 @@ public class CutsceneManager : MonoBehaviour
                 if (e == null || !e.clip) continue;
                 var c = e.clip;
 
-                if (string.IsNullOrWhiteSpace(c.id))
-                    c.id = Guid.NewGuid().ToString("N");
+                c.EnsureStableId();
 
                 c.triggerKey = (e.triggerKey ?? "").Trim();
                 c.groupKey   = string.IsNullOrWhiteSpace(e.groupKey) ? "" : e.groupKey.Trim();
@@ -97,8 +96,7 @@ public class CutsceneManager : MonoBehaviour
 
         foreach (var c in found)
         {
-            if (string.IsNullOrWhiteSpace(c.id))
-                c.id = Guid.NewGuid().ToString("N");
+            c.EnsureStableId();
 
             if (!allById.ContainsKey(c.id))
             {
@@ -340,8 +338,7 @@ public class CutsceneManager : MonoBehaviour
 
         foreach (var c in found)
         {
-            if (string.IsNullOrWhiteSpace(c.id))
-                c.id = Guid.NewGuid().ToString("N");
+            c.EnsureStableId();
 
             entries.Add(new CutsceneEntry
             {

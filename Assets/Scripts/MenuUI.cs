@@ -58,6 +58,8 @@ public class MenuUI : MonoBehaviour
 
     private const string KEY_SAVE_EXISTS = "SaveExists";
     private const string KEY_LAST_SCENE  = "LastScene";
+    private const string KEY_LAST_SCENE_PATH = "LastScenePath";
+    private const int DEFAULT_NEW_GAME_BUILD_INDEX = 1;
     private const string KEY_VOL         = "opt_masterVol";
     private const string KEY_QUALITY     = "opt_quality";
     private const string KEY_FULLSCREEN  = "opt_full";
@@ -85,7 +87,7 @@ public class MenuUI : MonoBehaviour
         if (optionsPanel) optionsPanel.SetActive(false);
         if (loadPanel) loadPanel.SetActive(false);
 
-        bool hasSave = PlayerPrefs.GetInt(KEY_SAVE_EXISTS, 0) == 1;
+        bool hasSave = SaveCoordinator.HasAnySave() || PlayerPrefs.GetInt(KEY_SAVE_EXISTS, 0) == 1;
         if (continueButton) continueButton.interactable = hasSave;
 
         if (newGameButton) newGameButton.onClick.AddListener(OnClick_NewGame);
@@ -110,16 +112,24 @@ public class MenuUI : MonoBehaviour
 
     private void OnClick_NewGame()
     {
+        if (SaveCoordinator.EnsureInstance() != null)
+        {
+            SaveCoordinator.Instance.StartDefaultNewGame();
+            return;
+        }
+
         PlayerPrefs.DeleteKey("DayCount");
         Time.timeScale = 1f;
-        SceneManager.LoadScene("aponun orjinal koyu", LoadSceneMode.Single);
+        SceneManager.LoadScene(DEFAULT_NEW_GAME_BUILD_INDEX, LoadSceneMode.Single);
     }
 
     private void OnClick_Continue()
     {
-        if (PlayerPrefs.GetInt(KEY_SAVE_EXISTS, 0) != 1) return;
+        if (!SaveCoordinator.HasAnySave() && PlayerPrefs.GetInt(KEY_SAVE_EXISTS, 0) != 1) return;
 
-        if (useLoadSummaryPanel)
+        bool canUseSummaryPanel = useLoadSummaryPanel && loadPanel != null && loadConfirmButton != null;
+
+        if (canUseSummaryPanel)
             OnClick_OpenLoadPanel();
         else
             OnClick_QuickLoad();
@@ -151,6 +161,12 @@ public class MenuUI : MonoBehaviour
 
     private void OnClick_OpenLoadPanel()
     {
+        if (!loadPanel || !loadConfirmButton)
+        {
+            OnClick_QuickLoad();
+            return;
+        }
+
         if (loadPanel) loadPanel.SetActive(true);
 
         if (!File.Exists(MetaPath))
@@ -177,10 +193,28 @@ public class MenuUI : MonoBehaviour
 
     public void OnClick_QuickLoad()
     {
-        if (PlayerPrefs.GetInt(KEY_SAVE_EXISTS, 0) != 1) return;
-        string last = PlayerPrefs.GetString(KEY_LAST_SCENE, "aponun orjinal koyu");
+        if (!SaveCoordinator.HasAnySave() && PlayerPrefs.GetInt(KEY_SAVE_EXISTS, 0) != 1) return;
+
+        if (SaveCoordinator.EnsureInstance() != null)
+        {
+            SaveCoordinator.Instance.LoadLastSaveFromMenu();
+            return;
+        }
+
+        string last = PlayerPrefs.GetString(KEY_LAST_SCENE_PATH, PlayerPrefs.GetString(KEY_LAST_SCENE, "aponun orjinal koyu"));
         Time.timeScale = 1f;
-        SceneManager.LoadScene(last, LoadSceneMode.Single);
+        string normalized = last.Replace("\\", "/");
+        if (!normalized.EndsWith(".unity", StringComparison.OrdinalIgnoreCase) && normalized.Contains("/"))
+            normalized += ".unity";
+
+        int buildIndex = SceneUtility.GetBuildIndexByScenePath(normalized);
+        if (buildIndex >= 0)
+        {
+            SceneManager.LoadScene(buildIndex, LoadSceneMode.Single);
+            return;
+        }
+
+        SceneManager.LoadScene(Path.GetFileNameWithoutExtension(normalized), LoadSceneMode.Single);
     }
 
     private void OnClick_CloseLoadPanel()

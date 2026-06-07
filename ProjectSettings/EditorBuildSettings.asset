@@ -6,12 +6,16 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/main/aponun orjinal koyu.unity
-    guid: e2ce4ba2aaec52844a739037b74414f7
-  - enabled: 1
     path: Assets/Scenes/Main Menu.unity
     guid: 0bc17779059b91c4baac22fbe74c7c97
   - enabled: 1
+    path: "Assets/Scenes/main/MA\u0130N_TEST.unity"
+    guid: c99a74c81040b3e4e8549608c6d0d9df
+  - enabled: 0
+    path: Assets/Scenes/main/aponun orjinal koyu.unity
+    guid: e2ce4ba2aaec52844a739037b74414f7
+  - enabled: 0
     path: Assets/Scenes/main menu 1/main menu 1.unity
     guid: f71ec45125448174bb1832d8fd64ac5b
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0

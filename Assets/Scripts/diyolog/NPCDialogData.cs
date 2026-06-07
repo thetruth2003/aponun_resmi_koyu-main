@@ -7,8 +7,15 @@ using UnityEngine;
 [System.Serializable]
 public class DialogLine
 {
+    [TextArea(2, 5)]
     public string text;
     public AudioClip voiceClip;
+    [Tooltip("0'dan buyukse bu satirin ekranda kalma suresini dogrudan buna sabitler.")]
+    public float durationOverride = 0f;
+    [Tooltip("Satir bittikten sonra bir sonraki satira gecmeden once eklenecek ekstra bekleme.")]
+    public float pauseAfterLine = 0f;
+    [Tooltip("Pause After Line sirasinda altyaziyi gecici olarak gizler.")]
+    public bool hideSubtitleDuringPause = false;
 }
 
 /// <summary>

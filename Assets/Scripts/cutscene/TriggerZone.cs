@@ -8,6 +8,7 @@ public class TriggerZone : MonoBehaviour
 {
     public string triggerKey = "Shop.Enter";
     public bool onlyPlayer = true;
+    [SerializeField] private bool runSkipIfAlreadyPlayed = true;
 
     private CutsceneManager manager;
 
@@ -21,6 +22,11 @@ public class TriggerZone : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (onlyPlayer && !other.CompareTag("Player")) return;
-        manager?.TryStart(triggerKey);
+        if (!manager) return;
+
+        if (runSkipIfAlreadyPlayed)
+            manager.TryStartOrSkip(triggerKey);
+        else
+            manager.TryStart(triggerKey);
     }
 }

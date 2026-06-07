@@ -366,21 +366,35 @@ public class CutsceneMover : MonoBehaviour
 
         float startAlpha = fadeCanvasGroup.alpha;
         float targetAlpha = s.fadeMode == FadeMode.FadeOutToBlack ? 1f : 0f;
-        float dur = Mathf.Max(0.0001f, s.duration);
-        float t = 0f;
+        float dur = Mathf.Max(0f, s.fadeDuration);
 
-        while (t < dur)
+        if (dur <= 0f)
         {
-            float k = Mathf.Clamp01(t / dur);
-            k = Ease01(s.easing, k);
-            fadeCanvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, k);
-            t += Time.deltaTime;
-            yield return null;
+            fadeCanvasGroup.alpha = targetAlpha;
+        }
+        else
+        {
+            float t = 0f;
+
+            while (t < dur)
+            {
+                float k = Mathf.Clamp01(t / dur);
+                k = Ease01(s.easing, k);
+                fadeCanvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, k);
+                t += Time.deltaTime;
+                yield return null;
+            }
+
+            fadeCanvasGroup.alpha = targetAlpha;
         }
 
-        fadeCanvasGroup.alpha = targetAlpha;
         fadeCanvasGroup.blocksRaycasts = targetAlpha > 0.01f;
         fadeCanvasGroup.interactable = false;
+
+        if (s.fadeHoldDuration > 0f)
+        {
+            yield return new WaitForSeconds(s.fadeHoldDuration);
+        }
     }
 
     IEnumerator RunTeleportStep(Step s)
@@ -607,6 +621,10 @@ public class Step
     public Transform lookTarget;
 
     public FadeMode fadeMode = FadeMode.FadeOutToBlack;
+    [Tooltip("Fade stepinin kac saniyede bitecegi.")]
+    public float fadeDuration = 0.35f;
+    [Tooltip("Fade hedef alpha'ya ulastiktan sonra ekstra ne kadar bekleyecegi.")]
+    public float fadeHoldDuration = 0f;
 
     [Tooltip("Teleport step geldigi anda objeyi direkt bu world pozisyonuna tasir.")]
     public Vector3 teleportWorldPosition = Vector3.zero;

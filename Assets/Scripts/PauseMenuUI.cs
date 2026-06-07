@@ -14,6 +14,9 @@ using UnityEngine.Video;
 /// </summary>
 public class PauseMenuUI : MonoBehaviour
 {
+    [Header("Input")]
+    [SerializeField] private KeyCode pauseKey = KeyCode.Escape;
+
     [Header("Panels")]
     [SerializeField] private GameObject rootPanel;
     [SerializeField] private GameObject optionsPanel;
@@ -23,6 +26,8 @@ public class PauseMenuUI : MonoBehaviour
     [SerializeField] private Button optionsButton;
     [SerializeField] private Button quitToMenuButton;
     [SerializeField] private Button quitToDesktopButton;
+    [SerializeField] private bool optionsTemporarilyDisabled = true;
+    [SerializeField] private bool showQuitToDesktopButton = false;
 
     [Header("Options Tabs")]
     [SerializeField] private GameObject voicePanel;
@@ -89,13 +94,19 @@ public class PauseMenuUI : MonoBehaviour
     {
         if (rootPanel) rootPanel.SetActive(false);
         if (optionsPanel) optionsPanel.SetActive(false);
+        if (quitToDesktopButton) quitToDesktopButton.gameObject.SetActive(showQuitToDesktopButton);
         IsPaused = false;
     }
 
     private void Start()
     {
         if (resumeButton)        resumeButton.onClick.AddListener(Resume);
-        if (optionsButton)       optionsButton.onClick.AddListener(ShowOptions);
+        if (optionsButton)
+        {
+            optionsButton.interactable = !optionsTemporarilyDisabled;
+            if (!optionsTemporarilyDisabled)
+                optionsButton.onClick.AddListener(ShowOptions);
+        }
         if (quitToMenuButton)    quitToMenuButton.onClick.AddListener(QuitToMenu);
         if (quitToDesktopButton) quitToDesktopButton.onClick.AddListener(QuitToDesktop);
         if (backButton)          backButton.onClick.AddListener(HideOptions);
@@ -118,7 +129,7 @@ public class PauseMenuUI : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(pauseKey))
         {
             if (optionsPanel && optionsPanel.activeSelf)
                 HideOptions();
@@ -192,9 +203,39 @@ public class PauseMenuUI : MonoBehaviour
         IsPaused = false;
     }
 
-    private void QuitToMenu()
+    public void OnResumePressed()
     {
-        SaveCoordinator.Instance?.SaveGame("quit to menu");
+        Resume();
+    }
+
+    public void OnBackToMenuPressed()
+    {
+        QuitToMenu();
+    }
+
+    public void OnOptionsPressed()
+    {
+        ShowOptions();
+    }
+
+    public void OpenPauseMenu()
+    {
+        Pause();
+    }
+
+    public void ClosePauseMenu()
+    {
+        Resume();
+    }
+
+    public void TogglePauseFromButton()
+    {
+        TogglePause();
+    }
+
+    public void QuitToMenu()
+    {
+        SaveCoordinator.EnsureInstance()?.SaveGame("quit to menu");
 
         if (hardFreezeEverything) UnfreezeWorld();
 
@@ -360,14 +401,14 @@ public class PauseMenuUI : MonoBehaviour
         _pausedSourcesIgnoringListener.Clear();
     }
 
-    private void ShowOptions()
+    public void ShowOptions()
     {
         if (rootPanel) rootPanel.SetActive(false);
         if (optionsPanel) optionsPanel.SetActive(true);
         ShowOnly(voicePanel);
     }
 
-    private void HideOptions()
+    public void HideOptions()
     {
         if (optionsPanel) optionsPanel.SetActive(false);
         if (rootPanel) rootPanel.SetActive(true);
@@ -509,9 +550,9 @@ public class PauseMenuUI : MonoBehaviour
 #endif
     }
 
-    private void QuitToDesktop()
+    public void QuitToDesktop()
     {
-        SaveCoordinator.Instance?.SaveGame("quit to desktop");
+        SaveCoordinator.EnsureInstance()?.SaveGame("quit to desktop");
         ResumeHard();
         Application.Quit();
 #if UNITY_EDITOR

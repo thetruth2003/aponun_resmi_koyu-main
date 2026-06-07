@@ -682,18 +682,20 @@ public class CutsceneMoverEditor : Editor
         }
 
         SerializedProperty fadeModeProp = stepProp.FindPropertyRelative("fadeMode");
-        SerializedProperty durationProp = stepProp.FindPropertyRelative("duration");
+        SerializedProperty fadeDurationProp = stepProp.FindPropertyRelative("fadeDuration");
+        SerializedProperty fadeHoldDurationProp = stepProp.FindPropertyRelative("fadeHoldDuration");
         SerializedProperty easingProp = stepProp.FindPropertyRelative("easing");
 
         using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
         {
             EditorGUILayout.LabelField("Fade", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(fadeModeProp, new GUIContent("Fade Type", "Fade Out ekrani siyaha goturur. Fade In siyahi geri acar."));
-            EditorGUILayout.PropertyField(durationProp, new GUIContent("Duration (sec)", "Fade'in kac saniyede bitecegi."));
+            EditorGUILayout.PropertyField(fadeDurationProp, new GUIContent("Fade Duration (sec)", "Fade'in kac saniyede bitecegi."));
+            EditorGUILayout.PropertyField(fadeHoldDurationProp, new GUIContent("Hold After Fade (sec)", "Fade hedefe vardiktan sonra bu stepin ne kadar daha bekleyecegi."));
             EditorGUILayout.PropertyField(easingProp, new GUIContent("Easing", "Fade'in yavas baslama / bitis hissi."));
         }
 
-        EditorGUILayout.HelpBox("Ornek: kapida ekran kararsin istiyorsan Fade Out sec. Sonra bir Event veya Attach/Teleport isi yap, sonra ikinci Fade step ile Fade In sec.", MessageType.None);
+        EditorGUILayout.HelpBox("Ornek: kapida ekran kararsin istiyorsan Fade Out sec. Fade Duration ile kararirkenki hizi, Hold After Fade ile siyah ekranda ne kadar kalacagini ayarlarsin. Sonra Event/Teleport ve ikinci Fade step ile Fade In kullan.", MessageType.None);
     }
 
     void DrawTeleportFields(SerializedProperty stepProp)
@@ -897,6 +899,8 @@ public class CutsceneMoverEditor : Editor
         stepProp.FindPropertyRelative("worldEuler").vector3Value = Vector3.zero;
         stepProp.FindPropertyRelative("lookTarget").objectReferenceValue = null;
         stepProp.FindPropertyRelative("fadeMode").enumValueIndex = (int)FadeMode.FadeOutToBlack;
+        stepProp.FindPropertyRelative("fadeDuration").floatValue = 0.35f;
+        stepProp.FindPropertyRelative("fadeHoldDuration").floatValue = 0f;
         stepProp.FindPropertyRelative("teleportWorldPosition").vector3Value = Vector3.zero;
 
         stepProp.FindPropertyRelative("attachMode").enumValueIndex = (int)AttachMode.AttachToTarget;
@@ -1093,9 +1097,12 @@ public class CutsceneMoverEditor : Editor
             case StepType.Fade:
             {
                 FadeMode fadeMode = (FadeMode)stepProp.FindPropertyRelative("fadeMode").enumValueIndex;
-                float duration = stepProp.FindPropertyRelative("duration").floatValue;
+                float duration = stepProp.FindPropertyRelative("fadeDuration").floatValue;
+                float hold = stepProp.FindPropertyRelative("fadeHoldDuration").floatValue;
                 string label = fadeMode == FadeMode.FadeOutToBlack ? "Fade Out" : "Fade In";
-                return $"{label} | {duration:0.##}s";
+                return hold > 0f
+                    ? $"{label} | {duration:0.##}s + hold {hold:0.##}s"
+                    : $"{label} | {duration:0.##}s";
             }
 
             case StepType.Teleport:

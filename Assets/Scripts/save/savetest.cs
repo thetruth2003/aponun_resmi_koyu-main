@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +12,7 @@ public class savetest : MonoBehaviour
     [SerializeField] private KeyCode saveKey = KeyCode.V;
     [SerializeField] private KeyCode loadKey = KeyCode.L;
 
-    [Header("Resources klasörleri (Assets/Resources/<folder>)")]
+    [Header("Resources klasÃ¶rleri (Assets/Resources/<folder>)")]
     [SerializeField] private string resourcesBuildFolder = "build";
     [SerializeField] private string resourcesCarsFolder  = "cars";
     [SerializeField] private string resourcesToolsFolder = "tools";
@@ -20,11 +20,11 @@ public class savetest : MonoBehaviour
     private const string SEEDDATA_RES_PATH      = "data/items";
     private const string OLD_SEEDDATA_RES_PATH  = "data/seeds";
 
-    [Header("Eski kayýtlar için fallback yakýnlýk toleransý (metre)")]
+    [Header("Eski kayÄ±tlar iÃ§in fallback yakÄ±nlÄ±k toleransÄ± (metre)")]
     [SerializeField] private float positionTolerance = 0.5f;
 
     [Header("Inventory (envanter)")]
-    [Tooltip("InventoryManager'da görünen isimler")]
+    [Tooltip("InventoryManager'da gÃ¶rÃ¼nen isimler")]
     [SerializeField] private string backpackInventoryName = "backpack";
     [SerializeField] private string toolbarInventoryName  = "toolbar";
 
@@ -101,15 +101,33 @@ public class savetest : MonoBehaviour
     {
         if (Input.GetKeyDown(saveKey))
         {
-            SaveTools(); SaveMoney(); SaveBuildings(); SaveCars(); SaveSeeds();
-            SaveInventoryBoth();
-            Debug.Log("[Save] Bitti.");
+            SaveCoordinator coordinator = SaveCoordinator.EnsureInstance();
+            if (coordinator != null)
+            {
+                coordinator.SaveGame("hotkey save");
+                Debug.Log("[Save] Coordinator ile tam save alindi.");
+            }
+            else
+            {
+                SaveTools(); SaveMoney(); SaveBuildings(); SaveCars(); SaveSeeds();
+                SaveInventoryBoth();
+                Debug.Log("[Save] Fallback world save bitti.");
+            }
         }
         if (Input.GetKeyDown(loadKey))
         {
-            LoadTools(); LoadMoney(); LoadBuildings(); LoadCars(); LoadSeeds();
-            LoadInventoryBoth();
-            Debug.Log("[Load] Bitti.");
+            SaveCoordinator coordinator = SaveCoordinator.EnsureInstance();
+            if (coordinator != null)
+            {
+                coordinator.LoadLastSaveNow();
+                Debug.Log("[Load] Coordinator ile son save yukleniyor.");
+            }
+            else
+            {
+                LoadTools(); LoadMoney(); LoadBuildings(); LoadCars(); LoadSeeds();
+                LoadInventoryBoth();
+                Debug.Log("[Load] Fallback world load bitti.");
+            }
         }
     }
 
@@ -132,7 +150,7 @@ public class savetest : MonoBehaviour
             });
         }
         File.WriteAllText(ToolsPath, JsonUtility.ToJson(sf));
-        Debug.Log($"[Save Tools] {sf.tools.Count} kayýt › {ToolsPath}");
+        Debug.Log($"[Save Tools] {sf.tools.Count} kayÄ±t â€º {ToolsPath}");
     }
 
     private void LoadTools()
@@ -185,7 +203,7 @@ public class savetest : MonoBehaviour
             spawned++;
         }
 
-        Debug.Log($"[Load Tools] Güncellendi: {updated}, Spawn: {spawned}, Prefab Eksik: {missingPrefab}. Toplam {sf.tools.Count}");
+        Debug.Log($"[Load Tools] GÃ¼ncellendi: {updated}, Spawn: {spawned}, Prefab Eksik: {missingPrefab}. Toplam {sf.tools.Count}");
     }
 
     private void SaveBuildings()
@@ -204,7 +222,7 @@ public class savetest : MonoBehaviour
             });
         }
         File.WriteAllText(BuildingsPath, JsonUtility.ToJson(sf));
-        Debug.Log($"[Save Buildings] {sf.buildings.Count} kayýt › {BuildingsPath}");
+        Debug.Log($"[Save Buildings] {sf.buildings.Count} kayÄ±t â€º {BuildingsPath}");
     }
 
     private void LoadBuildings()
@@ -252,7 +270,7 @@ public class savetest : MonoBehaviour
             spawned++;
         }
 
-        Debug.Log($"[Load Buildings] Güncellendi: {updated}, Spawn: {spawned}, Prefab Eksik: {missingPrefab}. Toplam {sf.buildings.Count}");
+        Debug.Log($"[Load Buildings] GÃ¼ncellendi: {updated}, Spawn: {spawned}, Prefab Eksik: {missingPrefab}. Toplam {sf.buildings.Count}");
     }
 
     private void SaveCars()
@@ -274,7 +292,7 @@ public class savetest : MonoBehaviour
             });
         }
         File.WriteAllText(CarsPath, JsonUtility.ToJson(sf));
-        Debug.Log($"[Save Cars] {sf.cars.Count} kayýt › {CarsPath}");
+        Debug.Log($"[Save Cars] {sf.cars.Count} kayÄ±t â€º {CarsPath}");
     }
 
     private void LoadCars()
@@ -327,7 +345,7 @@ public class savetest : MonoBehaviour
             spawned++;
         }
 
-        Debug.Log($"[Load Cars] Güncellendi: {updated}, Spawn: {spawned}, Prefab Eksik: {missingPrefab}. Toplam {sf.cars.Count}");
+        Debug.Log($"[Load Cars] GÃ¼ncellendi: {updated}, Spawn: {spawned}, Prefab Eksik: {missingPrefab}. Toplam {sf.cars.Count}");
     }
 
     private void SaveSeeds()
@@ -350,7 +368,7 @@ public class savetest : MonoBehaviour
         }
 
         File.WriteAllText(SeedsPath, JsonUtility.ToJson(sf));
-        Debug.Log($"[Save Seeds] {sf.seeds.Count} kayýt › {SeedsPath}");
+        Debug.Log($"[Save Seeds] {sf.seeds.Count} kayÄ±t â€º {SeedsPath}");
     }
 
     private void LoadSeeds()
@@ -428,7 +446,7 @@ public class savetest : MonoBehaviour
 
         if (loaded) sp.seedData = loaded;
         else if (!string.IsNullOrEmpty(rec.seedDataName) || rec.data.seedType != SeedType.None)
-            Debug.LogWarning($"[Load Seeds] SeedData bulunamadý: {SEEDDATA_RES_PATH}/{rec.seedDataName} (fallback: {OLD_SEEDDATA_RES_PATH})");
+            Debug.LogWarning($"[Load Seeds] SeedData bulunamadÄ±: {SEEDDATA_RES_PATH}/{rec.seedDataName} (fallback: {OLD_SEEDDATA_RES_PATH})");
 
         sp.SetState(rec.data);
     }
@@ -465,7 +483,7 @@ public class savetest : MonoBehaviour
         data.selectedIndex = ui ? ui.GetToolbarSelectedIndex() : -1;
 
         File.WriteAllText(path, JsonUtility.ToJson(data));
-        Debug.Log($"[Save Inventory] {invName} › {path}");
+        Debug.Log($"[Save Inventory] {invName} â€º {path}");
     }
 
     private void LoadInventoryByName(string invName, string path, bool applySelected)
@@ -475,7 +493,7 @@ public class savetest : MonoBehaviour
         if (!File.Exists(path)) { Debug.LogWarning($"[Load Inventory] Dosya yok: {path}"); return; }
 
         var data = JsonUtility.FromJson<InvSave>(File.ReadAllText(path));
-        if (data == null) { Debug.LogWarning($"[Load Inventory] Json boþ: {path}"); return; }
+        if (data == null) { Debug.LogWarning($"[Load Inventory] Json boÅŸ: {path}"); return; }
 
         for (int i = 0; i < inv.slots.Count; i++)
         {
@@ -503,7 +521,7 @@ public class savetest : MonoBehaviour
 
             if (itemData == null)
             {
-                Debug.LogWarning($"[Load Inventory] ItemData bulunamadý: {r.itemName}");
+                Debug.LogWarning($"[Load Inventory] ItemData bulunamadÄ±: {r.itemName}");
                 continue;
             }
 
@@ -525,17 +543,17 @@ public class savetest : MonoBehaviour
             else    inv.SelectSlot(idx);
         }
 
-        Debug.Log($"[Load Inventory] {invName} ‹ {path}");
+        Debug.Log($"[Load Inventory] {invName} â€¹ {path}");
     }
 
     private void SaveMoney()
     {
         if (!muhasebeci) muhasebeci = FindObjectOfType<Muhasebeci>();
-        if (!muhasebeci) { Debug.LogWarning("[Save Money] Muhasebeci bulunamadý."); return; }
+        if (!muhasebeci) { Debug.LogWarning("[Save Money] Muhasebeci bulunamadÄ±."); return; }
 
         var ms = new MoneySave { money = muhasebeci.GetMoney() };
         File.WriteAllText(MoneyPath, JsonUtility.ToJson(ms));
-        Debug.Log($"[Save Money] {ms.money} › {MoneyPath}");
+        Debug.Log($"[Save Money] {ms.money} â€º {MoneyPath}");
     }
 
     private void LoadMoney()

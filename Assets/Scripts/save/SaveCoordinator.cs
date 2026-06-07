@@ -15,22 +15,49 @@ public class SaveCoordinator : MonoBehaviour
 {
     private const string KeySaveExists = "SaveExists";
     private const string KeyLastScene = "LastScene";
+    private const string KeyLastScenePath = "LastScenePath";
     private const string KeyDayCount = "DayCount";
     private const string KeyStateKeys = "state_keys";
     private const string DefaultGameplayScene = "aponun orjinal koyu";
+    private const string DefaultGameplayScenePath = "Assets/Scenes/main/aponun orjinal koyu.unity";
+    private const int DefaultGameplayBuildIndex = 1;
     private const string DefaultCutsceneSaveFile = "cutscenes_save.json";
     private const string MetaFileName = "meta_save.json";
     private const string QuestProgressFileName = "quest_progress.json";
     private const string PlayerStateFileName = "player_state.json";
 
+    private static readonly string[] InspectableSaveFiles =
+    {
+        MetaFileName,
+        QuestProgressFileName,
+        PlayerStateFileName,
+        "money_save.json",
+        "tools_save.json",
+        "buildings_save.json",
+        "cars_save.json",
+        "seeds_save.json",
+        "inv_backpack.json",
+        "inv_toolbar.json",
+        DefaultCutsceneSaveFile
+    };
+
     public static SaveCoordinator Instance { get; private set; }
 
     private static bool _bootstrapped;
+    private bool _wasAutoCreated;
+
+    [Header("Autosave")]
+    [SerializeField] private bool enablePeriodicAutosave = true;
+    [SerializeField] private float autosaveIntervalSeconds = 180f;
+    [SerializeField] private float minimumAutosaveGapSeconds = 10f;
+    [SerializeField] private bool autosaveWhilePaused = false;
 
     private ActiveQuestSystem _subscribedQuestSystem;
     private bool _pendingLoad;
     private string _pendingSceneName;
     private bool _isRestoring;
+    private float _lastSaveRealtime = -9999f;
+    private float _nextAutosaveRealtime = float.PositiveInfinity;
 
     private string MetaPath => Path.Combine(Application.persistentDataPath, MetaFileName);
     private string QuestProgressPath => Path.Combine(Application.persistentDataPath, QuestProgressFileName);
@@ -78,21 +105,36 @@ public class SaveCoordinator : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void EnsureInstanceExists()
     {
+        EnsureInstance();
+    }
+
+    public static SaveCoordinator EnsureInstance()
+    {
         if (_bootstrapped || Instance != null)
-            return;
+            return Instance;
 
         var go = new GameObject("__SaveCoordinator");
         DontDestroyOnLoad(go);
-        go.AddComponent<SaveCoordinator>();
+        Instance = go.AddComponent<SaveCoordinator>();
+        Instance._wasAutoCreated = true;
         _bootstrapped = true;
+        return Instance;
     }
 
     private void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
-            return;
+            if (Instance._wasAutoCreated && !_wasAutoCreated)
+            {
+                Destroy(Instance.gameObject);
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
         }
 
         Instance = this;
@@ -102,6 +144,7 @@ public class SaveCoordinator : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
         game_start.OnDayChanged += HandleDayChangedAutosave;
         RefreshRuntimeHooks();
+        ScheduleNextAutosave();
     }
 
     private void OnDestroy()
@@ -125,7 +168,58 @@ public class SaveCoordinator : MonoBehaviour
         SaveGame("application quit");
     }
 
-    public bool HasSave() => PlayerPrefs.GetInt(KeySaveExists, 0) == 1;
+    private void Update()
+    {
+        if (!enablePeriodicAutosave)
+            return;
+
+        if (_isRestoring || _pendingLoad)
+            return;
+
+        if (float.IsPositiveInfinity(_nextAutosaveRealtime))
+            ScheduleNextAutosave();
+
+        if (Time.realtimeSinceStartup < _nextAutosaveRealtime)
+            return;
+
+        if (!CanAutosaveNow())
+        {
+            _nextAutosaveRealtime = Time.realtimeSinceStartup + 5f;
+            return;
+        }
+
+        SaveGame("interval autosave");
+    }
+
+    public bool HasSave()
+    {
+        bool hasPrefsFlag = PlayerPrefs.GetInt(KeySaveExists, 0) == 1;
+        bool hasFiles =
+            File.Exists(MetaPath) ||
+            File.Exists(QuestProgressPath) ||
+            File.Exists(PlayerStatePath) ||
+            File.Exists(DefaultCutsceneSavePath) ||
+            File.Exists(Path.Combine(Application.persistentDataPath, "money_save.json")) ||
+            File.Exists(Path.Combine(Application.persistentDataPath, "tools_save.json")) ||
+            File.Exists(Path.Combine(Application.persistentDataPath, "buildings_save.json")) ||
+            File.Exists(Path.Combine(Application.persistentDataPath, "cars_save.json")) ||
+            File.Exists(Path.Combine(Application.persistentDataPath, "seeds_save.json")) ||
+            File.Exists(Path.Combine(Application.persistentDataPath, "inv_backpack.json")) ||
+            File.Exists(Path.Combine(Application.persistentDataPath, "inv_toolbar.json"));
+
+        if (hasFiles && !hasPrefsFlag)
+        {
+            PlayerPrefs.SetInt(KeySaveExists, 1);
+            PlayerPrefs.Save();
+        }
+
+        return hasPrefsFlag || hasFiles;
+    }
+
+    public static bool HasAnySave()
+    {
+        return EnsureInstance() != null && Instance.HasSave();
+    }
 
     public void SaveGame(string reason = "manual")
     {
@@ -137,6 +231,8 @@ public class SaveCoordinator : MonoBehaviour
         SaveQuestProgress();
         SavePlayerState();
         SaveMeta(reason);
+        _lastSaveRealtime = Time.realtimeSinceStartup;
+        ScheduleNextAutosave();
     }
 
     public void SaveGameNow()
@@ -144,12 +240,17 @@ public class SaveCoordinator : MonoBehaviour
         SaveGame("manual");
     }
 
+    public void SaveNow()
+    {
+        SaveGameNow();
+    }
+
     public void LoadLastSaveFromMenu()
     {
         if (!HasSave())
             return;
 
-        string lastScene = PlayerPrefs.GetString(KeyLastScene, DefaultGameplayScene);
+        string lastScene = ResolveSavedSceneReference();
         BeginLoad(lastScene);
     }
 
@@ -158,15 +259,18 @@ public class SaveCoordinator : MonoBehaviour
         LoadLastSaveFromMenu();
     }
 
+    public void LoadLastSave()
+    {
+        LoadLastSaveFromMenu();
+    }
+
     public void BeginLoad(string sceneName)
     {
-        if (string.IsNullOrWhiteSpace(sceneName))
-            sceneName = DefaultGameplayScene;
-
+        sceneName = NormalizeSceneReference(sceneName);
         _pendingLoad = true;
-        _pendingSceneName = sceneName.Trim();
+        _pendingSceneName = sceneName;
         Time.timeScale = 1f;
-        SceneManager.LoadScene(_pendingSceneName, LoadSceneMode.Single);
+        LoadSceneReference(sceneName);
     }
 
     public void StartNewGame(string sceneName = DefaultGameplayScene)
@@ -175,7 +279,16 @@ public class SaveCoordinator : MonoBehaviour
         _pendingLoad = false;
         _pendingSceneName = null;
         Time.timeScale = 1f;
-        SceneManager.LoadScene(string.IsNullOrWhiteSpace(sceneName) ? DefaultGameplayScene : sceneName, LoadSceneMode.Single);
+        LoadSceneReference(sceneName);
+    }
+
+    public void StartDefaultNewGame()
+    {
+        ClearAllSavedData();
+        _pendingLoad = false;
+        _pendingSceneName = null;
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(DefaultGameplayBuildIndex, LoadSceneMode.Single);
     }
 
     public void ClearAllSavedData()
@@ -193,15 +306,56 @@ public class SaveCoordinator : MonoBehaviour
 
         PlayerPrefs.DeleteKey(KeySaveExists);
         PlayerPrefs.DeleteKey(KeyLastScene);
+        PlayerPrefs.DeleteKey(KeyLastScenePath);
         PlayerPrefs.DeleteKey(KeyDayCount);
         PlayerPrefs.Save();
+    }
+
+    public string GetSaveFolderPath()
+    {
+        return Application.persistentDataPath;
+    }
+
+    public void OpenSaveFolder()
+    {
+        string normalized = Application.persistentDataPath.Replace("\\", "/");
+        Application.OpenURL("file://" + normalized);
+        Debug.Log("[SaveCoordinator] Save klasoru: " + Application.persistentDataPath);
+    }
+
+    public void LogSaveReport()
+    {
+        Debug.Log(
+            "[SaveCoordinator] persistentDataPath = " + Application.persistentDataPath +
+            "\nSaveExists = " + PlayerPrefs.GetInt(KeySaveExists, 0) +
+            "\nLastScene = " + PlayerPrefs.GetString(KeyLastScene, "<none>") +
+            "\nLastScenePath = " + PlayerPrefs.GetString(KeyLastScenePath, "<none>")
+        );
+
+        for (int i = 0; i < InspectableSaveFiles.Length; i++)
+        {
+            string path = Path.Combine(Application.persistentDataPath, InspectableSaveFiles[i]);
+            if (!File.Exists(path))
+            {
+                Debug.Log("[SaveCoordinator] YOK  -> " + InspectableSaveFiles[i]);
+                continue;
+            }
+
+            FileInfo info = new FileInfo(path);
+            Debug.Log(
+                "[SaveCoordinator] VAR  -> " + InspectableSaveFiles[i] +
+                " | " + info.Length + " bytes" +
+                " | " + info.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")
+            );
+        }
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         RefreshRuntimeHooks();
+        ScheduleNextAutosave();
 
-        if (_pendingLoad && string.Equals(scene.name, _pendingSceneName, StringComparison.OrdinalIgnoreCase))
+        if (_pendingLoad && SceneMatchesPending(scene, _pendingSceneName))
             StartCoroutine(RestoreAfterSceneLoad());
     }
 
@@ -234,6 +388,7 @@ public class SaveCoordinator : MonoBehaviour
         {
             _pendingSceneName = null;
             _isRestoring = false;
+            ScheduleNextAutosave();
         }
     }
 
@@ -272,6 +427,35 @@ public class SaveCoordinator : MonoBehaviour
             return;
 
         SaveGame("day changed");
+    }
+
+    private bool CanAutosaveNow()
+    {
+        if (_isRestoring || _pendingLoad)
+            return false;
+
+        if (!autosaveWhilePaused && PauseMenuUI.IsPaused)
+            return false;
+
+        if (Time.realtimeSinceStartup - _lastSaveRealtime < Mathf.Max(1f, minimumAutosaveGapSeconds))
+            return false;
+
+        if (FindWorldSave() == null && FindQuestSave() == null)
+            return false;
+
+        return true;
+    }
+
+    private void ScheduleNextAutosave()
+    {
+        if (!enablePeriodicAutosave)
+        {
+            _nextAutosaveRealtime = float.PositiveInfinity;
+            return;
+        }
+
+        float interval = Mathf.Max(15f, autosaveIntervalSeconds);
+        _nextAutosaveRealtime = Time.realtimeSinceStartup + interval;
     }
 
     private void SaveWorldState()
@@ -437,9 +621,12 @@ public class SaveCoordinator : MonoBehaviour
 
     private void SaveMeta(string reason)
     {
-        string sceneName = SceneManager.GetActiveScene().name;
+        Scene currentScene = SceneManager.GetActiveScene();
+        string sceneName = currentScene.name;
+        string scenePath = NormalizeSceneReference(currentScene.path);
         PlayerPrefs.SetInt(KeySaveExists, 1);
         PlayerPrefs.SetString(KeyLastScene, sceneName);
+        PlayerPrefs.SetString(KeyLastScenePath, scenePath);
         PlayerPrefs.Save();
 
         MetaSave meta = new MetaSave
@@ -597,5 +784,75 @@ public class SaveCoordinator : MonoBehaviour
     {
         if (File.Exists(path))
             File.Delete(path);
+    }
+
+    private static string NormalizeSceneReference(string sceneReference)
+    {
+        string normalized = string.IsNullOrWhiteSpace(sceneReference) ? DefaultGameplayScenePath : sceneReference.Trim();
+        normalized = normalized.Replace("\\", "/");
+        if (normalized.EndsWith(".unity", StringComparison.OrdinalIgnoreCase))
+            normalized = normalized.Substring(0, normalized.Length - ".unity".Length);
+
+        if (string.Equals(normalized, DefaultGameplayScene, StringComparison.OrdinalIgnoreCase))
+            return DefaultGameplayScenePath;
+
+        return normalized;
+    }
+
+    private static string GetSceneLoadName(string sceneReference)
+    {
+        string normalized = NormalizeSceneReference(sceneReference);
+        int slashIndex = normalized.LastIndexOf('/');
+        if (slashIndex >= 0 && slashIndex < normalized.Length - 1)
+            return normalized.Substring(slashIndex + 1);
+
+        return normalized;
+    }
+
+    private static int GetSceneBuildIndex(string sceneReference)
+    {
+        string normalized = NormalizeSceneReference(sceneReference);
+        string pathWithExtension = normalized.EndsWith(".unity", StringComparison.OrdinalIgnoreCase)
+            ? normalized
+            : normalized + ".unity";
+
+        int buildIndex = SceneUtility.GetBuildIndexByScenePath(pathWithExtension);
+        if (buildIndex >= 0)
+            return buildIndex;
+
+        buildIndex = SceneUtility.GetBuildIndexByScenePath(normalized);
+        return buildIndex;
+    }
+
+    private static void LoadSceneReference(string sceneReference)
+    {
+        int buildIndex = GetSceneBuildIndex(sceneReference);
+        if (buildIndex >= 0)
+        {
+            SceneManager.LoadScene(buildIndex, LoadSceneMode.Single);
+            return;
+        }
+
+        SceneManager.LoadScene(GetSceneLoadName(sceneReference), LoadSceneMode.Single);
+    }
+
+    private static string ResolveSavedSceneReference()
+    {
+        string scenePath = PlayerPrefs.GetString(KeyLastScenePath, string.Empty);
+        if (!string.IsNullOrWhiteSpace(scenePath))
+            return NormalizeSceneReference(scenePath);
+
+        string sceneName = PlayerPrefs.GetString(KeyLastScene, DefaultGameplayScene);
+        return NormalizeSceneReference(sceneName);
+    }
+
+    private static bool SceneMatchesPending(Scene loadedScene, string pendingReference)
+    {
+        string loadedName = loadedScene.name ?? string.Empty;
+        string loadedPath = NormalizeSceneReference(loadedScene.path);
+        string pending = NormalizeSceneReference(pendingReference);
+
+        return string.Equals(loadedName, pending, StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(loadedPath, pending, StringComparison.OrdinalIgnoreCase);
     }
 }
