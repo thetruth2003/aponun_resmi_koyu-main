@@ -10,6 +10,10 @@ public class DialogLine
     [TextArea(2, 5)]
     public string text;
     public AudioClip voiceClip;
+    [Tooltip("Bu satir baslamadan once eklenecek gecikme.")]
+    public float delayBeforeLine = 0f;
+    [Tooltip("Delay sirasinda altyaziyi gizler.")]
+    public bool hideSubtitleDuringDelay = true;
     [Tooltip("0'dan buyukse bu satirin ekranda kalma suresini dogrudan buna sabitler.")]
     public float durationOverride = 0f;
     [Tooltip("Satir bittikten sonra bir sonraki satira gecmeden once eklenecek ekstra bekleme.")]

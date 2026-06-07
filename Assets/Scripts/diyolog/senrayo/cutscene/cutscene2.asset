@@ -16,130 +16,180 @@ MonoBehaviour:
   - lines:
     - text: "hersey\u0131 almay\u0131 unutma"
       voiceClip: {fileID: 0}
+      delayBeforeLine: 3
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: e zaten aq
       voiceClip: {fileID: 0}
+      delayBeforeLine: 3
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
-      pauseAfterLine: 0
-      hideSubtitleDuringPause: 0
+      pauseAfterLine: 9
+      hideSubtitleDuringPause: 1
     - text: "al \u0131ste"
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: "\u015Ealter falan vard\u0131r. Ben bakar\u0131m."
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
-      pauseAfterLine: 0
-      hideSubtitleDuringPause: 0
+      pauseAfterLine: 1
+      hideSubtitleDuringPause: 1
     - text: hangisi amk ha tamam
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: "(elif ba\u011F\u0131r\u0131r)ALPERENNNNN"
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: Anani sikim
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
-      pauseAfterLine: 0
+      pauseAfterLine: 1
       hideSubtitleDuringPause: 0
     - text: Kimsiniz olm siz gec gece
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: "abi ev biz\u015Fm sen kimsin"
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: "Ne s\u0131z\u0131n oglum Ahmed\u0131nb ev\u0131 bura"
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: "Ahmed\u0131n ogluyum ben ab\u0131 alperen ben yen\u0131 tas\u0131nd\u0131k
         s\u0131md\u0131 geld\u0131k"
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: "Oglum neb\u0131ley\u0131m ben sen\u0131n ahmed\u0131n oglu oldugunu
         Gece vakt\u0131 \u0131s\u0131g\u0131 gordum geld\u0131m"
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: "Her \u0131s\u0131k olan eve g\u0131r\u0131yor musun sen sen k\u0131ms\u0131n?"
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: Ben senin besikteki halini bilirim, Ahmet benim gardasim gibidir, evine
         biri geldigini gorunce tabi gelecem
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: Dayi babam oleli 1 sene oldu
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: Siktir lan
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: N-Nasil oldu, ne zaman old- BIZIM NEDEN HABERIMIZ YOK?
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: Dayi fabrikada calisiyodu, kalptten....
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: Oglum emekli adam neden calissin?
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: Abi emekli kime yetiyo ki?
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: Basininz sagolsun yegenim/yenge hanim, kusura kalmayin. Ben Mansur, Rahmetlinin
         cocukluk arkadasiyim.
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: Oglum gece vakti gelmissiniz, kariya solyiyim birseyler hazirlasin
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: Abi biz bi dinlenelim, yani yarin bi bakar - tamam
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: iyi geceler yegenim
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0
     - text: O kadar da kotu DEGILMIS hayatim
       voiceClip: {fileID: 0}
+      delayBeforeLine: 0
+      hideSubtitleDuringDelay: 1
       durationOverride: 0
       pauseAfterLine: 0
       hideSubtitleDuringPause: 0

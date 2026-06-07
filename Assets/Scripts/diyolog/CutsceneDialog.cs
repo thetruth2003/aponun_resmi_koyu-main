@@ -51,9 +51,11 @@ public class CutsceneDialog : MonoBehaviour
     private float originalFOV = 60f;
     private float lineTimer = 0f;
     private bool isPlaying = false;
+    private bool waitingBeforeLineStart = false;
     private bool waitingInInterLinePause = false;
     private Coroutine currentCo;
     private DialogLine currentLine;
+    private DialogLine pendingLine;
 
     private CanvasGroup fadeCg;
     private Image       fadeImg;
@@ -89,8 +91,10 @@ public class CutsceneDialog : MonoBehaviour
         }
 
         isPlaying = false;
+        waitingBeforeLineStart = false;
         waitingInInterLinePause = false;
         currentLine = null;
+        pendingLine = null;
     }
 
     void PrepareFadePanel()
@@ -166,32 +170,30 @@ public class CutsceneDialog : MonoBehaviour
 
         var line = sec.lines[lineIndex];
         currentLine = line;
+        pendingLine = null;
+        waitingBeforeLineStart = false;
         waitingInInterLinePause = false;
-        if (dialogText) dialogText.text = line.text ?? string.Empty;
 
-        if (audioSource && audioSource.isPlaying) audioSource.Stop();
-
-        if (line.durationOverride > 0f)
+        if (line.delayBeforeLine > 0f)
         {
-            if (audioSource && line.voiceClip)
+            pendingLine = line;
+            waitingBeforeLineStart = true;
+            lineTimer = line.delayBeforeLine;
+
+            if (line.hideSubtitleDuringDelay && dialogText)
             {
-                audioSource.clip = line.voiceClip;
-                audioSource.Play();
+                dialogText.text = string.Empty;
             }
 
-            lineTimer = line.durationOverride;
+            if (audioSource && audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
+
+            return;
         }
-        else if (audioSource && line.voiceClip)
-        {
-            audioSource.clip = line.voiceClip;
-            audioSource.Play();
-            lineTimer = audioSource.clip.length + extraVoicePadding;
-        }
-        else
-        {
-            float t = EstimateTextDuration(line.text);
-            lineTimer = Mathf.Clamp(t, minLineDuration, maxLineDuration);
-        }
+
+        StartLinePlayback(line);
     }
 
     float EstimateTextDuration(string text)
@@ -215,7 +217,11 @@ public class CutsceneDialog : MonoBehaviour
         if (lineTimer > 0f) lineTimer -= Time.deltaTime;
         if (lineTimer <= 0f)
         {
-            if (!waitingInInterLinePause && currentLine != null && currentLine.pauseAfterLine > 0f)
+            if (waitingBeforeLineStart && pendingLine != null)
+            {
+                StartPendingLine();
+            }
+            else if (!waitingInInterLinePause && currentLine != null && currentLine.pauseAfterLine > 0f)
             {
                 BeginInterLinePause(currentLine);
             }
@@ -236,8 +242,10 @@ public class CutsceneDialog : MonoBehaviour
     void AdvanceLine()
     {
         if (audioSource && audioSource.isPlaying) audioSource.Stop();
+        waitingBeforeLineStart = false;
         waitingInInterLinePause = false;
         currentLine = null;
+        pendingLine = null;
 
         lineIndex++;
         var sec = sections[sectionIndex];
@@ -338,6 +346,50 @@ public class CutsceneDialog : MonoBehaviour
         if (line.hideSubtitleDuringPause && dialogText)
         {
             dialogText.text = string.Empty;
+        }
+    }
+
+    void StartPendingLine()
+    {
+        waitingBeforeLineStart = false;
+
+        if (pendingLine == null)
+        {
+            AdvanceLine();
+            return;
+        }
+
+        var line = pendingLine;
+        pendingLine = null;
+        StartLinePlayback(line);
+    }
+
+    void StartLinePlayback(DialogLine line)
+    {
+        if (dialogText) dialogText.text = line.text ?? string.Empty;
+
+        if (audioSource && audioSource.isPlaying) audioSource.Stop();
+
+        if (line.durationOverride > 0f)
+        {
+            if (audioSource && line.voiceClip)
+            {
+                audioSource.clip = line.voiceClip;
+                audioSource.Play();
+            }
+
+            lineTimer = line.durationOverride;
+        }
+        else if (audioSource && line.voiceClip)
+        {
+            audioSource.clip = line.voiceClip;
+            audioSource.Play();
+            lineTimer = audioSource.clip.length + extraVoicePadding;
+        }
+        else
+        {
+            float t = EstimateTextDuration(line.text);
+            lineTimer = Mathf.Clamp(t, minLineDuration, maxLineDuration);
         }
     }
 }
