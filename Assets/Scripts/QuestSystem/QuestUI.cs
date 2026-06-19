@@ -12,6 +12,10 @@ public class QuestUI : MonoBehaviour
     public TMP_Text questTypeText;
     public TMP_Text requirementText;
 
+    private bool warnedMissingQuestSystem;
+    private bool warnedMissingTextReferences;
+    private bool warnedMissingGameStateTracker;
+
     private void Update()
     {
         UpdateQuestUI();
@@ -19,12 +23,30 @@ public class QuestUI : MonoBehaviour
 
     public void UpdateQuestUI()
     {
-        List<TrackedQuest> trackedList = ActiveQuestSystem.Instance.GetAllTracked();
+        if (!HasTextReferences())
+        {
+            return;
+        }
+
+        ActiveQuestSystem activeQuestSystem = ActiveQuestSystem.Instance;
+        if (activeQuestSystem == null)
+        {
+            if (!warnedMissingQuestSystem)
+            {
+                Debug.LogWarning("[QuestUI] ActiveQuestSystem.Instance bulunamadi. Quest UI beklemeye alindi.");
+                warnedMissingQuestSystem = true;
+            }
+
+            SetTexts("No Quest System", "", "");
+            return;
+        }
+
+        warnedMissingQuestSystem = false;
+
+        List<TrackedQuest> trackedList = activeQuestSystem.GetAllTracked();
         if (trackedList == null || trackedList.Count == 0)
         {
-            mainQuestText.text = "No Quest Tracked";
-            questTypeText.text = "";
-            requirementText.text = "";
+            SetTexts("No Quest Tracked", "", "");
             return;
         }
 
@@ -60,19 +82,19 @@ public class QuestUI : MonoBehaviour
             else if (step is SellItemStep sell)
             {
                 questTypeText.text = $"Sell {sell.requiredAmount} {sell.itemID}";
-                int sold = GameStateTracker.Instance.GetCount(sell.GetProgressKey());
+                int sold = GetTrackedCountOrZero(sell.GetProgressKey());
                 requirementText.text = $"{sold}/{sell.requiredAmount}";
             }
             else if (step is BuyItemStep buy)
             {
                 questTypeText.text = $"Buy {buy.requiredAmount} {buy.itemID}";
-                int bought = GameStateTracker.Instance.GetCount(buy.GetProgressKey());
+                int bought = GetTrackedCountOrZero(buy.GetProgressKey());
                 requirementText.text = $"{bought}/{buy.requiredAmount}";
             }
             else if (step is HarvestItemStep harvest)
             {
                 questTypeText.text = $"Harvest {harvest.requiredAmount} {harvest.itemID}";
-                int harvested = GameStateTracker.Instance.GetCount(harvest.GetProgressKey());
+                int harvested = GetTrackedCountOrZero(harvest.GetProgressKey());
                 requirementText.text = $"{harvested}/{harvest.requiredAmount}";
             }
             else if (step is ChoiceStep choice)
@@ -107,8 +129,47 @@ public class QuestUI : MonoBehaviour
             return;
         }
 
-        mainQuestText.text = "All quests complete!";
-        questTypeText.text = "";
-        requirementText.text = "";
+        SetTexts("All quests complete!", "", "");
+    }
+
+    private bool HasTextReferences()
+    {
+        if (mainQuestText != null && questTypeText != null && requirementText != null)
+        {
+            warnedMissingTextReferences = false;
+            return true;
+        }
+
+        if (!warnedMissingTextReferences)
+        {
+            Debug.LogWarning("[QuestUI] TMP_Text alanlarindan biri eksik. Inspector atamalarini kontrol et.");
+            warnedMissingTextReferences = true;
+        }
+
+        return false;
+    }
+
+    private void SetTexts(string main, string type, string requirement)
+    {
+        mainQuestText.text = main;
+        questTypeText.text = type;
+        requirementText.text = requirement;
+    }
+
+    private int GetTrackedCountOrZero(string key)
+    {
+        if (GameStateTracker.Instance != null)
+        {
+            warnedMissingGameStateTracker = false;
+            return GameStateTracker.Instance.GetCount(key);
+        }
+
+        if (!warnedMissingGameStateTracker)
+        {
+            Debug.LogWarning("[QuestUI] GameStateTracker.Instance bulunamadi. Ilerleme 0 olarak gosterilecek.");
+            warnedMissingGameStateTracker = true;
+        }
+
+        return 0;
     }
 }
