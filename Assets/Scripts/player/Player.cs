@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
-    /// Oyuncunun hedef pozisyona ulaþýp ulaþmadýðýný kontrol eder.
+    /// Oyuncunun hedef pozisyona ulaÅŸÄ±p ulaÅŸmadÄ±ÄŸÄ±nÄ± kontrol eder.
     /// </summary>
     public bool IsAt(Vector3 targetPosition)
     {
@@ -39,18 +39,10 @@ public class Player : MonoBehaviour
         if (handObject == null)
         {
             handObject = GameObject.Find("HandObject");
-            if (handObject != null)
+            if (handObject == null)
             {
-                Debug.Log("HandObject bulundu: " + handObject.name);
+                Debug.LogError("HandObject bulunamadÄ±!");
             }
-            else
-            {
-                Debug.LogError("HandObject bulunamadý!");
-            }
-        }
-        else
-        {
-            Debug.Log("HandObject zaten atanmýþ: " + handObject.name);
         }
     }
 
@@ -73,7 +65,7 @@ public class Player : MonoBehaviour
     {
         if (handObject == null)
         {
-            Debug.LogError("HandObject null! Lütfen el nesnesini atayýn.");
+            Debug.LogError("HandObject null! LÃ¼tfen el nesnesini atayÄ±n.");
             return;
         }
 
@@ -82,26 +74,23 @@ public class Player : MonoBehaviour
             Destroy(handObject.transform.GetChild(0).gameObject);
         }
 
-        string selectedItemPrefab = toolbar.GetSelectedPrefab();
-        if (!string.IsNullOrEmpty(selectedItemPrefab))
+        string selectedItemPrefab = toolbar != null ? toolbar.GetSelectedPrefab() : null;
+        if (string.IsNullOrEmpty(selectedItemPrefab))
         {
-            GameObject newItem = Resources.Load<GameObject>($"Prefabs/{selectedItemPrefab}");
-            if (newItem != null)
-            {
-                GameObject instantiatedItem = Instantiate(newItem, handObject.transform);
-                instantiatedItem.transform.localPosition = Vector3.zero;
-                instantiatedItem.transform.localRotation = Quaternion.identity;
-                instantiatedItem.transform.localScale = Vector3.one;
-                Debug.Log($"Prefab found and added: {selectedItemPrefab}");
-            }
-            else
-            {
-                Debug.LogWarning($"Prefab not found for item: {selectedItemPrefab}");
-            }
+            return;
+        }
+
+        GameObject newItem = Resources.Load<GameObject>($"Prefabs/{selectedItemPrefab}");
+        if (newItem != null)
+        {
+            GameObject instantiatedItem = Instantiate(newItem, handObject.transform);
+            instantiatedItem.transform.localPosition = Vector3.zero;
+            instantiatedItem.transform.localRotation = Quaternion.identity;
+            instantiatedItem.transform.localScale = Vector3.one;
         }
         else
         {
-            Debug.Log("Seçili bir item yok.");
+            Debug.LogWarning($"Prefab not found for item: {selectedItemPrefab}");
         }
     }
 }

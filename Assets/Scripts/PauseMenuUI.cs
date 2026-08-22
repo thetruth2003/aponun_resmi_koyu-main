@@ -44,6 +44,7 @@ public class PauseMenuUI : MonoBehaviour
     [Header("Options - Audio")]
     [SerializeField] private AudioMixer masterMixer;
     [SerializeField] private Slider masterVolumeSlider;
+    [SerializeField] private string masterVolumeParameter = "MasterVolume";
 
     [Header("Options - Video")]
     [SerializeField] private Dropdown qualityDropdown;
@@ -89,6 +90,8 @@ public class PauseMenuUI : MonoBehaviour
     private bool _prevCursorVisible;
     private CursorLockMode _prevCursorLock;
     private Resolution[] _resolutions;
+    private string _resolvedMasterVolumeParameter;
+    private bool _masterVolumeParameterChecked;
 
     private void Awake()
     {
@@ -534,8 +537,46 @@ public class PauseMenuUI : MonoBehaviour
     private void ApplyVolume(float v)
     {
         if (!masterMixer) return;
+        if (!TryGetMasterVolumeParameter(out string parameterName)) return;
         float dB = Mathf.Lerp(-80f, 0f, Mathf.Clamp01(v));
-        masterMixer.SetFloat("MasterVolume", dB);
+        masterMixer.SetFloat(parameterName, dB);
+    }
+
+    private bool TryGetMasterVolumeParameter(out string parameterName)
+    {
+        if (_masterVolumeParameterChecked)
+        {
+            parameterName = _resolvedMasterVolumeParameter;
+            return !string.IsNullOrEmpty(parameterName);
+        }
+
+        _masterVolumeParameterChecked = true;
+
+        string[] candidates =
+        {
+            masterVolumeParameter,
+            "MasterVolume",
+            "Master",
+            "Volume"
+        };
+
+        for (int i = 0; i < candidates.Length; i++)
+        {
+            string candidate = candidates[i];
+            if (string.IsNullOrWhiteSpace(candidate))
+            {
+                continue;
+            }
+
+            if (masterMixer.GetFloat(candidate, out _))
+            {
+                _resolvedMasterVolumeParameter = candidate;
+                break;
+            }
+        }
+
+        parameterName = _resolvedMasterVolumeParameter;
+        return !string.IsNullOrEmpty(parameterName);
     }
 
     private void SetResolutionByIndex(int idx)

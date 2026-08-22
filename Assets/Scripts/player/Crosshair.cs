@@ -80,7 +80,13 @@ public class Crosshair : MonoBehaviour
 
     private SeedPoint GetSeedPoint(Collider collider)
     {
-        return collider.GetComponent<SeedPoint>();
+        SeedPoint seedPoint = collider.GetComponent<SeedPoint>();
+        if (seedPoint == null)
+        {
+            seedPoint = collider.GetComponentInParent<SeedPoint>();
+        }
+
+        return seedPoint;
     }
 
     private string GetSelectedPrefab()
@@ -91,11 +97,6 @@ public class Crosshair : MonoBehaviour
     private string GetSelectedPrefabTag()
     {
         return toolbar != null ? toolbar.GetSelectedPrefabTag() : null;
-    }
-
-    private string GetSelectedUsedPrefab()
-    {
-        return toolbar != null ? toolbar.GetSelectedUsedPrefab() : null;
     }
 
     private SeedData GetSelectedSeedData()
@@ -223,11 +224,6 @@ public class Crosshair : MonoBehaviour
         }
     }
 
-    private bool IsSeedBoxTarget(GameObject clickedCell)
-    {
-        return clickedCell.layer == LayerMask.NameToLayer("SeedBox");
-    }
-
     private bool IsWaterSelected()
     {
         return IsSelectedPrefabTag("water") || IsSelectedPrefab("WateringCan_full");
@@ -247,32 +243,10 @@ public class Crosshair : MonoBehaviour
         {
             targetInventory.selectedSlot = selectedInvSlot;
             targetInventory.TryConsumeSelectedSlot(1);
-            Debug.Log("[AddSeed] Aktif slot azaltildi.");
         }
         else
         {
             Debug.LogWarning("[AddSeed] Slot veya envanter bulunamadi, azaltma yapilamadi.");
-        }
-    }
-
-    private void CreateWaterIndicator(SeedPoint seedPoint)
-    {
-        if (seedPoint.wateringEffectPrefab == null)
-        {
-            Debug.LogWarning($"[Watering] {seedPoint.name} icin wateringEffectPrefab atanamadi.");
-            return;
-        }
-
-        Transform marker = seedPoint.transform.Find("WaterIndicator");
-        if (marker == null)
-        {
-            GameObject fx = Instantiate(
-                seedPoint.wateringEffectPrefab,
-                seedPoint.transform.position + Vector3.up * 0.1f,
-                Quaternion.identity,
-                seedPoint.transform
-            );
-            fx.name = "WaterIndicator";
         }
     }
 
@@ -304,12 +278,6 @@ public class Crosshair : MonoBehaviour
         Destroy(clickedCell);
     }
 
-    private void PlantSeedOnPoint(SeedPoint seedPoint, SeedData selectedSeedData)
-    {
-        seedPoint.seedData = selectedSeedData;
-        seedPoint.PlantSeed(selectedSeedData.seedType);
-    }
-
     private bool TryInteractRaycast(Ray ray, out RaycastHit hit)
     {
         return Physics.Raycast(ray, out hit, maxDistance, interactableLayer);
@@ -330,12 +298,10 @@ public class Crosshair : MonoBehaviour
         if (identifier.market.activeSelf)
         {
             identifier.closemarket();
-            Debug.Log("Halci ile etkilesim: Market kapatildi.");
         }
         else
         {
             identifier.openmarket();
-            Debug.Log("Halci ile etkilesim: Market acildi.");
         }
     }
 
@@ -345,7 +311,6 @@ public class Crosshair : MonoBehaviour
         if (interactable != null)
         {
             interactable.Interact();
-            Debug.Log("Etkilesim gerceklesti: " + collider.gameObject.name);
         }
     }
 
@@ -355,13 +320,8 @@ public class Crosshair : MonoBehaviour
 
         if (item != null)
         {
-            Debug.Log("SATIN ALMA: Tools bulundu -> " + item.itemName);
             currentItem = item;
             BuyItem();
-        }
-        else
-        {
-            Debug.LogWarning("SATIN ALMA: Tools component yok -> BuyItem calismadi.");
         }
     }
 
@@ -369,8 +329,6 @@ public class Crosshair : MonoBehaviour
     {
         if (TryRaycast(out RaycastHit hit))
         {
-            Debug.Log("Etkilesim: " + hit.collider.name);
-
             Collectable collectable = GetCollectable(hit.collider);
             Tools tools = GetTools(hit.collider);
             if (collectable != null && tools != null)
@@ -384,11 +342,12 @@ public class Crosshair : MonoBehaviour
     {
         if (TryRaycast(out RaycastHit hit))
         {
-            Debug.Log("Etkilesim: " + hit.collider.name);
+            if (TryHandleHarvestAction(hit.collider))
+                return;
 
             Collectable collectable = GetCollectable(hit.collider);
             Tools tools = GetTools(hit.collider);
-            if (collectable != null && tools == null)
+            if (collectable != null && tools == null && GetSeedPoint(hit.collider) == null)
             {
                 collectable.Collect();
             }
@@ -434,10 +393,19 @@ public class Crosshair : MonoBehaviour
             return;
         }
 
+        if (TryHandleTreeAction(clickedCell))
+            return;
+
+        if (TryHandleHarvestAction(hit.collider))
+            return;
+
+        if (TryHandleSeedAction(hit))
+            return;
+
+        if (TryHandleWaterAction(hit, clickedCell))
+            return;
+
         TryHandleCollectAction(hit.collider);
-        TryHandleTreeAction(clickedCell);
-        TryHandleSeedAction(hit, clickedCell);
-        TryHandleWaterAction(hit, clickedCell);
     }
 
     /// <summary>
@@ -460,13 +428,23 @@ public class Crosshair : MonoBehaviour
     {
         Collectable collectable = GetCollectable(collider);
         Tools tools = GetTools(collider);
-        if (collectable != null && tools == null)
+        if (collectable != null && tools == null && GetSeedPoint(collider) == null)
         {
             collectable.Collect();
             return true;
         }
 
         return false;
+    }
+
+    private bool TryHandleHarvestAction(Collider collider)
+    {
+        SeedPoint seedPoint = GetSeedPoint(collider);
+        if (seedPoint == null || !seedPoint.IsHarvestReady)
+            return false;
+
+        bool harvested = seedPoint.TryHarvest();
+        return harvested;
     }
 
     private bool TryHandleTreeAction(GameObject clickedCell)
@@ -483,31 +461,22 @@ public class Crosshair : MonoBehaviour
             return true;
         }
 
-        Debug.Log("Bu agac zaten devrilmis.");
         return true;
     }
 
-    private bool TryHandleSeedAction(RaycastHit hit, GameObject clickedCell)
+    private bool TryHandleSeedAction(RaycastHit hit)
     {
-        if (!IsSeedBoxTarget(clickedCell) || !IsSelectedPrefabTag("seed"))
+        if (!IsSelectedPrefabTag("seed"))
         {
             return false;
         }
 
-        string selectedItemUsedPrefab = GetSelectedUsedPrefab();
         SeedData selectedSeedData = GetSelectedSeedData();
-
-        if (string.IsNullOrEmpty(selectedItemUsedPrefab))
-        {
-            Debug.LogWarning("Secili prefab adi bos!");
-            return true;
-        }
-
         SeedPoint seedPoint = GetSeedPoint(hit.collider);
+
         if (seedPoint == null)
         {
-            Debug.LogWarning("[AddSeed] SeedPoint bulunamadi.");
-            return true;
+            return false;
         }
 
         if (selectedSeedData == null)
@@ -516,22 +485,17 @@ public class Crosshair : MonoBehaviour
             return true;
         }
 
-        GameObject newItem = Resources.Load<GameObject>($"Prefabs/foods/{selectedItemUsedPrefab}");
-        if (newItem == null)
+        if (seedPoint.TryPlant(selectedSeedData))
         {
-            Debug.LogWarning($"Prefab bulunamadi: {selectedItemUsedPrefab}");
-            return true;
+            ConsumeSelectedSeedSlot();
         }
 
-        PlantSeedOnPoint(seedPoint, selectedSeedData);
-        ConsumeSelectedSeedSlot();
-        Debug.Log($"SeedPoint'e ekim yapildi: {selectedSeedData.seedType}");
         return true;
     }
 
     private bool TryHandleWaterAction(RaycastHit hit, GameObject clickedCell)
     {
-        if (!IsSeedBoxTarget(clickedCell) || !IsWaterSelected())
+        if (!IsWaterSelected())
         {
             return false;
         }
@@ -539,18 +503,14 @@ public class Crosshair : MonoBehaviour
         SeedPoint seedPoint = GetSeedPoint(hit.collider);
         if (seedPoint == null)
         {
-            Debug.LogWarning($"[Watering] SeedPoint yok: {clickedCell.name}");
+            return false;
+        }
+
+        if (seedPoint.TryWater())
+        {
             return true;
         }
 
-        if (!seedPoint.hasSeed)
-        {
-            Debug.Log($"[Watering] Hucrede tohum yok: {clickedCell.name}");
-        }
-
-        seedPoint.isWatered = true;
-        CreateWaterIndicator(seedPoint);
-        Debug.Log($"Hucre sulandi: {clickedCell.name}");
         return true;
     }
 
@@ -577,7 +537,6 @@ public class Crosshair : MonoBehaviour
             if (npc != null)
             {
                 npc.StartDialog();
-                Debug.Log("NPC ile etkilesim basladi: " + npc.gameObject.name);
             }
         }
     }
@@ -617,8 +576,6 @@ public class Crosshair : MonoBehaviour
     /// </summary>
     public void BuyItem()
     {
-        Debug.Log("BuyItem tetiklendi!");
-
         if (currentItem == null)
         {
             Debug.LogWarning("BuyItem icin currentItem atanamadi.");
@@ -633,7 +590,7 @@ public class Crosshair : MonoBehaviour
         }
         else
         {
-            Debug.Log("Yetersiz altin!");
+            return;
         }
     }
 
@@ -658,7 +615,6 @@ public class Crosshair : MonoBehaviour
         if (TryGetClickedCell(out _, out GameObject clickedCell) && IsOnLayer(clickedCell, "ground") && IsSelectedPrefab("Hoe"))
         {
             ReplaceClickedCell(clickedCell);
-            Debug.Log("Hucre basariyla degistirildi.");
         }
     }
 
@@ -666,24 +622,23 @@ public class Crosshair : MonoBehaviour
     {
         if (TryGetClickedCell(out _, out GameObject clickedCell) && IsOnLayer(clickedCell, "groundcell") && IsSelectedPrefab("Hammer"))
         {
-            Debug.Log($"Raycast basarili, carpilan obje: {clickedCell.name}, Layer: {clickedCell.layer}");
             clickedCell.transform.GetChild(0).gameObject.SetActive(true);
         }
     }
 
     /// <summary>
-    /// Secili tohum aracini kullanarak ekim kutusu uzerine tohum diker ve aktif slottan tuketir.
+    /// Secili tohum aracini kullanarak ekim noktasina tohum diker ve aktif slottan tuketir.
     /// </summary>
     public void AddSeed()
     {
-        if (TryGetClickedCell(out RaycastHit hit, out GameObject clickedCell))
+        if (TryGetClickedCell(out RaycastHit hit, out _))
         {
-            TryHandleSeedAction(hit, clickedCell);
+            TryHandleSeedAction(hit);
         }
     }
 
     /// <summary>
-    /// Secili sulama araci ile ekim kutusunu sulayip gorsel isaretleyiciyi olusturur.
+    /// Secili sulama araci ile ekim noktasini sulayip visual state'i gunceller.
     /// </summary>
     public void Watering()
     {

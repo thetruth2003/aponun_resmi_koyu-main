@@ -44,8 +44,7 @@ public class WeatherSystem : MonoBehaviour
         var all = FindObjectsOfType<SeedPoint>(true);
         foreach (var sp in all)
         {
-            if (sp.hasSeed)
-                sp.SetWatered(true);
+            sp.TryWater();
         }
     }
 }

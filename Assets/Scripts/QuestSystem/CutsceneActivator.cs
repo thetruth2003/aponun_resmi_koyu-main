@@ -32,25 +32,18 @@ public class CutsceneActivator : MonoBehaviour
     public List<GameObject> cutscenesToActivate = new List<GameObject>();
     public List<GameObject> cutscenesToDeactivate = new List<GameObject>();
 
+    [Header("Debug")]
+    [SerializeField] private bool verboseLogs = false;
+
     private bool triggered = false;
+    private Coroutine waitForQuestSystemRoutine;
 
     private void OnEnable()
     {
-        Debug.Log($"[CutsceneActivator:{name}] OnEnable, triggerType = {triggerType}");
-
         if (triggerType == TriggerType.OnQuestStepReached ||
             triggerType == TriggerType.OnQuestCompleted)
         {
-            if (ActiveQuestSystem.Instance != null)
-            {
-                Debug.Log($"[CutsceneActivator:{name}] ActiveQuestSystem bulundu, event'e abone oluyorum.");
-                ActiveQuestSystem.Instance.OnActiveStepChanged += OnQuestStepChanged;
-                EvaluateCurrentQuestState();
-            }
-            else
-            {
-                Debug.LogWarning($"[CutsceneActivator:{name}] ActiveQuestSystem.Instance yok, event'e abone olamiyorum!");
-            }
+            TrySubscribeQuestSystem();
         }
 
         if (triggerType == TriggerType.OnCutsceneFinished)
@@ -61,6 +54,12 @@ public class CutsceneActivator : MonoBehaviour
 
     private void OnDisable()
     {
+        if (waitForQuestSystemRoutine != null)
+        {
+            StopCoroutine(waitForQuestSystemRoutine);
+            waitForQuestSystemRoutine = null;
+        }
+
         if (ActiveQuestSystem.Instance != null)
         {
             ActiveQuestSystem.Instance.OnActiveStepChanged -= OnQuestStepChanged;
@@ -71,20 +70,13 @@ public class CutsceneActivator : MonoBehaviour
 
     private void OnQuestStepChanged(QuestEditorAsset changedAsset, int newIndex)
     {
-        Debug.Log(
-            $"[CutsceneActivator:{name}] EVENT GELDI | changedAsset = {(changedAsset ? changedAsset.name : "NULL")}, " +
-            $"newIndex = {newIndex}, myQuest = {(quest ? quest.name : "NULL")}, myStep = {stepIndex}, triggerType = {triggerType}"
-        );
-
         if (triggered)
         {
-            Debug.Log($"[CutsceneActivator:{name}] Zaten tetiklenmis, donuyorum.");
             return;
         }
 
         if (changedAsset != quest)
         {
-            Debug.Log($"[CutsceneActivator:{name}] Asset uyusmuyor, beni ilgilendirmiyor.");
             return;
         }
 
@@ -93,7 +85,6 @@ public class CutsceneActivator : MonoBehaviour
             case TriggerType.OnQuestStepReached:
                 if (newIndex == stepIndex)
                 {
-                    Debug.Log($"[CutsceneActivator:{name}] STEP ESLESTI (newIndex={newIndex}), Trigger cagrilmali.");
                     Trigger();
                 }
                 break;
@@ -101,7 +92,6 @@ public class CutsceneActivator : MonoBehaviour
             case TriggerType.OnQuestCompleted:
                 if (newIndex >= quest.quests.Count)
                 {
-                    Debug.Log($"[CutsceneActivator:{name}] GOREV TAMAMLANDI, Trigger cagrilmali.");
                     Trigger();
                 }
                 break;
@@ -113,17 +103,13 @@ public class CutsceneActivator : MonoBehaviour
     /// </summary>
     public void OnCutsceneFinished()
     {
-        Debug.Log($"[CutsceneActivator:{name}] OnCutsceneFinished cagrildi.");
-
         if (triggerType != TriggerType.OnCutsceneFinished)
         {
-            Debug.Log($"[CutsceneActivator:{name}] TriggerType OnCutsceneFinished degil, donuyorum.");
             return;
         }
 
         if (triggered)
         {
-            Debug.Log($"[CutsceneActivator:{name}] Zaten tetiklenmis, donuyorum.");
             return;
         }
 
@@ -132,15 +118,12 @@ public class CutsceneActivator : MonoBehaviour
 
     private void Trigger()
     {
-        Debug.Log($"[CutsceneActivator:{name}] TRIGGER CALISTI.");
-
         triggered = true;
 
         foreach (GameObject go in cutscenesToActivate)
         {
             if (go != null)
             {
-                Debug.Log($"[CutsceneActivator:{name}] Activate: {go.name}");
                 go.SetActive(true);
             }
         }
@@ -149,7 +132,6 @@ public class CutsceneActivator : MonoBehaviour
         {
             if (go != null)
             {
-                Debug.Log($"[CutsceneActivator:{name}] Deactivate: {go.name}");
                 go.SetActive(false);
             }
         }
@@ -168,7 +150,6 @@ public class CutsceneActivator : MonoBehaviour
         if (!waitForCutscene || finishedClip != waitForCutscene)
             return;
 
-        Debug.Log($"[CutsceneActivator:{name}] Beklenen cutscene bitti, trigger akisi basliyor.");
         TryTriggerWithDelay();
     }
 
@@ -203,7 +184,6 @@ public class CutsceneActivator : MonoBehaviour
             case TriggerType.OnQuestStepReached:
                 if (tracked.currentIndex == stepIndex)
                 {
-                    Debug.Log($"[CutsceneActivator:{name}] Mevcut quest step zaten uygun, Trigger cagriliyor.");
                     Trigger();
                 }
                 break;
@@ -211,10 +191,52 @@ public class CutsceneActivator : MonoBehaviour
             case TriggerType.OnQuestCompleted:
                 if (quest.quests != null && tracked.currentIndex >= quest.quests.Count)
                 {
-                    Debug.Log($"[CutsceneActivator:{name}] Quest zaten tamamlanmis, Trigger cagriliyor.");
                     Trigger();
                 }
                 break;
+        }
+    }
+
+    private void TrySubscribeQuestSystem()
+    {
+        ActiveQuestSystem activeQuestSystem = ActiveQuestSystem.Instance;
+        if (activeQuestSystem != null)
+        {
+            activeQuestSystem.OnActiveStepChanged -= OnQuestStepChanged;
+            activeQuestSystem.OnActiveStepChanged += OnQuestStepChanged;
+            EvaluateCurrentQuestState();
+            LogVerbose("Quest event aboneligi aktif.");
+            return;
+        }
+
+        if (waitForQuestSystemRoutine == null && isActiveAndEnabled)
+        {
+            waitForQuestSystemRoutine = StartCoroutine(WaitForQuestSystemAndSubscribe());
+        }
+    }
+
+    private IEnumerator WaitForQuestSystemAndSubscribe()
+    {
+        LogVerbose("ActiveQuestSystem bekleniyor.");
+
+        while (isActiveAndEnabled && ActiveQuestSystem.Instance == null)
+        {
+            yield return null;
+        }
+
+        waitForQuestSystemRoutine = null;
+
+        if (isActiveAndEnabled)
+        {
+            TrySubscribeQuestSystem();
+        }
+    }
+
+    private void LogVerbose(string message)
+    {
+        if (verboseLogs)
+        {
+            Debug.Log($"[CutsceneActivator:{name}] {message}", this);
         }
     }
 }

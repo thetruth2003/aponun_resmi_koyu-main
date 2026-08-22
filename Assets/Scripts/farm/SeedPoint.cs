@@ -1,15 +1,16 @@
 using UnityEngine;
 
 /// <summary>
-/// SeedType sinifi, ilgili davranis veya veriyi yonetmek icin kullanilir.
+/// Seed types used by farm sockets.
 /// </summary>
-public enum SeedType {
+public enum SeedType
+{
     None, Wheat, Corn, Tomato, Potato, Carrot, Pumpkin, Cabbage, Eggplant, Radish, Lettuce,
     Cucumber, Grape, Pepper, Bean, Chilli, Onion, Melon, Watermelon
 }
 
 /// <summary>
-/// SeedPointData sinifi, ilgili veriyi tanimlamak ve tasimak icin kullanilir.
+/// Serializable runtime state for one farm socket.
 /// </summary>
 [System.Serializable]
 public struct SeedPointData
@@ -23,22 +24,23 @@ public struct SeedPointData
 }
 
 /// <summary>
-/// SeedPoint sinifi, ilgili davranis veya veriyi yonetmek icin kullanilir.
+/// Owns planting, watering, growth and harvest flow for a single farm socket.
 /// </summary>
 public class SeedPoint : MonoBehaviour, ISaveable
 {
     [Header("Seed Configuration")]
-    [Tooltip("ScriptableObject ile tohum verisi (varsa buradan okunur)")]
+    [Tooltip("Optional scriptable seed config. When assigned, growth stages and dry logic come from here.")]
     public SeedData seedData;
+
     [Header("Save/Load")]
     [SerializeField] public string persistentId;
 
     [Header("Watering Indicator")]
-    [Tooltip("Sulanm???±≈ü g√∂rseli (mavi √ßember)")]
+    [Tooltip("Optional visual shown while this socket is watered.")]
     public GameObject wateringEffectPrefab;
     private GameObject wateringEffectInstance;
 
-    [Tooltip("Mavi √ßemberin dikey offset'i (negatif ‚Üí biraz a≈üa???ü???±)")]
+    [Tooltip("Vertical offset for the watering indicator.")]
     public float waterIndicatorYOffset = -0.02f;
 
     [Header("Seed State")]
@@ -47,20 +49,21 @@ public class SeedPoint : MonoBehaviour, ISaveable
     public SeedType currentSeed = SeedType.None;
 
     [Header("Dry Logic (fallback)")]
-    [Tooltip("SeedData yoksa buras???± kullan???±l???±r")]
+    [Tooltip("Used only when SeedData is missing.")]
     public int maxDryDays = 2;
 
     [Header("Planted Prefab (fallback)")]
-    [Tooltip("SeedData/growthStages yoksa kullan???±lacak tek prefab")]
+    [Tooltip("Used only when there are no growth stages.")]
     public GameObject plantPrefab;
     private GameObject plantedInstance;
 
     [Header("Growth (fallback)")]
-    [Tooltip("SeedData yoksa buras???± kullan???±l???±r (0..n a≈üamalar)")]
+    [Tooltip("Used only when SeedData is missing. Index 0 is the planted stage.")]
     public GameObject[] growthStages;
     private int currentGrowthStage = 0;
     private int dryDayCount = 0;
     public bool isPesticideApplied = false;
+    private int lastProcessedDayStamp = int.MinValue;
 
     private GameObject[] ActiveGrowthStages =>
         (seedData != null && seedData.growthStages != null && seedData.growthStages.Length > 0)
@@ -68,7 +71,18 @@ public class SeedPoint : MonoBehaviour, ISaveable
             : growthStages;
 
     private int MaxDryDays =>
-        (seedData != null) ? seedData.maxDryDays : maxDryDays;
+        seedData != null ? seedData.maxDryDays : maxDryDays;
+
+    public int CurrentGrowthStage => currentGrowthStage;
+    public bool IsFullyGrown => HasReachedFinalStage();
+    public bool IsHarvestReady => hasSeed && HasReachedFinalStage() && GetHarvestCollectable() != null;
+    public string UniqueID => GetUniqueID();
+
+    private void Awake()
+    {
+        if (string.IsNullOrWhiteSpace(persistentId))
+            persistentId = System.Guid.NewGuid().ToString("N");
+    }
 
     private void Start()
     {
@@ -118,23 +132,145 @@ public class SeedPoint : MonoBehaviour, ISaveable
         if (plantedInstance != null)
             Destroy(plantedInstance);
 
+        plantedInstance = null;
+
         if (hasSeed)
             SpawnStage(currentGrowthStage);
 
         SetWatered(data.isWatered);
     }
 
-    /// <summary>Tohum eker, a≈üama 0‚Ä???????± spawn eder.</summary>
+    /// <summary>
+    /// Backward-compatible entry point for older callers.
+    /// </summary>
     public void PlantSeed(SeedType type)
     {
-        if (hasSeed) return;
+        PlantSeedInternal(type);
+    }
+
+    public bool TryPlant(SeedData newSeedData)
+    {
+        if (newSeedData == null)
+        {
+            Debug.LogWarning($"[SeedPoint:{name}] TryPlant called with null SeedData.");
+            return false;
+        }
+
+        seedData = newSeedData;
+        return PlantSeedInternal(newSeedData.seedType);
+    }
+
+    public void Water()
+    {
+        SetWatered(true);
+    }
+
+    public bool TryWater()
+    {
+        if (!hasSeed)
+        {
+            return false;
+        }
+
+        if (isWatered)
+            return false;
+
+        SetWatered(true);
+        return true;
+    }
+
+    public bool TryHarvest()
+    {
+        if (!IsHarvestReady)
+            return false;
+
+        Collectable collectable = GetHarvestCollectable();
+        if (collectable == null)
+        {
+            Debug.LogWarning($"[SeedPoint:{name}] Final stage has no Collectable component.");
+            return false;
+        }
+
+        collectable.Collect();
+        ResetCropState(destroyVisual: true);
+        return true;
+    }
+
+    public void SetWatered(bool state)
+    {
+        if (state && !hasSeed)
+            return;
+
+        isWatered = state;
+        SyncWaterObject();
+    }
+
+    public string GetUniqueID()
+    {
+        return !string.IsNullOrEmpty(persistentId) ? persistentId : transform.GetInstanceID().ToString();
+    }
+
+    public void SaveData()
+    {
+        string id = GetUniqueID();
+        PlayerPrefs.SetInt(id + "_HasSeed", hasSeed ? 1 : 0);
+        PlayerPrefs.SetString(id + "_SeedType", currentSeed.ToString());
+        PlayerPrefs.SetInt(id + "_IsWatered", isWatered ? 1 : 0);
+        PlayerPrefs.SetInt(id + "_DryDayCount", dryDayCount);
+        PlayerPrefs.SetInt(id + "_GrowthStage", currentGrowthStage);
+        PlayerPrefs.SetInt(id + "_IsPesticideApplied", isPesticideApplied ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    public void LoadData()
+    {
+        string id = GetUniqueID();
+        if (!PlayerPrefs.HasKey(id + "_HasSeed"))
+            return;
+
+        hasSeed = PlayerPrefs.GetInt(id + "_HasSeed", 0) == 1;
+
+        string seedTypeName = PlayerPrefs.GetString(id + "_SeedType", SeedType.None.ToString());
+        if (!System.Enum.TryParse(seedTypeName, out currentSeed))
+            currentSeed = SeedType.None;
+
+        isWatered = PlayerPrefs.GetInt(id + "_IsWatered", 0) == 1;
+        dryDayCount = PlayerPrefs.GetInt(id + "_DryDayCount", 0);
+        currentGrowthStage = PlayerPrefs.GetInt(id + "_GrowthStage", 0);
+        isPesticideApplied = PlayerPrefs.GetInt(id + "_IsPesticideApplied", 0) == 1;
+
+        if (plantedInstance != null)
+            Destroy(plantedInstance);
+
+        plantedInstance = null;
+
+        if (hasSeed)
+            SpawnStage(currentGrowthStage);
+
+        SetWatered(isWatered);
+    }
+
+    private bool PlantSeedInternal(SeedType type)
+    {
+        if (type == SeedType.None)
+        {
+            Debug.LogWarning($"[SeedPoint:{name}] SeedType.None cannot be planted.");
+            return false;
+        }
+
+        if (hasSeed)
+        {
+            return false;
+        }
 
         currentSeed = type;
 
         if (seedData != null)
         {
             if (seedData.seedType != SeedType.None && seedData.seedType != type)
-                Debug.LogWarning($"[SeedPoint] SeedData.seedType ({seedData.seedType}) ile ekilen tip ({type}) farkl???±.");
+            {
+                Debug.LogWarning($"[SeedPoint:{name}] SeedData type ({seedData.seedType}) and planted type ({type}) do not match.");
+            }
 
             if (seedData.growthStages != null && seedData.growthStages.Length > 0)
                 growthStages = seedData.growthStages;
@@ -147,36 +283,26 @@ public class SeedPoint : MonoBehaviour, ISaveable
         }
         else
         {
-            Debug.LogWarning("[SeedPoint] PlantSeed √ßa???ür???±ld???± ama seedData atanm???±≈ü de???üil. Fallback (growthStages) kullan???±lacak.");
+            Debug.LogWarning($"[SeedPoint:{name}] No SeedData assigned. Fallback growthStages will be used.");
         }
 
         hasSeed = true;
         dryDayCount = 0;
         currentGrowthStage = 0;
+        isPesticideApplied = false;
 
         SetWatered(false);
         SpawnStage(0);
+        return true;
     }
 
-    /// <summary>Oyuncu sulad???±: isWatered = true ve halkay???± y√∂net.</summary>
-    public void Water() => SetWatered(true);
-
-    /// <summary>
-    /// isWatered durumunu merkezi y√∂netir (true‚Üíspawn, false‚Üídestroy).
-    /// Ya???ümur, kova, sprinkler hepsi bunu √ßa???ü???±rmal???±.
-    /// </summary>
-    public void SetWatered(bool state)
-    {
-        if (state && !hasSeed) return;
-
-        isWatered = state;
-        SyncWaterObject();
-    }
-
-    /// <summary>Yeni g√ºn: suland???±ysa b√ºy√ºt, de???üilse kurut; sonunda sulama s???±f???±rlan???±r.</summary>
     private void HandleNewDay()
     {
-        if (!hasSeed) return;
+        if (!ShouldProcessNewDay())
+            return;
+
+        if (!hasSeed)
+            return;
 
         if (isWatered)
         {
@@ -188,7 +314,6 @@ public class SeedPoint : MonoBehaviour, ISaveable
             dryDayCount++;
             if (dryDayCount >= MaxDryDays)
             {
-                Debug.Log($"{name} kurudu!");
                 KillCrop();
                 return;
             }
@@ -199,7 +324,7 @@ public class SeedPoint : MonoBehaviour, ISaveable
 
     private void AdvanceGrowth()
     {
-        var stages = ActiveGrowthStages;
+        GameObject[] stages = ActiveGrowthStages;
         if (stages != null && stages.Length > 0)
         {
             if (currentGrowthStage < stages.Length - 1)
@@ -208,14 +333,18 @@ public class SeedPoint : MonoBehaviour, ISaveable
                 SpawnStage(currentGrowthStage);
             }
         }
-        else
+        else if (plantPrefab != null)
         {
-            if (plantPrefab != null)
-                SpawnPrefab(plantPrefab);
+            SpawnPrefab(plantPrefab);
         }
     }
 
     private void KillCrop()
+    {
+        ResetCropState(destroyVisual: true);
+    }
+
+    private void ResetCropState(bool destroyVisual)
     {
         SetWatered(false);
 
@@ -223,21 +352,24 @@ public class SeedPoint : MonoBehaviour, ISaveable
         currentSeed = SeedType.None;
         dryDayCount = 0;
         currentGrowthStage = 0;
+        isPesticideApplied = false;
 
-        if (plantedInstance != null)
-            Destroy(plantedInstance);
+        GameObject previousInstance = plantedInstance;
+        plantedInstance = null;
+
+        if (destroyVisual && previousInstance != null)
+            Destroy(previousInstance);
     }
 
     private void SpawnStage(int stageIndex)
     {
-        var stages = ActiveGrowthStages;
-
+        GameObject[] stages = ActiveGrowthStages;
         GameObject prefab = null;
 
         if (stages != null && stages.Length > 0)
         {
-            int idx = Mathf.Clamp(stageIndex, 0, stages.Length - 1);
-            prefab = stages[idx];
+            int index = Mathf.Clamp(stageIndex, 0, stages.Length - 1);
+            prefab = stages[index];
         }
         else
         {
@@ -249,7 +381,8 @@ public class SeedPoint : MonoBehaviour, ISaveable
 
     private void SpawnPrefab(GameObject prefab)
     {
-        if (prefab == null) return;
+        if (prefab == null)
+            return;
 
         if (plantedInstance != null)
             Destroy(plantedInstance);
@@ -258,50 +391,62 @@ public class SeedPoint : MonoBehaviour, ISaveable
         plantedInstance.transform.SetParent(transform, worldPositionStays: true);
     }
 
-    /// <summary>isWatered == true ise halkay???± spawnlar, false ise varsa destroy eder.</summary>
     private void SyncWaterObject()
     {
         if (isWatered)
         {
-            Vector3 basePos = transform.position;
-            Vector3 finalPos = basePos + new Vector3(0f, -1.0f, 0f);
+            if (wateringEffectInstance == null)
+            {
+                Transform existing = transform.Find("WaterIndicator");
+                if (existing != null)
+                    wateringEffectInstance = existing.gameObject;
+            }
 
             if (wateringEffectPrefab != null && wateringEffectInstance == null)
             {
-                wateringEffectInstance = Instantiate(
-                    wateringEffectPrefab,
-                    finalPos,
-                    Quaternion.identity,
-                    null
-                );
+                Vector3 finalPos = transform.position + new Vector3(0f, waterIndicatorYOffset, 0f);
+                wateringEffectInstance = Instantiate(wateringEffectPrefab, finalPos, Quaternion.identity, transform);
+                wateringEffectInstance.name = "WaterIndicator";
             }
         }
-        else
+        else if (wateringEffectInstance != null)
         {
-            if (wateringEffectInstance != null)
-            {
-                Destroy(wateringEffectInstance);
-                wateringEffectInstance = null;
-            }
+            Destroy(wateringEffectInstance);
+            wateringEffectInstance = null;
         }
     }
 
-    public string GetUniqueID() => transform.GetInstanceID().ToString();
-
-    public string UniqueID { get; }
-    public void SaveData()
+    private bool HasReachedFinalStage()
     {
-        PlayerPrefs.SetInt(GetUniqueID() + "_HasSeed", hasSeed ? 1 : 0);
-        PlayerPrefs.SetString(GetUniqueID() + "_SeedType", currentSeed.ToString());
-        PlayerPrefs.SetInt(GetUniqueID() + "_IsWatered", isWatered ? 1 : 0);
-        PlayerPrefs.SetInt(GetUniqueID() + "_DryDayCount", dryDayCount);
-        PlayerPrefs.SetInt(GetUniqueID() + "_GrowthStage", currentGrowthStage);
-        PlayerPrefs.SetInt(GetUniqueID() + "_IsPesticideApplied", isPesticideApplied ? 1 : 0);
-        throw new System.NotImplementedException();
+        GameObject[] stages = ActiveGrowthStages;
+        if (stages == null || stages.Length == 0)
+            return plantedInstance != null;
+
+        return currentGrowthStage >= stages.Length - 1;
     }
 
-    public void LoadData()
+    private Collectable GetHarvestCollectable()
     {
-        throw new System.NotImplementedException();
+        return plantedInstance != null ? plantedInstance.GetComponentInChildren<Collectable>(true) : null;
+    }
+
+    private bool ShouldProcessNewDay()
+    {
+        int dayStamp = ResolveCurrentDayStamp();
+        if (dayStamp == int.MinValue)
+            return true;
+
+        if (dayStamp == lastProcessedDayStamp)
+            return false;
+
+        lastProcessedDayStamp = dayStamp;
+        return true;
+    }
+
+    private int ResolveCurrentDayStamp()
+    {
+        int prefDay = PlayerPrefs.GetInt("DayCount", int.MinValue);
+        int gameTimeDay = GameTime.Instance != null ? GameTime.Instance.dayCount : int.MinValue;
+        return Mathf.Max(prefDay, gameTimeDay);
     }
 }

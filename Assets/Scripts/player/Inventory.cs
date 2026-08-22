@@ -111,18 +111,21 @@ public class Inventory
     }
 
     /// <summary>
-    /// Eþyayý envantere ekler. Ayný türden bir eþya varsa sadece sayýyý artýrýr, yoksa boþ slota yerleþtirir.
+    /// EÅŸyayÄ± envantere ekler. AynÄ± tÃ¼rden bir eÅŸya varsa sadece sayÄ±yÄ± artÄ±rÄ±r, yoksa boÅŸ slota yerleÅŸtirir.
     /// </summary>
     public void Add(Item item)
     {
-        Debug.Log($"Adding item: {item.data.itemName}");
+        if (item == null || item.data == null)
+        {
+            Debug.LogWarning("[Inventory] Gecersiz item eklenmeye calisildi.");
+            return;
+        }
 
         foreach (Slot slot in slots)
         {
             if (slot.CanAddItem(item.data.itemName))
             {
                 slot.AddItem(item.data, item.data.itemName, item.data.icon, item.data.maxAllowed, item.data.itemPrefab, item.data.itemUsedPrefab);
-                Debug.Log($"Item added to existing slot: {slot.itemName}, Count: {slot.count}");
                 return;
             }
         }
@@ -132,7 +135,6 @@ public class Inventory
             if (slot.IsEmpty)
             {
                 slot.AddItem(item.data, item.data.itemName, item.data.icon, item.data.maxAllowed, item.data.itemPrefab, item.data.itemUsedPrefab);
-                Debug.Log($"Item added to empty slot: {slot.itemName}, Count: {slot.count}");
                 return;
             }
         }
@@ -148,7 +150,7 @@ public class Inventory
         }
         else
         {
-            Debug.LogWarning("Geçersiz slot indeksi!");
+            Debug.LogWarning("GeÃ§ersiz slot indeksi!");
         }
     }
 
@@ -163,7 +165,7 @@ public class Inventory
         }
         else
         {
-            Debug.LogWarning("Geçersiz iþlem veya yetersiz eþya!");
+            Debug.LogWarning("GeÃ§ersiz iÅŸlem veya yetersiz eÅŸya!");
         }
     }
 
@@ -176,13 +178,13 @@ public class Inventory
 
         if (fromIndex < 0 || fromIndex >= slots.Count)
         {
-            Debug.LogWarning($"MoveSlot: Geçersiz fromIndex: {fromIndex}");
+            Debug.LogWarning($"MoveSlot: GeÃ§ersiz fromIndex: {fromIndex}");
             return;
         }
 
         if (toIndex < 0 || toIndex >= toInventory.slots.Count)
         {
-            Debug.LogWarning($"MoveSlot: Geçersiz toIndex: {toIndex}");
+            Debug.LogWarning($"MoveSlot: GeÃ§ersiz toIndex: {toIndex}");
             return;
         }
 
@@ -203,19 +205,18 @@ public class Inventory
     {
         if (selectedSlot == null)
         {
-            Debug.LogWarning("[Inventory] selectedSlot null, azaltýlamadý.");
+            Debug.LogWarning("[Inventory] selectedSlot null, azaltÄ±lamadÄ±.");
             return false;
         }
 
         if (selectedSlot.count <= 0)
         {
-            Debug.LogWarning("[Inventory] Seçili slotta item yok veya miktar 0.");
+            Debug.LogWarning("[Inventory] SeÃ§ili slotta item yok veya miktar 0.");
             return false;
         }
 
         selectedSlot.RemoveItem();
-        Inventory_UI.instance.Refresh();
-        Debug.Log($"[Inventory] Seçili slot azaltýldý -> {selectedSlot.itemName}, kalan: {selectedSlot.count}");
+        Inventory_UI.instance?.Refresh();
         return true;
     }
 
@@ -227,7 +228,7 @@ public class Inventory
         }
         else
         {
-            Debug.LogWarning("Geçersiz slot indeksi seçildi!");
+            Debug.LogWarning("GeÃ§ersiz slot indeksi seÃ§ildi!");
         }
     }
 }

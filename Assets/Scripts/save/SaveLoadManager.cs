@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// SaveLoadManager, sahnedeki kaydedilebilir nesneleri kaydedip geri yukleyen merkezi yoneticidir.
@@ -8,20 +9,35 @@ public class SaveLoadManager : MonoBehaviour
 {
     public static SaveLoadManager Instance { get; private set; }
 
+    [Header("Debug")]
+    [SerializeField] private bool verboseLogs = false;
+    [Tooltip("Kapali tut. Runtime save/load giris noktasi SaveCoordinator olmali.")]
+    [SerializeField] private bool allowLegacyDebugHotkeys = false;
+    [SerializeField] private KeyCode legacySaveKey = KeyCode.V;
+    [SerializeField] private KeyCode legacyLoadKey = KeyCode.L;
+
     private readonly Dictionary<string, ISaveable> saveables = new Dictionary<string, ISaveable>();
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        if (Instance != this)
         {
-            Instance.LoadAll();
-            Debug.Log("Loaded all saveables");
+            return;
         }
 
-        if (Input.GetKeyDown(KeyCode.V))
+        if (!allowLegacyDebugHotkeys)
         {
-            Instance.SaveAll();
-            Debug.Log("Saved all saveables");
+            return;
+        }
+
+        if (Input.GetKeyDown(legacyLoadKey))
+        {
+            LoadAll();
+        }
+
+        if (Input.GetKeyDown(legacySaveKey))
+        {
+            SaveAll();
         }
     }
 
@@ -37,11 +53,47 @@ public class SaveLoadManager : MonoBehaviour
             return;
         }
 
+        if (transform.parent != null)
+        {
+            transform.SetParent(null, true);
+        }
+
         DontDestroyOnLoad(gameObject);
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        RegisterExistingSaveables();
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            Instance = null;
+        }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        RegisterExistingSaveables();
+    }
+
+    public static void TryRegister(ISaveable saveable)
+    {
+        Instance?.Register(saveable);
+    }
+
+    public static void TryUnregister(ISaveable saveable)
+    {
+        Instance?.Unregister(saveable);
     }
 
     public void Register(ISaveable saveable)
     {
+        if (saveable == null || string.IsNullOrWhiteSpace(saveable.UniqueID))
+        {
+            return;
+        }
+
         if (!saveables.ContainsKey(saveable.UniqueID))
         {
             saveables.Add(saveable.UniqueID, saveable);
@@ -50,6 +102,11 @@ public class SaveLoadManager : MonoBehaviour
 
     public void Unregister(ISaveable saveable)
     {
+        if (saveable == null || string.IsNullOrWhiteSpace(saveable.UniqueID))
+        {
+            return;
+        }
+
         saveables.Remove(saveable.UniqueID);
     }
 
@@ -58,11 +115,25 @@ public class SaveLoadManager : MonoBehaviour
     /// </summary>
     public void SaveAll()
     {
-        foreach (ISaveable saveable in saveables.Values)
+        int savedCount = 0;
+        List<string> staleKeys = null;
+
+        foreach (KeyValuePair<string, ISaveable> pair in saveables)
         {
+            ISaveable saveable = pair.Value;
+            if (saveable is Object unityObject && unityObject == null)
+            {
+                staleKeys ??= new List<string>();
+                staleKeys.Add(pair.Key);
+                continue;
+            }
+
             saveable.SaveData();
-            Debug.Log($"[Save] {saveable.UniqueID}");
+            savedCount++;
         }
+
+        RemoveStaleKeys(staleKeys);
+        LogVerbose($"[SaveLoadManager] {savedCount} saveable kaydedildi.");
     }
 
     /// <summary>
@@ -70,10 +141,63 @@ public class SaveLoadManager : MonoBehaviour
     /// </summary>
     public void LoadAll()
     {
-        foreach (ISaveable saveable in saveables.Values)
+        int loadedCount = 0;
+        List<string> staleKeys = null;
+
+        foreach (KeyValuePair<string, ISaveable> pair in saveables)
         {
+            ISaveable saveable = pair.Value;
+            if (saveable is Object unityObject && unityObject == null)
+            {
+                staleKeys ??= new List<string>();
+                staleKeys.Add(pair.Key);
+                continue;
+            }
+
             saveable.LoadData();
-            Debug.Log($"[Load] {saveable.UniqueID}");
+            loadedCount++;
+        }
+
+        RemoveStaleKeys(staleKeys);
+        LogVerbose($"[SaveLoadManager] {loadedCount} saveable yuklendi.");
+    }
+
+    private void RegisterExistingSaveables()
+    {
+        MonoBehaviour[] behaviours = FindObjectsOfType<MonoBehaviour>(true);
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            MonoBehaviour behaviour = behaviours[i];
+            if (behaviour == null || behaviour == this)
+            {
+                continue;
+            }
+
+            if (behaviour is ISaveable saveable)
+            {
+                Register(saveable);
+            }
+        }
+    }
+
+    private void RemoveStaleKeys(List<string> staleKeys)
+    {
+        if (staleKeys == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < staleKeys.Count; i++)
+        {
+            saveables.Remove(staleKeys[i]);
+        }
+    }
+
+    private void LogVerbose(string message)
+    {
+        if (verboseLogs)
+        {
+            Debug.Log(message, this);
         }
     }
 }
@@ -110,12 +234,12 @@ public abstract class SaveableMonoBehaviour : MonoBehaviour, ISaveable
 
     private void OnEnable()
     {
-        SaveLoadManager.Instance.Register(this);
+        SaveLoadManager.TryRegister(this);
     }
 
     private void OnDisable()
     {
-        SaveLoadManager.Instance.Unregister(this);
+        SaveLoadManager.TryUnregister(this);
     }
 
     public abstract void SaveData();

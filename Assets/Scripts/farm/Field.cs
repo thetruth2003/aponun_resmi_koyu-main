@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Tarladaki tüm SeedPoint socket�????lerini yönetir ve ayn???� zamanda
-/// ISaveable implementasyonu ile kaydet/yükle işlevlerini sa???�lar.
+/// Tarladaki tÃƒÂ¼m SeedPoint socketÃ¢â‚¬????lerini yÃƒÂ¶netir ve ayn???Â± zamanda
+/// ISaveable implementasyonu ile kaydet/yÃƒÂ¼kle iÃ…Å¸levlerini sa???Å¸lar.
 /// </summary>
 [DisallowMultipleComponent]
 public class Field : MonoBehaviour, ISaveable
 {
-    [Tooltip("Tarladaki tüm seed socket GameObject'leri")]
+    [Tooltip("Tarladaki tÃƒÂ¼m seed socket GameObject'leri")]
     [SerializeField] private GameObject[] seedPoints = null;
 
     private string _prefsKey => $"Field_{gameObject.GetInstanceID()}";
@@ -17,30 +17,30 @@ public class Field : MonoBehaviour, ISaveable
 
     private void OnEnable()
     {
-        SaveLoadManager.Instance.Register(this);
+        SaveLoadManager.TryRegister(this);
     }
 
     private void OnDisable()
     {
-        SaveLoadManager.Instance.Unregister(this);
+        SaveLoadManager.TryUnregister(this);
     }
 
     #endregion
 
     #region Field Operations
 
-    /// <summary> Tüm socket�????leri toplu olarak sular. </summary>
+    /// <summary> TÃƒÂ¼m socketÃ¢â‚¬????leri toplu olarak sular. </summary>
     public void WaterAll()
     {
         foreach (var go in seedPoints)
         {
             if (go == null) continue;
             var sp = go.GetComponent<SeedPoint>();
-            sp?.Water();
+            sp?.TryWater();
         }
     }
 
-    /// <summary> Tüm socket�????lere ayn???� tohum türünü eker. </summary>
+    /// <summary> TÃƒÂ¼m socketÃ¢â‚¬????lere ayn???Â± tohum tÃƒÂ¼rÃƒÂ¼nÃƒÂ¼ eker. </summary>
     public void PlantAll(SeedType seedType)
     {
         foreach (var go in seedPoints)
@@ -58,7 +58,7 @@ public class Field : MonoBehaviour, ISaveable
     public string UniqueID => _prefsKey;
 
     /// <summary>
-    /// SeedPointData�????lar???� JSON�????a çevirip PlayerPrefs�????e kaydeder.
+    /// SeedPointDataÃ¢â‚¬????lar???Â± JSONÃ¢â‚¬????a ÃƒÂ§evirip PlayerPrefsÃ¢â‚¬????e kaydeder.
     /// </summary>
     public void SaveData()
     {
@@ -78,7 +78,7 @@ public class Field : MonoBehaviour, ISaveable
     }
 
     /// <summary>
-    /// PlayerPrefs�????ten okur, JSON�???????� seriden geçirip her SeedPoint�????e uygular.
+    /// PlayerPrefsÃ¢â‚¬????ten okur, JSONÃ¢â‚¬???????Â± seriden geÃƒÂ§irip her SeedPointÃ¢â‚¬????e uygular.
     /// </summary>
     public void LoadData()
     {

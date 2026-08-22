@@ -8,7 +8,9 @@ using UnityEngine;
 /// </summary>
 public class savetest : MonoBehaviour
 {
-    [Header("Hotkeys")]
+    [Header("Legacy Direct Input")]
+    [Tooltip("Kapali tut. Kaydet/yukle giris noktasi artik SaveCoordinator.")]
+    [SerializeField] private bool allowLegacyDirectHotkeys = false;
     [SerializeField] private KeyCode saveKey = KeyCode.V;
     [SerializeField] private KeyCode loadKey = KeyCode.L;
 
@@ -99,6 +101,9 @@ public class savetest : MonoBehaviour
 
     void Update()
     {
+        if (!allowLegacyDirectHotkeys)
+            return;
+
         if (Input.GetKeyDown(saveKey))
         {
             SaveCoordinator coordinator = SaveCoordinator.EnsureInstance();

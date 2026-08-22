@@ -46,6 +46,11 @@ public class SaveCoordinator : MonoBehaviour
     private static bool _bootstrapped;
     private bool _wasAutoCreated;
 
+    [Header("Manual Save / Load")]
+    [SerializeField] private bool enableManualHotkeys = true;
+    [SerializeField] private KeyCode manualSaveKey = KeyCode.V;
+    [SerializeField] private KeyCode manualLoadKey = KeyCode.L;
+
     [Header("Autosave")]
     [SerializeField] private bool enablePeriodicAutosave = true;
     [SerializeField] private float autosaveIntervalSeconds = 180f;
@@ -169,6 +174,30 @@ public class SaveCoordinator : MonoBehaviour
     }
 
     private void Update()
+    {
+        HandleManualHotkeys();
+        HandleAutosaveTick();
+    }
+
+    private void HandleManualHotkeys()
+    {
+        if (!enableManualHotkeys || _isRestoring || _pendingLoad)
+            return;
+
+        if (Input.GetKeyDown(manualSaveKey))
+        {
+            if (FindWorldSave() == null && FindQuestSave() == null)
+                return;
+
+            SaveGame("hotkey save");
+            return;
+        }
+
+        if (Input.GetKeyDown(manualLoadKey))
+            LoadLastSaveNow();
+    }
+
+    private void HandleAutosaveTick()
     {
         if (!enablePeriodicAutosave)
             return;

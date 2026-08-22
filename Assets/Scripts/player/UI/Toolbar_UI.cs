@@ -26,17 +26,29 @@ public class Toolbar_UI : MonoBehaviour
 
     public string GetSelectedPrefab()
     {
-        return selectedSlot != null && selectedSlot.inventorySlot != null ? selectedSlot.inventorySlot.itemPrefab.name : null;
+        return selectedSlot != null &&
+               selectedSlot.inventorySlot != null &&
+               selectedSlot.inventorySlot.itemPrefab != null
+            ? selectedSlot.inventorySlot.itemPrefab.name
+            : null;
     }
 
     public string GetSelectedPrefabTag()
     {
-        return selectedSlot != null && selectedSlot.inventorySlot != null ? selectedSlot.inventorySlot.itemPrefab.tag : null;
+        return selectedSlot != null &&
+               selectedSlot.inventorySlot != null &&
+               selectedSlot.inventorySlot.itemPrefab != null
+            ? selectedSlot.inventorySlot.itemPrefab.tag
+            : null;
     }
 
     public SeedData GetSelectedPrefabSeedData()
     {
-        return selectedSlot != null && selectedSlot.inventorySlot != null ? selectedSlot.inventorySlot.item.seedData : null;
+        return selectedSlot != null &&
+               selectedSlot.inventorySlot != null &&
+               selectedSlot.inventorySlot.item != null
+            ? selectedSlot.inventorySlot.item.seedData
+            : null;
     }
 
     public string GetSelectedUsedPrefab()
@@ -60,7 +72,7 @@ public class Toolbar_UI : MonoBehaviour
 
     public void SelectSlot(int index)
     {
-        if (toolbarSlots.Count == 9)
+        if (toolbarSlots.Count == 9 && index >= 0 && index < toolbarSlots.Count)
         {
             if (selectedSlot != null)
             {
@@ -72,20 +84,11 @@ public class Toolbar_UI : MonoBehaviour
 
             if (GameManager.instance.player == null)
             {
-                Debug.LogError("Player nesnesi GameManager içinde atanmadı!");
+                Debug.LogError("Player nesnesi GameManager iÃ§inde atanmadÄ±!");
                 return;
             }
 
             GameManager.instance.player.UpdateHandObject();
-
-            if (selectedSlot.inventorySlot != null && selectedSlot.inventorySlot.itemPrefab != null)
-            {
-                Debug.Log("Selected item: " + selectedSlot.inventorySlot.itemPrefab.name);
-            }
-            else
-            {
-                Debug.Log("Seçilen slotta item yok.");
-            }
 
             GameManager.instance.player.inventoryManager.toolbar.SelectSlot(index);
         }

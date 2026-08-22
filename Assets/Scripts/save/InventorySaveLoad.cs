@@ -23,7 +23,8 @@ public class InventorySaveLoad : MonoBehaviour
     public string resourcesFolder = "items";
 
     [Header("Test hotkeys (opsiyonel)")]
-    public bool enableHotkeys = true;
+    [Tooltip("Kapali tut. Runtime save/load giris noktasi SaveCoordinator olmali.")]
+    public bool enableHotkeys = false;
     public KeyCode saveKey = KeyCode.I;
     public KeyCode loadKey = KeyCode.O;
 
